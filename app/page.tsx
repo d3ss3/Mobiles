@@ -12,7 +12,7 @@ export default function HomePage() {
   const { addToCart } = useCart();
 
   // حالات السلايدر الجانبي
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // عرض أحدث 4 منتجات في الصفحة الرئيسية
