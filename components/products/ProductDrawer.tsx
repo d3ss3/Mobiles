@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { useCart } from '@/context/CartContext';
+import { createPortal } from 'react-dom';
 
 interface Product {
   id: string | number;
@@ -42,6 +43,7 @@ export default function ProductDrawer({
   }, [isOpen]);
 
   if (!isOpen || !product) return null;
+  if (typeof document === 'undefined') return null;
 
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
@@ -59,111 +61,133 @@ export default function ProductDrawer({
     }, 2000);
   };
 
-  return (
-    // تم تغيير الـ z-index إلى 100 ليتخطى أي نافبار مثبت في الموقع
-    <div className="fixed inset-0 z-[100] overflow-hidden" dir="rtl">
-      {/* خلفية معتمة بالكامل تغطي الشاشة وتمنع تفاعل ما خلفها */}
+  return createPortal(
+    (
       <div
-        className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm transition-opacity"
-        onClick={onClose}
-      />
-
-      {/* صندوق تفاصيل المنتج الجانبي */}
-      <div className="absolute inset-y-0 right-0 max-w-full flex pl-0 z-[101]">
-        <div className="w-screen max-w-md bg-white shadow-2xl flex flex-col h-full border-r border-slate-100">
-          {/* رأس السلايدر */}
-          <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
-            <h2 className="font-extrabold text-slate-900 text-base">
+        className="fixed inset-0 z-[9999]"
+        dir="rtl"
+      >
+        {/* الخلفية */}
+        <div
+          className="absolute inset-0 bg-slate-950/60 backdrop-blur-[3px]"
+          onClick={onClose}
+        />
+  
+        {/* السلايدر */}
+        <aside className="absolute inset-y-0 right-0 z-[10000] flex w-full max-w-[460px] flex-col bg-white shadow-2xl">
+  
+          {/* Header */}
+          <header className="flex h-[68px] shrink-0 items-center justify-between border-b border-slate-100 bg-white px-5">
+            <h2 className="text-base font-extrabold text-slate-900">
               تفاصيل المنتج
             </h2>
+  
             <button
+              type="button"
               onClick={onClose}
-              className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors"
+              aria-label="إغلاق"
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-lg text-slate-500 transition hover:bg-slate-200 hover:text-slate-900"
             >
-              ✕
+              ×
             </button>
-          </div>
-
-          {/* محتوى الصندوق (بدون أشرطة تمرير مزعجة وبشكل مرتب) */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-6 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-            {/* صورة المنتج */}
-            <div className="relative w-full h-64 rounded-3xl overflow-hidden bg-slate-50 border border-slate-100 shadow-sm group">
-              <img
-                src={product.image || 'https://via.placeholder.com/300'}
-                alt={product.name}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              {product.category && (
-                <span className="absolute top-4 right-4 bg-white/90 backdrop-blur-md text-slate-800 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
-                  {product.category}
-                </span>
+          </header>
+  
+          {/* المحتوى */}
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            <div className="space-y-5 p-5">
+  
+              <div className="relative w-full overflow-hidden rounded-[24px] bg-slate-50">
+                <div className="h-[240px] w-full sm:h-[260px]">
+                  <img
+                    src={product.image || 'https://via.placeholder.com/600'}
+                    alt={product.name}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+  
+                {product.category && (
+                  <span className="absolute right-4 top-4 rounded-full bg-white/95 px-3.5 py-2 text-xs font-bold text-slate-800 shadow-md">
+                    {product.category}
+                  </span>
+                )}
+              </div>
+  
+              <div>
+                <h1 className="text-[22px] font-black leading-[1.4] text-slate-900">
+                  {product.name}
+                </h1>
+  
+                <div className="mt-3 inline-flex items-baseline gap-1.5 rounded-2xl bg-blue-50 px-4 py-2 text-blue-600">
+                  <span className="text-2xl font-black">
+                    {product.price.toLocaleString('ar-SA')}
+                  </span>
+                  <span className="text-xs font-bold">ر.س</span>
+                </div>
+              </div>
+  
+              {product.description && (
+                <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                  <h3 className="mb-2 text-sm font-extrabold text-slate-900">
+                    وصف المنتج
+                  </h3>
+  
+                  <p className="text-sm leading-7 text-slate-600">
+                    {product.description}
+                  </p>
+                </div>
               )}
             </div>
-
-            {/* العنوان والسعر */}
-            <div className="space-y-3">
-              <h1 className="text-xl sm:text-2xl font-black text-slate-900 leading-snug">
-                {product.name}
-              </h1>
-              <div className="inline-flex items-center gap-1.5 bg-blue-50 text-blue-600 px-4 py-2 rounded-2xl font-black text-xl">
-                <span>{product.price}</span>
-                <span className="text-xs font-bold">ر.س</span>
-              </div>
-            </div>
-
-            {/* الوصف */}
-            {product.description && (
-              <div className="space-y-2 bg-slate-50/70 p-4.5 rounded-2xl border border-slate-100/80">
-                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                  وصف المنتج
-                </h3>
-                <p className="text-sm text-slate-600 leading-relaxed">
-                  {product.description}
-                </p>
-              </div>
-            )}
           </div>
-
-          {/* تذييل الصندوق (الكمية وزر الإضافة) */}
-          <div className="p-6 bg-white border-t border-slate-100 space-y-4 shrink-0 shadow-lg">
-            <div className="flex items-center justify-between bg-slate-50 p-2.5 rounded-2xl border border-slate-100">
-              <span className="text-xs font-bold text-slate-500 mr-2">
-                الكمية:
+  
+          {/* Footer */}
+          <footer className="shrink-0 border-t border-slate-100 bg-white p-5 shadow-[0_-8px_25px_rgba(15,23,42,0.07)]">
+  
+            <div className="mb-4 flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3">
+              <span className="text-sm font-bold text-slate-600">
+                الكمية
               </span>
-              <div className="flex items-center bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+  
+              <div className="flex items-center overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
                 <button
+                  type="button"
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  className="w-9 h-9 flex items-center justify-center text-slate-600 hover:bg-slate-100 transition-colors font-bold"
+                  disabled={quantity === 1}
+                  className="flex h-10 w-10 items-center justify-center text-lg font-bold text-slate-600 hover:bg-slate-100 disabled:opacity-30"
                 >
-                  -
+                  −
                 </button>
-                <span className="w-10 text-center font-black text-slate-900 text-sm">
+  
+                <span className="flex h-10 w-12 items-center justify-center border-x border-slate-100 text-sm font-black text-slate-900">
                   {quantity}
                 </span>
+  
                 <button
+                  type="button"
                   onClick={() => setQuantity((q) => q + 1)}
-                  className="w-9 h-9 flex items-center justify-center text-slate-600 hover:bg-slate-100 transition-colors font-bold"
+                  className="flex h-10 w-10 items-center justify-center text-lg font-bold text-slate-600 hover:bg-slate-100"
                 >
                   +
                 </button>
               </div>
             </div>
-
+  
             <button
+              type="button"
               onClick={handleAddToCart}
-              className={`w-full py-4 rounded-2xl font-extrabold text-sm shadow-md transition-all active:scale-[0.98] ${
+              className={`w-full rounded-2xl py-4 text-sm font-extrabold text-white shadow-lg transition-all active:scale-[0.98] ${
                 added > 0
-                  ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-200'
-                  : 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-200'
+                  ? 'bg-emerald-600 shadow-emerald-200 hover:bg-emerald-700'
+                  : 'bg-blue-600 shadow-blue-200 hover:bg-blue-700'
               }`}
             >
               {added > 0
-                ? `تمت إضافة ${added} منتج للسلة بنجاح ✓`
-                : `إضافة للسلة (${product.price * quantity} ر.س)`}
+                ? `تمت إضافة ${added} منتج للسلة ✓`
+                : `إضافة للسلة — ${totalPrice.toLocaleString('ar-SA')} ر.س`}
             </button>
-          </div>
+          </footer>
+        </aside>
         </div>
-      </div>
-    </div>
+    ),
+    document.body
   );
 }
