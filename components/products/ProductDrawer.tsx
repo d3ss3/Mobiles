@@ -61,6 +61,8 @@ export default function ProductDrawer({
     }, 2000);
   };
 
+  const totalPrice = product.price * quantity;
+  
   return createPortal(
     (
       <div

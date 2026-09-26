@@ -32,7 +32,7 @@ export default function HomePage() {
           </p>
           <div className="pt-2">
             <Link
-              href="/shop/products"
+              href="/products"
               className="inline-block bg-white text-blue-600 font-extrabold px-8 py-3.5 rounded-2xl shadow-lg hover:bg-blue-50 transition-all active:scale-95"
             >
               استكشف كل المنتجات
@@ -53,7 +53,7 @@ export default function HomePage() {
             </p>
           </div>
           <Link
-            href="/shop/products"
+            href="/products"
             className="text-sm font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1"
           >
             عرض الكل ←
