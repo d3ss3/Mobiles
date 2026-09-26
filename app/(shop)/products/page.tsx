@@ -14,7 +14,17 @@ export default function ShopProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
 
   // حالات السلايدر الجانبي لتفاصيل المنتج
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  interface DrawerProduct {
+    id: string | number;
+    name: string;
+    price: number;
+    image: string;
+    description?: string;
+    category?: string;
+  }
+  
+  const [selectedProduct, setSelectedProduct] =
+    useState<DrawerProduct | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const filteredProducts = useMemo(() => {
