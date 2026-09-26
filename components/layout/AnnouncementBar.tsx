@@ -5,23 +5,32 @@ import { useState } from 'react';
 import Link from 'next/link';
 
 interface AnnouncementBarProps {
+  message?: string;
+  badgeText?: string;
   newsItems?: string[];
   linkHref?: string;
   linkText?: string;
 }
 
 export default function AnnouncementBar({
-  newsItems = [
-    '🎉 خصومات حصريّة بمناسبة الافتتاح! احصل على خصم 15% على جميع المنتجات.',
-    '🚚 شحن مجاني وسريع لكافة الطلبات التي تتجاوز 200 ريال.',
-    '⭐ تم إضافة تشكيلة جديدة من الأجهزة الذكية والإكسسوارات.',
-  ],
+  message,
+  badgeText = 'عاجل',
+  newsItems,
   linkHref = '/products',
   linkText = 'تسوق الآن ←',
 }: AnnouncementBarProps) {
   const [isVisible, setIsVisible] = useState(true);
 
   if (!isVisible) return null;
+
+  // تحديد محتوى الشريط (إذا تم إرسال message مفردة، أو استخدام مصفوفة newsItems، أو الافتراضي)
+  const items = message
+    ? [message]
+    : newsItems || [
+        '🎉 خصومات حصريّة بمناسبة الافتتاح! احصل على خصم 15% على جميع المنتجات.',
+        '🚚 شحن مجاني وسريع لكافة الطلبات التي تتجاوز 200 ريال.',
+        '⭐ تم إضافة تشكيلة جديدة من الأجهزة الذكية والإكسسوارات.',
+      ];
 
   return (
     <div className="bg-slate-900 text-white text-xs sm:text-sm py-2 px-4 relative z-50 overflow-hidden border-b border-slate-800 shadow-md">
@@ -33,7 +42,7 @@ export default function AnnouncementBar({
             <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
           </span>
           <span className="bg-blue-600 text-white text-[11px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-            عاجل
+            {badgeText}
           </span>
         </div>
 
@@ -41,7 +50,7 @@ export default function AnnouncementBar({
         <div className="flex-1 overflow-hidden relative group">
           <div className="animate-marquee whitespace-nowrap flex items-center gap-12 group-hover:[animation-play-state:paused]">
             {/* تكرار المصفوفة لضمان استمرارية الحركة الأفقية بدون انقطاع */}
-            {[...newsItems, ...newsItems].map((item, index) => (
+            {[...items, ...items].map((item, index) => (
               <span
                 key={index}
                 className="inline-flex items-center gap-2 font-medium text-slate-200"
