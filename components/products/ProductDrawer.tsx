@@ -48,11 +48,13 @@ export default function ProductDrawer({
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
       addToCart({
-        id: product.id,
+        id: String(product.id),
         title: product.name,
         price: product.price,
         image: product.image,
-        category: product.category,
+        category: product.category || '',
+        description: product.description || '', // أضفنا الوصف لتلبية متطلبات السلة
+        stock: 10, // أضفنا قيمة افتراضية للمخزون
       });
     }
     setAdded(quantity);
@@ -62,7 +64,7 @@ export default function ProductDrawer({
   };
 
   const totalPrice = product.price * quantity;
-  
+
   return createPortal(
     (
       <div
