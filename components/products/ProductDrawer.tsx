@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react';
 import { useCart } from '@/context/CartContext';
 import { createPortal } from 'react-dom';
+import Image from 'next/image';
 
 interface Product {
   id: string | number;
@@ -100,17 +101,20 @@ export default function ProductDrawer({
           <div className="min-h-0 flex-1 overflow-y-auto">
             <div className="space-y-5 p-5">
   
-              <div className="relative w-full overflow-hidden rounded-[24px] bg-slate-50">
-                <div className="h-[240px] w-full sm:h-[260px]">
-                  <img
+            <div className="relative w-full overflow-hidden rounded-[24px] bg-slate-50">
+                <div className="relative h-[240px] w-full sm:h-[260px]">
+                  <Image
                     src={product.image || 'https://via.placeholder.com/600'}
                     alt={product.name}
-                    className="h-full w-full object-cover"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 460px"
+                    priority
+                    className="object-cover"
                   />
                 </div>
-  
+
                 {product.category && (
-                  <span className="absolute right-4 top-4 rounded-full bg-white/95 px-3.5 py-2 text-xs font-bold text-slate-800 shadow-md">
+                  <span className="absolute right-4 top-4 z-10 rounded-full bg-white/95 px-3.5 py-2 text-xs font-bold text-slate-800 shadow-md">
                     {product.category}
                   </span>
                 )}

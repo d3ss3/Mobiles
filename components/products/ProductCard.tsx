@@ -3,6 +3,7 @@
 
 import { Product } from '@/types';
 import { useCart } from '@/context/CartContext';
+import Image from 'next/image';
 
 interface ProductCardProps {
   product: Product;
@@ -12,13 +13,15 @@ export default function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
 
   return (
-    <div className="border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white flex flex-col justify-between">
+    <div className="border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white flex flex-col justify-between group">
       <div>
-        <div className="relative h-48 w-full bg-gray-100">
-          <img
+        <div className="relative h-48 w-full bg-gray-100 overflow-hidden">
+          <Image
             src={product.image}
             alt={product.title}
-            className="w-full h-full object-cover"
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
           />
         </div>
         <div className="p-4">
