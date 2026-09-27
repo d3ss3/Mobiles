@@ -9,7 +9,7 @@ import {
   ReactNode,
 } from 'react';
 import { Product } from '@/types';
-import { supabase } from '@/lib/bd'; // ملف الاتصال بقاعدة البيانات
+import { supabase } from '@/lib/db'; // ملف الاتصال بقاعدة البيانات
 
 interface ProductContextType {
   products: Product[];
