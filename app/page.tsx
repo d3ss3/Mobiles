@@ -21,25 +21,25 @@ export default function HomePage() {
   return (
     <div className="space-y-12 pb-12" dir="rtl">
       {/* قسم الهيرو / Hero Section */}
-      <section className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-800 text-white py-16 px-6 rounded-3xl mx-4 sm:mx-8 mt-6 shadow-xl">
-        <div className="max-w-4xl mx-auto text-center space-y-4">
-          <h1 className="text-3xl sm:text-5xl font-black leading-tight">
-            أحدث المنتجات والتقنيات بين يديك
-          </h1>
-          <p className="text-blue-100 text-sm sm:text-base max-w-2xl mx-auto">
-            تسوق أفضل المنتجات الرقمية والإلكترونيات بأسعار تنافسية وجودة
-            مضمونة.
-          </p>
-          <div className="pt-2">
-            <Link
-              href="/products"
-              className="inline-block bg-white text-blue-600 font-extrabold px-8 py-3.5 rounded-2xl shadow-lg hover:bg-blue-50 transition-all active:scale-95"
-            >
-              استكشف كل المنتجات
-            </Link>
-          </div>
-        </div>
-      </section>
+      <section className="relative w-full bg-[url('https://images.unsplash.com/photo-1550745165-9bc0b252726f')] bg-cover bg-center py-24 px-6 overflow-hidden text-white shadow-xl">
+  <div className="absolute inset-0 bg-slate-950/75 backdrop-blur-[2px]" />
+  <div className="relative z-10 max-w-4xl mx-auto text-center space-y-4">
+    <h1 className="text-3xl sm:text-5xl font-black leading-tight">
+      أحدث المنتجات والتقنيات بين يديك
+    </h1>
+    <p className="text-slate-200 text-sm sm:text-base max-w-2xl mx-auto">
+      تسوق أفضل المنتجات الرقمية والإلكترونيات بأسعار تنافسية وجودة مضمونة.
+    </p>
+    <div className="pt-2">
+      <Link
+        href="/products"
+        className="inline-block bg-white text-blue-600 font-extrabold px-8 py-3.5 rounded-2xl shadow-lg hover:bg-blue-50 transition-all active:scale-95"
+      >
+        استكشف كل المنتجات
+      </Link>
+    </div>
+  </div>
+</section>
 
       {/* قسم المنتجات المميزة */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8">
