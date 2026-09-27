@@ -22,7 +22,7 @@ export default function HomePage() {
     <div className="space-y-12 pb-12" dir="rtl">
       {/* قسم الهيرو / Hero Section */}
       <section className="relative w-full bg-[url('https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover bg-center py-24 px-6 overflow-hidden text-white shadow-xl">
-  <div className="absolute inset-0 bg-slate-950/75 backdrop-blur-[2px]" />
+  <div className="backdrop-blur-[2px]" />
   <div className="relative z-10 max-w-4xl mx-auto text-center space-y-4">
     <h1 className="text-3xl sm:text-5xl font-black leading-tight">
       أحدث المنتجات والتقنيات بين يديك
