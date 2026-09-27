@@ -21,7 +21,7 @@ export default function HomePage() {
   return (
     <div className="space-y-12 pb-12" dir="rtl">
       {/* قسم الهيرو / Hero Section */}
-      <section className="relative w-full bg-[url('https://www.hlc.com/-/media/project/english-site/home-page/hlc/homepage-desktop-hlc.png')] bg-cover bg-center py-24 px-6 overflow-hidden text-white shadow-xl">
+      <section className="relative w-full bg-[url('https://chatgpt.com/backend-api/estuary/content?id=file_000000006180821192636d83afef85ff&ts=497361&p=fs&cid=1&sig=7e8d422502124adcef4a8d6a2d2f09a9bd37f2278b2d2d5f3bfdd0817ededa5c&v=0')] bg-cover bg-center py-24 px-6 overflow-hidden text-white shadow-xl">
   <div className="backdrop-blur-[2px]" />
   <div className="relative z-10 max-w-4xl mx-auto text-center space-y-4">
     <h1 className="text-3xl sm:text-5xl font-black leading-tight">
