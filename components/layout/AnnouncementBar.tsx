@@ -33,15 +33,15 @@ export default function AnnouncementBar({
       ];
 
   return (
-    <div className="bg-slate-900 text-white text-xs sm:text-sm py-2 px-4 relative z-50 overflow-hidden border-b border-slate-800 shadow-md">
+    <div className="bg-zinc-950 text-white text-xs sm:text-sm py-2 px-4 relative z-50 overflow-hidden border-b border-zinc-800/80 shadow-md" dir="rtl">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         {/* شارة العنوان الإخباري Thicker Badge */}
-        <div className="flex items-center gap-2 shrink-0 z-10 bg-slate-900 pl-2">
+        <div className="flex items-center gap-2 shrink-0 z-10 bg-zinc-950 pl-2">
           <span className="flex h-2 w-2 relative">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-store-primary opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-store-primary"></span>
           </span>
-          <span className="bg-blue-600 text-white text-[11px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+          <span className="bg-store-primary text-white text-[11px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
             {badgeText}
           </span>
         </div>
@@ -53,18 +53,18 @@ export default function AnnouncementBar({
             {[...items, ...items].map((item, index) => (
               <span
                 key={index}
-                className="inline-flex items-center gap-2 font-medium text-slate-200"
+                className="inline-flex items-center gap-2 font-medium text-zinc-300"
               >
                 <span>{item}</span>
                 {linkHref && (
                   <Link
                     href={linkHref}
-                    className="text-blue-400 hover:text-blue-300 font-bold underline transition-colors mr-2"
+                    className="text-store-primary hover:underline font-bold transition-colors mr-2"
                   >
                     {linkText}
                   </Link>
                 )}
-                <span className="text-slate-600 mr-8">•</span>
+                <span className="text-zinc-700 mr-8">•</span>
               </span>
             ))}
           </div>
@@ -73,7 +73,7 @@ export default function AnnouncementBar({
         {/* زر الإغلاق */}
         <button
           onClick={() => setIsVisible(false)}
-          className="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-all shrink-0 z-10 bg-slate-900 pr-2 focus:outline-none"
+          className="p-1 rounded-lg hover:bg-zinc-900 text-zinc-400 hover:text-white transition-all shrink-0 z-10 bg-zinc-950 pr-2 focus:outline-none cursor-pointer"
           aria-label="إغلاق الشريط"
         >
           <svg

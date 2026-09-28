@@ -1,4 +1,3 @@
-// app/login/page.tsx
 'use client';
 
 import { useState } from 'react';
@@ -23,22 +22,22 @@ export default function LoginPage() {
 
   return (
     <main
-      className="min-h-[calc(100vh-5rem)] flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-slate-50/50"
+      className="min-h-[calc(100vh-5rem)] flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-store-light text-store-dark"
       dir="rtl"
     >
-      <div className="w-full max-w-5xl bg-white rounded-3xl border border-slate-200/80 shadow-2xl shadow-slate-200/50 overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[600px]">
+      <div className="w-full max-w-5xl bg-white rounded-3xl border border-zinc-200/80 shadow-2xl shadow-zinc-200/50 overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[600px]">
         {/* القسم الأيمن: النموذج والتفاعل */}
         <div className="lg:col-span-7 p-8 sm:p-12 flex flex-col justify-between">
           <div>
             {/* العنونة والتحديث */}
             <div className="space-y-2 mb-8">
-              <span className="bg-blue-50 text-blue-600 text-xs font-extrabold px-3 py-1 rounded-full border border-blue-100">
+              <span className="bg-store-primary/10 text-store-primary text-xs font-extrabold px-3 py-1 rounded-full border border-store-primary/20">
                 مرحباً بعودتك 👋
               </span>
-              <h1 className="text-3xl font-black text-slate-900 tracking-tight">
+              <h1 className="text-3xl font-black text-store-dark tracking-tight">
                 تسجيل الدخول
               </h1>
-              <p className="text-sm font-medium text-slate-500">
+              <p className="text-sm font-medium text-zinc-500">
                 أدخل بيانات حسابك للمتابعة وإدارة طلباتك وسلتك بسهولة
               </p>
             </div>
@@ -47,7 +46,7 @@ export default function LoginPage() {
             <div className="grid grid-cols-2 gap-3 mb-6">
               <button
                 type="button"
-                className="flex items-center justify-center gap-2 px-4 py-3 border border-slate-200 rounded-2xl hover:bg-slate-50 transition-all font-bold text-xs text-slate-700 active:scale-[0.98]"
+                className="flex items-center justify-center gap-2 px-4 py-3 border border-zinc-200 rounded-2xl hover:bg-zinc-50 transition-all font-bold text-xs text-zinc-700 active:scale-[0.98]"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24">
                   <path
@@ -72,9 +71,9 @@ export default function LoginPage() {
 
               <button
                 type="button"
-                className="flex items-center justify-center gap-2 px-4 py-3 border border-slate-200 rounded-2xl hover:bg-slate-50 transition-all font-bold text-xs text-slate-700 active:scale-[0.98]"
+                className="flex items-center justify-center gap-2 px-4 py-3 border border-zinc-200 rounded-2xl hover:bg-zinc-50 transition-all font-bold text-xs text-zinc-700 active:scale-[0.98]"
               >
-                <svg className="w-4 h-4 fill-slate-900" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 fill-zinc-900" viewBox="0 0 24 24">
                   <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.85c.62-.76 1.05-1.82.93-2.88-.91.04-2.03.61-2.68 1.37-.58.67-1.09 1.76-.95 2.8.1.01.21.02.31.02 1.02 0 1.77-.55 2.39-1.31z" />
                 </svg>
                 <span>Apple</span>
@@ -83,8 +82,8 @@ export default function LoginPage() {
 
             {/* فاصل */}
             <div className="relative my-6 flex items-center justify-center">
-              <div className="border-t border-slate-200 w-full" />
-              <span className="bg-white px-3 text-[11px] font-bold text-slate-400 absolute uppercase">
+              <div className="border-t border-zinc-200 w-full" />
+              <span className="bg-white px-3 text-[11px] font-bold text-zinc-400 absolute uppercase">
                 أو بالبريد الإلكتروني
               </span>
             </div>
@@ -93,7 +92,7 @@ export default function LoginPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* حقل البريد الإلكتروني */}
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                <label className="block text-xs font-bold text-zinc-700 mb-1.5">
                   البريد الإلكتروني
                 </label>
                 <div className="relative">
@@ -103,9 +102,9 @@ export default function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="example@domain.com"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3.5 pl-10 text-sm font-medium text-slate-900 outline-none focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-600/10 transition-all"
+                    className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-3.5 pl-10 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/10 transition-all"
                   />
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400">
                     📧
                   </span>
                 </div>
@@ -114,12 +113,12 @@ export default function LoginPage() {
               {/* حقل كلمة المرور */}
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-xs font-bold text-slate-700">
+                  <label className="block text-xs font-bold text-zinc-700">
                     كلمة المرور
                   </label>
                   <Link
                     href="#"
-                    className="text-xs font-bold text-blue-600 hover:text-blue-700 hover:underline"
+                    className="text-xs font-bold text-store-primary hover:text-store-secondary hover:underline"
                   >
                     نسيت كلمة المرور؟
                   </Link>
@@ -131,12 +130,12 @@ export default function LoginPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3.5 pl-10 text-sm font-medium text-slate-900 outline-none focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-600/10 transition-all"
+                    className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-3.5 pl-10 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/10 transition-all"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs font-bold"
+                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 text-xs font-bold"
                   >
                     {showPassword ? 'إخفاء' : 'إظهار'}
                   </button>
@@ -147,7 +146,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-600/25 transition-all active:scale-[0.98] text-sm flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                className="w-full bg-store-primary hover:bg-store-secondary text-white font-bold py-4 rounded-2xl shadow-lg shadow-store-primary/25 transition-all active:scale-[0.98] text-sm flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 {isLoading ? (
                   <>
@@ -180,12 +179,12 @@ export default function LoginPage() {
           </div>
 
           {/* التذييل التحتي */}
-          <div className="pt-6 text-center border-t border-slate-100">
-            <p className="text-xs font-bold text-slate-500">
+          <div className="pt-6 text-center border-t border-zinc-100">
+            <p className="text-xs font-bold text-zinc-500">
               ليس لديك حساب بعد؟{' '}
               <Link
                 href="/register"
-                className="text-blue-600 font-black hover:underline"
+                className="text-store-primary font-black hover:underline"
               >
                 أنشئ حساباً جديداً مجاناً
               </Link>
@@ -193,19 +192,19 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* القسم الأيسر: العرض البصري الجذاب (Hidden on Mobile) */}
-        <div className="hidden lg:flex lg:col-span-5 bg-gradient-to-br from-blue-600 via-indigo-600 to-slate-900 p-8 flex-col justify-between relative overflow-hidden text-white">
+        {/* القسم الأيسر: العرض البصري الجذاب المحدث بالهوية الجديدة */}
+        <div className="hidden lg:flex lg:col-span-5 bg-gradient-to-br from-store-primary via-store-secondary to-store-dark p-8 flex-col justify-between relative overflow-hidden text-white">
           {/* دوائر خلفية زجاجية تزيينية */}
           <div className="absolute -top-12 -left-12 w-48 h-48 bg-white/10 rounded-full blur-2xl" />
-          <div className="absolute -bottom-12 -right-12 w-60 h-60 bg-blue-500/20 rounded-full blur-3xl" />
+          <div className="absolute -bottom-12 -right-12 w-60 h-60 bg-store-primary/20 rounded-full blur-3xl" />
 
           {/* محتوى الشعار والوصف */}
           <div className="relative z-10">
             <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl mb-6 border border-white/20">
               🛍️
             </div>
-            <h2 className="text-2xl font-black mb-3">تجرية تسوق استثنائية!</h2>
-            <p className="text-blue-100 text-xs leading-relaxed font-medium">
+            <h2 className="text-2xl font-black mb-3">تجربة تسوق استثنائية!</h2>
+            <p className="text-zinc-200 text-xs leading-relaxed font-medium">
               احصل على خصومات حصرية وتتبع شحناتك بسهولة مع واجهة مستخدم فائقة
               السرعة.
             </p>
@@ -217,7 +216,7 @@ export default function LoginPage() {
               <span className="text-2xl">🔥</span>
               <div>
                 <p className="font-extrabold text-xs">عرض لفترة محدودة</p>
-                <p className="text-[10px] text-blue-200">
+                <p className="text-[10px] text-zinc-200">
                   شحن مجاني على أول طلب لك عند التسجيل
                 </p>
               </div>
@@ -225,7 +224,7 @@ export default function LoginPage() {
           </div>
 
           {/* التذييل */}
-          <p className="relative z-10 text-[10px] text-blue-200 font-medium">
+          <p className="relative z-10 text-[10px] text-zinc-200 font-medium">
             © 2026 جميع الحقوق محفوظة لـ متجري
           </p>
         </div>

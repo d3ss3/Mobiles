@@ -36,32 +36,33 @@ export default function Navbar() {
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-white/80 backdrop-blur-md border-b border-slate-200/80 shadow-sm'
-          : 'bg-white border-b border-slate-100'
+          ? 'bg-white/85 backdrop-blur-md border-b border-zinc-200/80 shadow-xl shadow-zinc-200/20'
+          : 'bg-white border-b border-zinc-100'
       }`}
+      dir="rtl"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* 1. الشعار / Logo */}
           <Link
             href="/"
-            className="flex items-center gap-2 group focus:outline-none"
+            className="flex items-center gap-3 group focus:outline-none"
           >
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
-              <span className="text-xl">🛒</span>
+            <div className="w-11 h-11 rounded-2xl bg-store-primary flex items-center justify-center text-white shadow-lg shadow-store-primary/25 group-hover:scale-105 transition-transform font-black text-xl">
+              🛒
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-black bg-gradient-to-r from-slate-900 via-blue-900 to-blue-600 bg-clip-text text-transparent">
+              <span className="text-xl font-black text-store-dark tracking-tight">
                 متجري
               </span>
-              <span className="text-[10px] font-bold text-slate-400 -mt-1 tracking-wider uppercase">
+              <span className="text-[10px] font-bold text-zinc-400 -mt-1 tracking-wider uppercase">
                 التسوق الذكي
               </span>
             </div>
           </Link>
 
           {/* 2. روابط التنقل للشاشات الكبيرة */}
-          <nav className="hidden md:flex items-center gap-1 bg-slate-50 p-1.5 rounded-2xl border border-slate-200/60">
+          <nav className="hidden md:flex items-center gap-1.5 bg-zinc-100/80 p-1.5 rounded-2xl border border-zinc-200/80">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
@@ -70,8 +71,8 @@ export default function Navbar() {
                   href={link.href}
                   className={`px-5 py-2 rounded-xl text-sm font-bold transition-all ${
                     isActive
-                      ? 'bg-white text-blue-600 shadow-sm border border-slate-200/50'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
+                      ? 'bg-white text-store-primary shadow-sm border border-zinc-200/50'
+                      : 'text-zinc-600 hover:text-store-dark hover:bg-zinc-200/60'
                   }`}
                 >
                   {link.name}
@@ -81,14 +82,14 @@ export default function Navbar() {
           </nav>
 
           {/* 3. إجراءات اليمين (السلة + أيقونة الحساب + زر الجوال) */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3">
             {/* زر سلة التسوق */}
             <Link
               href="/cart"
               className={`relative flex items-center gap-2.5 px-3.5 sm:px-4 py-2.5 rounded-2xl text-sm font-bold transition-all active:scale-95 ${
                 pathname === '/cart'
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/25'
-                  : 'bg-slate-100 text-slate-700 hover:bg-blue-50 hover:text-blue-600'
+                  ? 'bg-store-primary text-white shadow-lg shadow-store-primary/25'
+                  : 'bg-zinc-100 text-zinc-700 hover:bg-store-primary/10 hover:text-store-primary'
               }`}
             >
               <svg
@@ -109,8 +110,8 @@ export default function Navbar() {
                 <span
                   className={`min-w-[20px] h-5 px-1.5 text-[11px] font-black rounded-full flex items-center justify-center transition-transform animate-bounce ${
                     pathname === '/cart'
-                      ? 'bg-white text-blue-600'
-                      : 'bg-blue-600 text-white shadow-sm'
+                      ? 'bg-white text-store-primary'
+                      : 'bg-store-primary text-white shadow-sm'
                   }`}
                 >
                   {totalItems}
@@ -125,8 +126,8 @@ export default function Navbar() {
               aria-label="تسجيل الدخول"
               className={`p-2.5 rounded-2xl transition-all active:scale-95 ${
                 pathname === '/login' || pathname === '/register'
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/25'
-                  : 'bg-slate-100 text-slate-700 hover:bg-blue-50 hover:text-blue-600'
+                  ? 'bg-store-primary text-white shadow-lg shadow-store-primary/25'
+                  : 'bg-zinc-100 text-zinc-700 hover:bg-store-primary/10 hover:text-store-primary'
               }`}
             >
               <svg
@@ -148,7 +149,7 @@ export default function Navbar() {
             {/* زر القائمة المنسدلة للجوال */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors"
+              className="md:hidden p-2.5 rounded-2xl bg-zinc-100 hover:bg-zinc-200 text-zinc-600 transition-colors cursor-pointer"
               aria-label="Toggle Menu"
             >
               {isMobileMenuOpen ? (
@@ -187,17 +188,17 @@ export default function Navbar() {
 
       {/* 4. القائمة المنسدلة للجوال (Mobile Drawer) */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-6 space-y-2 animate-fadeIn">
+        <div className="md:hidden bg-white border-b border-zinc-200 px-4 pt-3 pb-6 space-y-2 shadow-xl animate-fadeIn">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`block px-4 py-3 rounded-xl text-base font-bold transition-all ${
+                className={`block px-4 py-3 rounded-2xl text-base font-bold transition-all ${
                   isActive
-                    ? 'bg-blue-50 text-blue-600'
-                    : 'text-slate-600 hover:bg-slate-50'
+                    ? 'bg-store-primary/10 text-store-primary border border-store-primary/20'
+                    : 'text-zinc-600 hover:bg-zinc-50'
                 }`}
               >
                 {link.name}

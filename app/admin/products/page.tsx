@@ -131,25 +131,26 @@ export default function AdminProductsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-50/50 p-4 md:p-8" dir="rtl">
+    <main className="min-h-[calc(100vh-5rem)] bg-store-light text-store-dark p-4 md:p-8" dir="rtl">
       <div className="max-w-7xl mx-auto space-y-6">
+        
         {/* 1. الهيدر الرئيسي وزر الإضافة */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-zinc-200/80 shadow-xl shadow-zinc-200/40">
           <div>
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-blue-600 animate-pulse"></span>
-              <h1 className="text-2xl font-black text-slate-900">
+              <span className="w-3 h-3 rounded-full bg-store-primary animate-pulse"></span>
+              <h1 className="text-2xl font-black text-store-dark">
                 إدارة المنتجات والمخزون
               </h1>
             </div>
-            <p className="text-slate-500 text-sm mt-1">
+            <p className="text-zinc-500 text-sm mt-1 font-medium">
               لوحة تحكم ذكية لتنظيم واستعراض جميع منتجات المتجر وتحديد المخزون.
             </p>
           </div>
 
           <button
             onClick={handleOpenAddModal}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3.5 rounded-2xl shadow-lg shadow-blue-500/20 transition-all transform active:scale-95 flex items-center justify-center gap-2 text-sm"
+            className="bg-store-primary hover:bg-store-secondary text-white font-bold px-6 py-3.5 rounded-2xl shadow-lg shadow-store-primary/25 transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 text-sm cursor-pointer"
           >
             <span className="text-xl leading-none">+</span>
             <span>إضافة منتج جديد</span>
@@ -158,65 +159,65 @@ export default function AdminProductsPage() {
 
         {/* 2. بطاقات الإحصائيات الحية (KPI Cards) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex justify-between items-center">
+          <div className="bg-white p-5 rounded-3xl border border-zinc-200/80 shadow-xl shadow-zinc-200/40 flex justify-between items-center">
             <div>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+              <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
                 إجمالي المنتجات
               </p>
-              <h3 className="text-2xl font-black text-slate-900 mt-1">
+              <h3 className="text-2xl font-black text-store-dark mt-1">
                 {stats.totalProducts}
               </h3>
             </div>
-            <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-black text-lg">
+            <div className="w-12 h-12 rounded-2xl bg-store-primary/10 text-store-primary flex items-center justify-center font-black text-lg border border-store-primary/20">
               📦
             </div>
           </div>
 
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex justify-between items-center">
+          <div className="bg-white p-5 rounded-3xl border border-zinc-200/80 shadow-xl shadow-zinc-200/40 flex justify-between items-center">
             <div>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+              <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
                 قيمة المخزون الإجمالية
               </p>
               <h3 className="text-2xl font-black text-emerald-600 mt-1">
-                {stats.totalValue.toLocaleString()} ر.س
+                {stats.totalValue.toLocaleString('ar-SA')} ر.س
               </h3>
             </div>
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-black text-lg">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-black text-lg border border-emerald-200">
               💰
             </div>
           </div>
 
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex justify-between items-center">
+          <div className="bg-white p-5 rounded-3xl border border-zinc-200/80 shadow-xl shadow-zinc-200/40 flex justify-between items-center">
             <div>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+              <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
                 مخزون منخفض (≤ 5)
               </p>
               <h3 className="text-2xl font-black text-amber-500 mt-1">
                 {stats.lowStockCount}
               </h3>
             </div>
-            <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-black text-lg">
+            <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-black text-lg border border-amber-200">
               ⚠️
             </div>
           </div>
 
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex justify-between items-center">
+          <div className="bg-white p-5 rounded-3xl border border-zinc-200/80 shadow-xl shadow-zinc-200/40 flex justify-between items-center">
             <div>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+              <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
                 نفذ من المخزون
               </p>
               <h3 className="text-2xl font-black text-rose-600 mt-1">
                 {stats.outOfStockCount}
               </h3>
             </div>
-            <div className="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-black text-lg">
+            <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center font-black text-lg border border-rose-200">
               🚫
             </div>
           </div>
         </div>
 
         {/* 3. شريط أدوات التحكم والفلترة */}
-        <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm space-y-3 md:space-y-0 md:flex md:items-center md:justify-between gap-4">
+        <div className="bg-white p-4 sm:p-5 rounded-3xl border border-zinc-200/80 shadow-xl shadow-zinc-200/40 space-y-3 md:space-y-0 md:flex md:items-center md:justify-between gap-4">
           {/* البحث */}
           <div className="relative flex-1">
             <input
@@ -224,12 +225,12 @@ export default function AdminProductsPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="ابحث باسم المنتج أو الوصف..."
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-600 focus:bg-white transition-all placeholder:text-slate-400"
+              className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl px-4 py-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/10 transition-all placeholder:text-zinc-400"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute left-3 top-2.5 text-slate-400 hover:text-slate-600 text-sm font-bold"
+                className="absolute left-3.5 top-3 text-zinc-400 hover:text-zinc-600 text-sm font-bold"
               >
                 ✕
               </button>
@@ -241,7 +242,7 @@ export default function AdminProductsPage() {
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-medium outline-none focus:border-blue-600"
+              className="bg-zinc-50/50 border border-zinc-200 rounded-2xl px-4 py-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/10 transition-all cursor-pointer"
             >
               <option value="all">جميع التصنيفات</option>
               <option value="إلكترونيات">إلكترونيات</option>
@@ -253,7 +254,7 @@ export default function AdminProductsPage() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-medium outline-none focus:border-blue-600"
+              className="bg-zinc-50/50 border border-zinc-200 rounded-2xl px-4 py-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/10 transition-all cursor-pointer"
             >
               <option value="newest">الأحدث أولاً</option>
               <option value="price-asc">السعر: من الأقل للأعلى</option>
@@ -261,23 +262,23 @@ export default function AdminProductsPage() {
             </select>
 
             {/* أزرار التبديل بين Grid و Table */}
-            <div className="bg-slate-100 p-1 rounded-xl flex items-center gap-1 border">
+            <div className="bg-zinc-100 p-1 rounded-2xl flex items-center gap-1 border border-zinc-200/80">
               <button
                 onClick={() => setViewMode('table')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   viewMode === 'table'
-                    ? 'bg-white text-blue-600 shadow-sm'
-                    : 'text-slate-500 hover:text-slate-900'
+                    ? 'bg-white text-store-primary shadow-sm'
+                    : 'text-zinc-500 hover:text-store-dark'
                 }`}
               >
                 جدول
               </button>
               <button
                 onClick={() => setViewMode('grid')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   viewMode === 'grid'
-                    ? 'bg-white text-blue-600 shadow-sm'
-                    : 'text-slate-500 hover:text-slate-900'
+                    ? 'bg-white text-store-primary shadow-sm'
+                    : 'text-zinc-500 hover:text-store-dark'
                 }`}
               >
                 شبكي
@@ -288,18 +289,22 @@ export default function AdminProductsPage() {
 
         {/* 4. عرض المحتوى (Table / Grid) */}
         {filteredProducts.length === 0 ? (
-          <div className="bg-white rounded-3xl p-12 text-center border border-dashed border-slate-300">
-            <p className="text-slate-400 text-lg font-medium">
+          <div className="bg-white rounded-3xl p-16 text-center border border-dashed border-zinc-300 shadow-sm">
+            <div className="w-16 h-16 bg-store-primary/10 text-store-primary rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl border border-store-primary/20">
+              📭
+            </div>
+            <h3 className="text-lg font-bold text-store-dark mb-1">لا توجد منتجات مطابقة</h3>
+            <p className="text-sm font-medium text-zinc-400">
               لم يتم العثور على أية منتجات مطابقة للبحث.
             </p>
           </div>
         ) : viewMode === 'table' ? (
           /* جدول البيانات العصري */
-          <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
+          <div className="bg-white rounded-3xl border border-zinc-200/80 shadow-xl shadow-zinc-200/40 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-right border-collapse">
                 <thead>
-                  <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-bold text-xs uppercase tracking-wider">
+                  <tr className="bg-zinc-50/80 border-b border-zinc-200 text-zinc-500 font-bold text-xs uppercase tracking-wider">
                     <th className="p-4">المنتج</th>
                     <th className="p-4">التصنيف</th>
                     <th className="p-4">السعر</th>
@@ -307,36 +312,36 @@ export default function AdminProductsPage() {
                     <th className="p-4 text-center">الإجراءات</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 text-sm">
+                <tbody className="divide-y divide-zinc-100 text-sm font-medium">
                   {filteredProducts.map((product) => (
                     <tr
                       key={product.id}
-                      className="hover:bg-slate-50/50 transition-colors"
+                      className="hover:bg-zinc-50/50 transition-colors"
                     >
                       <td className="p-4">
                         <div className="flex items-center gap-3">
                           <img
                             src={product.image}
                             alt={product.title}
-                            className="w-12 h-12 rounded-xl object-cover border border-slate-200 bg-slate-100"
+                            className="w-12 h-12 rounded-2xl object-cover border border-zinc-200 bg-zinc-100 shrink-0"
                           />
                           <div>
-                            <span className="font-bold text-slate-900 block">
+                            <span className="font-bold text-store-dark block">
                               {product.title}
                             </span>
-                            <span className="text-xs text-slate-400 line-clamp-1">
+                            <span className="text-xs text-zinc-400 line-clamp-1 font-normal">
                               {product.description}
                             </span>
                           </div>
                         </div>
                       </td>
                       <td className="p-4">
-                        <span className="inline-block bg-slate-100 text-slate-600 text-xs font-bold px-2.5 py-1 rounded-lg">
+                        <span className="inline-block bg-store-primary/10 text-store-primary text-xs font-bold px-3 py-1 rounded-full border border-store-primary/20">
                           {product.category}
                         </span>
                       </td>
-                      <td className="p-4 font-black text-slate-900">
-                        {product.price.toLocaleString()} ر.س
+                      <td className="p-4 font-black text-store-dark">
+                        {product.price.toLocaleString('ar-SA')} ر.س
                       </td>
                       <td className="p-4">
                         {product.stock === 0 ? (
@@ -357,13 +362,13 @@ export default function AdminProductsPage() {
                         <div className="flex items-center justify-center gap-2">
                           <button
                             onClick={() => handleOpenEditModal(product)}
-                            className="p-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors font-bold text-xs"
+                            className="px-3 py-1.5 text-zinc-600 hover:text-store-primary hover:bg-store-primary/5 rounded-xl transition-colors font-bold text-xs cursor-pointer"
                           >
                             تعديل
                           </button>
                           <button
                             onClick={() => handleDeleteProduct(product.id)}
-                            className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors font-bold text-xs"
+                            className="px-3 py-1.5 text-zinc-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors font-bold text-xs cursor-pointer"
                           >
                             حذف
                           </button>
@@ -381,47 +386,47 @@ export default function AdminProductsPage() {
             {filteredProducts.map((product) => (
               <div
                 key={product.id}
-                className="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden flex flex-col justify-between hover:shadow-md transition-all"
+                className="bg-white rounded-3xl border border-zinc-200/80 shadow-xl shadow-zinc-200/40 overflow-hidden flex flex-col justify-between hover:shadow-2xl transition-all"
               >
-                <div className="p-4">
-                  <div className="relative h-48 rounded-2xl overflow-hidden bg-slate-100 mb-4 border border-slate-100">
+                <div className="p-5">
+                  <div className="relative h-48 rounded-2xl overflow-hidden bg-zinc-100 mb-4 border border-zinc-200">
                     <img
                       src={product.image}
                       alt={product.title}
                       className="w-full h-full object-cover"
                     />
-                    <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-md text-slate-800 text-xs font-bold px-3 py-1 rounded-full shadow-sm">
+                    <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-md text-store-dark text-xs font-bold px-3 py-1 rounded-full border border-zinc-200/50 shadow-sm">
                       {product.category}
                     </span>
                   </div>
 
-                  <h3 className="font-bold text-slate-900 text-base mb-1">
+                  <h3 className="font-bold text-store-dark text-base mb-1">
                     {product.title}
                   </h3>
-                  <p className="text-xs text-slate-500 line-clamp-2 mb-4">
+                  <p className="text-xs text-zinc-500 line-clamp-2 mb-4 font-medium">
                     {product.description}
                   </p>
 
-                  <div className="flex items-center justify-between border-t border-slate-100 pt-3">
-                    <span className="text-lg font-black text-slate-900">
+                  <div className="flex items-center justify-between border-t border-zinc-100 pt-3">
+                    <span className="text-lg font-black text-store-dark">
                       {product.price} ر.س
                     </span>
-                    <span className="text-xs font-semibold text-slate-500">
+                    <span className="text-xs font-bold text-zinc-500">
                       المخزون: {product.stock}
                     </span>
                   </div>
                 </div>
 
-                <div className="bg-slate-50 px-4 py-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                <div className="bg-zinc-50/50 p-4 border-t border-zinc-100 flex items-center justify-between gap-2">
                   <button
                     onClick={() => handleOpenEditModal(product)}
-                    className="flex-1 bg-white border border-slate-200 text-slate-700 py-2 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors"
+                    className="flex-1 bg-white border border-zinc-200 text-store-dark py-2.5 rounded-2xl text-xs font-bold hover:bg-zinc-50 transition-colors shadow-sm cursor-pointer"
                   >
                     تعديل
                   </button>
                   <button
                     onClick={() => handleDeleteProduct(product.id)}
-                    className="px-3 py-2 text-rose-600 hover:bg-rose-50 rounded-xl text-xs font-bold transition-colors"
+                    className="px-4 py-2.5 text-rose-600 hover:bg-rose-50 rounded-2xl text-xs font-bold transition-colors cursor-pointer"
                   >
                     حذف
                   </button>
@@ -434,20 +439,20 @@ export default function AdminProductsPage() {
 
       {/* 5. النافذة المنبثقة (Dynamic Glassmorphic Modal) */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto animate-fadeIn">
-          <div className="bg-white rounded-3xl w-full max-w-xl p-6 sm:p-8 shadow-2xl border border-slate-100 my-8">
-            <div className="flex justify-between items-center border-b pb-4 mb-6">
+        <div className="fixed inset-0 z-50 bg-store-dark/40 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto animate-fadeIn">
+          <div className="bg-white rounded-3xl w-full max-w-xl p-6 sm:p-8 shadow-2xl border border-zinc-200/80 my-8">
+            <div className="flex justify-between items-center border-b border-zinc-100 pb-4 mb-6">
               <div>
-                <h3 className="text-xl font-black text-slate-900">
+                <h3 className="text-xl font-black text-store-dark">
                   {editingProduct ? 'تعديل بيانات المنتج' : 'إضافة منتج جديد'}
                 </h3>
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-zinc-400 mt-1 font-medium">
                   قم بتعبئة بيانات المنتج للتحديث الفوري في المتجر
                 </p>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm transition-colors"
+                className="w-9 h-9 rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-500 flex items-center justify-center font-bold text-sm transition-colors cursor-pointer"
               >
                 ✕
               </button>
@@ -455,7 +460,7 @@ export default function AdminProductsPage() {
 
             <form onSubmit={handleSaveProduct} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                <label className="block text-xs font-bold text-zinc-700 mb-1.5">
                   اسم المنتج *
                 </label>
                 <input
@@ -465,14 +470,14 @@ export default function AdminProductsPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, title: e.target.value })
                   }
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:border-blue-600 focus:bg-white transition-all"
+                  className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/10 transition-all"
                   placeholder="مثال: سماعة رأس لاسلكية"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-bold text-zinc-700 mb-1.5">
                     السعر (ر.س) *
                   </label>
                   <input
@@ -483,13 +488,13 @@ export default function AdminProductsPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, price: e.target.value })
                     }
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:border-blue-600 focus:bg-white transition-all"
+                    className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/10 transition-all"
                     placeholder="250"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-bold text-zinc-700 mb-1.5">
                     الكمية بالمخزون
                   </label>
                   <input
@@ -499,14 +504,14 @@ export default function AdminProductsPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, stock: e.target.value })
                     }
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:border-blue-600 focus:bg-white transition-all"
+                    className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/10 transition-all"
                     placeholder="10"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                <label className="block text-xs font-bold text-zinc-700 mb-1.5">
                   التصنيف
                 </label>
                 <select
@@ -514,7 +519,7 @@ export default function AdminProductsPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, category: e.target.value })
                   }
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:border-blue-600 focus:bg-white transition-all"
+                  className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/10 transition-all cursor-pointer"
                 >
                   <option value="إلكترونيات">إلكترونيات</option>
                   <option value="إكسسوارات">إكسسوارات</option>
@@ -524,7 +529,7 @@ export default function AdminProductsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                <label className="block text-xs font-bold text-zinc-700 mb-1.5">
                   رابط الصورة (Image URL)
                 </label>
                 <input
@@ -533,13 +538,13 @@ export default function AdminProductsPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, image: e.target.value })
                   }
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:border-blue-600 focus:bg-white transition-all"
+                  className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/10 transition-all"
                   placeholder="https://..."
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                <label className="block text-xs font-bold text-zinc-700 mb-1.5">
                   وصف المنتج
                 </label>
                 <textarea
@@ -548,22 +553,22 @@ export default function AdminProductsPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, description: e.target.value })
                   }
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:border-blue-600 focus:bg-white transition-all resize-none"
+                  className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/10 transition-all resize-none"
                   placeholder="اكتب وصفاً موجزاً للمنتج..."
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-zinc-100">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-sm hover:bg-slate-50 transition-colors"
+                  className="px-6 py-3 rounded-2xl border border-zinc-200 text-zinc-600 font-bold text-sm hover:bg-zinc-50 transition-colors cursor-pointer"
                 >
                   إلغاء
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-sm transition-colors shadow-lg shadow-blue-500/20"
+                  className="px-6 py-3 bg-store-primary hover:bg-store-secondary text-white rounded-2xl font-bold text-sm transition-all shadow-lg shadow-store-primary/25 cursor-pointer active:scale-[0.98]"
                 >
                   {editingProduct ? 'حفظ التغييرات' : 'تأكيد إضافة المنتج'}
                 </button>

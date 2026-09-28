@@ -46,25 +46,25 @@ export default function CheckoutPage() {
   // 1. إذا تم إتمام الطلب بنجاح
   if (orderCompleted) {
     return (
-      <main className="min-h-[75vh] flex flex-col items-center justify-center p-6 max-w-xl mx-auto text-center" dir="rtl">
-        <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-6 shadow-sm">
+      <main className="min-h-[75vh] flex flex-col items-center justify-center p-6 max-w-xl mx-auto text-center bg-store-light text-store-dark" dir="rtl">
+        <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mb-6 shadow-sm border border-emerald-200">
           <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h1 className="text-3xl font-black text-slate-900 mb-2">شكراً لك، تم طلبك بنجاح!</h1>
-        <p className="text-slate-600 mb-6">
-          رقم الطلب الخاص بك هو <span className="font-bold text-blue-600">{orderId}</span>. سنقوم بالتواصل معك قريباً لتأكيد الشحن.
+        <h1 className="text-3xl font-black text-store-dark mb-2">شكراً لك، تم طلبك بنجاح!</h1>
+        <p className="text-zinc-600 mb-6 font-medium">
+          رقم الطلب الخاص بك هو <span className="font-bold text-store-primary">{orderId}</span>. سنقوم بالتواصل معك قريباً لتأكيد الشحن.
         </p>
-        <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 w-full text-right mb-8">
-          <h3 className="font-bold text-slate-800 mb-3">تفاصيل التوصيل:</h3>
-          <p className="text-sm text-slate-600 mb-1">الاسم: {formData.fullName}</p>
-          <p className="text-sm text-slate-600 mb-1">المدينة: {formData.city} - {formData.address}</p>
-          <p className="text-sm text-slate-600">الجوال: {formData.phone}</p>
+        <div className="bg-white border border-zinc-200/80 rounded-2xl p-6 w-full text-right mb-8 shadow-sm">
+          <h3 className="font-bold text-store-dark mb-3">تفاصيل التوصيل:</h3>
+          <p className="text-sm text-zinc-600 mb-1 font-medium">الاسم: {formData.fullName}</p>
+          <p className="text-sm text-zinc-600 mb-1 font-medium">المدينة: {formData.city} - {formData.address}</p>
+          <p className="text-sm text-zinc-600 font-medium">الجوال: {formData.phone}</p>
         </div>
         <Link
           href="/"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl transition-colors shadow-lg shadow-blue-200"
+          className="w-full bg-store-primary hover:bg-store-secondary text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-store-primary/25 active:scale-[0.98] text-sm"
         >
           العودة للتسوق
         </Link>
@@ -75,17 +75,15 @@ export default function CheckoutPage() {
   // 2. إذا كانت السلة فارغة
   if (cart.length === 0) {
     return (
-      <main className="min-h-[70vh] flex flex-col items-center justify-center p-8 text-center" dir="rtl">
-        <div className="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mb-4">
-          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-          </svg>
+      <main className="min-h-[70vh] flex flex-col items-center justify-center p-8 text-center bg-store-light text-store-dark" dir="rtl">
+        <div className="w-16 h-16 bg-store-primary/10 text-store-primary rounded-2xl flex items-center justify-center mb-4 border border-store-primary/20 text-2xl">
+          🛒
         </div>
-        <h2 className="text-2xl font-black text-slate-900 mb-2">سلة التسوق فارغة</h2>
-        <p className="text-slate-500 mb-6">أضف بعض المنتجات الرائعة إلى سلتك أولاً لإتمام الطلب.</p>
+        <h2 className="text-2xl font-black text-store-dark mb-2">سلة التسوق فارغة</h2>
+        <p className="text-zinc-500 mb-6 font-medium">أضف بعض المنتجات الرائعة إلى سلتك أولاً لإتمام الطلب.</p>
         <Link
           href="/"
-          className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-3 rounded-xl transition-colors shadow-md"
+          className="bg-store-primary hover:bg-store-secondary text-white font-bold px-8 py-3.5 rounded-2xl transition-all shadow-lg shadow-store-primary/25 text-sm"
         >
           تصفح المنتجات
         </Link>
@@ -95,8 +93,13 @@ export default function CheckoutPage() {
 
   // 3. صفحة الدفع الأساسية
   return (
-    <main className="max-w-7xl mx-auto px-4 py-10" dir="rtl">
-      <h1 className="text-3xl font-black text-slate-900 mb-8">إتمام الطلب والدفع</h1>
+    <main className="max-w-7xl mx-auto px-4 py-10 bg-store-light text-store-dark min-h-[calc(100vh-5rem)]" dir="rtl">
+      <div className="mb-8">
+        <span className="bg-store-primary/10 text-store-primary text-xs font-extrabold px-3 py-1 rounded-full border border-store-primary/20">
+          إتمام الطلب 💳
+        </span>
+        <h1 className="text-3xl font-black text-store-dark tracking-tight mt-2">إتمام الطلب والدفع</h1>
+      </div>
 
       <form onSubmit={handleSubmitOrder} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
@@ -104,15 +107,15 @@ export default function CheckoutPage() {
         <div className="lg:col-span-7 space-y-6">
           
           {/* بيانات الشحن */}
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-5">
-            <h2 className="text-xl font-extrabold text-slate-900 flex items-center gap-2">
-              <span className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm font-bold">1</span>
+          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200/80 shadow-xl shadow-zinc-200/40 space-y-5">
+            <h2 className="text-xl font-extrabold text-store-dark flex items-center gap-2">
+              <span className="w-8 h-8 rounded-xl bg-store-primary/10 text-store-primary flex items-center justify-center text-sm font-bold border border-store-primary/20">1</span>
               معلومات الشحن والاستلام
             </h2>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">الاسم الكامل</label>
+                <label className="block text-xs font-bold text-zinc-700 mb-1.5">الاسم الكامل</label>
                 <input
                   type="text"
                   name="fullName"
@@ -120,13 +123,13 @@ export default function CheckoutPage() {
                   value={formData.fullName}
                   onChange={handleInputChange}
                   placeholder="محمد أحمد"
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50/50 text-sm"
+                  className="w-full px-4 py-3 rounded-2xl border border-zinc-200 focus:outline-none focus:ring-4 focus:ring-store-primary/10 focus:border-store-primary bg-zinc-50/50 text-sm font-medium text-store-dark transition-all"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5">رقم الجوال</label>
+                  <label className="block text-xs font-bold text-zinc-700 mb-1.5">رقم الجوال</label>
                   <input
                     type="tel"
                     name="phone"
@@ -134,16 +137,16 @@ export default function CheckoutPage() {
                     value={formData.phone}
                     onChange={handleInputChange}
                     placeholder="0500000000"
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50/50 text-sm"
+                    className="w-full px-4 py-3 rounded-2xl border border-zinc-200 focus:outline-none focus:ring-4 focus:ring-store-primary/10 focus:border-store-primary bg-zinc-50/50 text-sm font-medium text-store-dark transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5">المدينة</label>
+                  <label className="block text-xs font-bold text-zinc-700 mb-1.5">المدينة</label>
                   <select
                     name="city"
                     value={formData.city}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50/50 text-sm"
+                    className="w-full px-4 py-3 rounded-2xl border border-zinc-200 focus:outline-none focus:ring-4 focus:ring-store-primary/10 focus:border-store-primary bg-zinc-50/50 text-sm font-medium text-store-dark transition-all"
                   >
                     <option value="الرياض">الرياض</option>
                     <option value="جدة">جدة</option>
@@ -156,7 +159,7 @@ export default function CheckoutPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">العنوان بالتفصيل (الحي، الشارع، رقم المبنى)</label>
+                <label className="block text-xs font-bold text-zinc-700 mb-1.5">العنوان بالتفصيل (الحي، الشارع، رقم المبنى)</label>
                 <input
                   type="text"
                   name="address"
@@ -164,47 +167,47 @@ export default function CheckoutPage() {
                   value={formData.address}
                   onChange={handleInputChange}
                   placeholder="حي الياسمين، شارع الملك عبد العزيز"
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50/50 text-sm"
+                  className="w-full px-4 py-3 rounded-2xl border border-zinc-200 focus:outline-none focus:ring-4 focus:ring-store-primary/10 focus:border-store-primary bg-zinc-50/50 text-sm font-medium text-store-dark transition-all"
                 />
               </div>
             </div>
           </div>
 
-          {/* طريـقة الدفع */}
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-4">
-            <h2 className="text-xl font-extrabold text-slate-900 flex items-center gap-2">
-              <span className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm font-bold">2</span>
+          {/* طريقة الدفع */}
+          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200/80 shadow-xl shadow-zinc-200/40 space-y-4">
+            <h2 className="text-xl font-extrabold text-store-dark flex items-center gap-2">
+              <span className="w-8 h-8 rounded-xl bg-store-primary/10 text-store-primary flex items-center justify-center text-sm font-bold border border-store-primary/20">2</span>
               طريقة الدفع
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <label className={`flex items-center gap-3 p-4 rounded-2xl border-2 cursor-pointer transition-all ${formData.paymentMethod === 'cod' ? 'border-blue-600 bg-blue-50/30' : 'border-slate-100 hover:border-slate-200'}`}>
+              <label className={`flex items-center gap-3 p-4 rounded-2xl border-2 cursor-pointer transition-all ${formData.paymentMethod === 'cod' ? 'border-store-primary bg-store-primary/5' : 'border-zinc-100 hover:border-zinc-200'}`}>
                 <input
                   type="radio"
                   name="paymentMethod"
                   value="cod"
                   checked={formData.paymentMethod === 'cod'}
                   onChange={handleInputChange}
-                  className="w-4 h-4 text-blue-600"
+                  className="w-4 h-4 text-store-primary accent-store-primary"
                 />
                 <div>
-                  <span className="block font-bold text-slate-900 text-sm">الدفع عند الاستلام</span>
-                  <span className="text-xs text-slate-500">ادفع نقداً عند استلام طلبك</span>
+                  <span className="block font-bold text-store-dark text-sm">الدفع عند الاستلام</span>
+                  <span className="text-xs text-zinc-500 font-medium">ادفع نقداً عند استلام طلبك</span>
                 </div>
               </label>
 
-              <label className={`flex items-center gap-3 p-4 rounded-2xl border-2 cursor-pointer transition-all ${formData.paymentMethod === 'card' ? 'border-blue-600 bg-blue-50/30' : 'border-slate-100 hover:border-slate-200'}`}>
+              <label className={`flex items-center gap-3 p-4 rounded-2xl border-2 cursor-pointer transition-all ${formData.paymentMethod === 'card' ? 'border-store-primary bg-store-primary/5' : 'border-zinc-100 hover:border-zinc-200'}`}>
                 <input
                   type="radio"
                   name="paymentMethod"
                   value="card"
                   checked={formData.paymentMethod === 'card'}
                   onChange={handleInputChange}
-                  className="w-4 h-4 text-blue-600"
+                  className="w-4 h-4 text-store-primary accent-store-primary"
                 />
                 <div>
-                  <span className="block font-bold text-slate-900 text-sm">بطاقة ائتمانية / مدى</span>
-                  <span className="text-xs text-slate-500">دفع إلكتروني آمن</span>
+                  <span className="block font-bold text-store-dark text-sm">بطاقة ائتمانية / مدى</span>
+                  <span className="text-xs text-zinc-500 font-medium">دفع إلكتروني آمن</span>
                 </div>
               </label>
             </div>
@@ -213,57 +216,57 @@ export default function CheckoutPage() {
         </div>
 
         {/* القسم الأيسر: ملخص الطلب والأسعار (5 أعمدة) */}
-        <div className="lg:col-span-5 bg-white p-6 sm:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-6 sticky top-6">
-          <h2 className="text-xl font-extrabold text-slate-900 border-b border-slate-100 pb-4">
+        <div className="lg:col-span-5 bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200/80 shadow-xl shadow-zinc-200/40 space-y-6 sticky top-6">
+          <h2 className="text-xl font-extrabold text-store-dark border-b border-zinc-100 pb-4">
             ملخص الطلب ({cart.length} منتجات)
           </h2>
 
           {/* قائمة المنتجات المصغرة */}
           <div className="max-h-60 overflow-y-auto space-y-3 pr-1">
             {cart.map((item, index) => (
-              <div key={index} className="flex items-center justify-between gap-4 py-2 border-b border-slate-50 last:border-0">
+              <div key={index} className="flex items-center justify-between gap-4 py-2 border-b border-zinc-50 last:border-0">
                 <div className="flex items-center gap-3">
-                  <div className="relative w-12 h-12 rounded-xl bg-slate-100 overflow-hidden shrink-0">
+                  <div className="relative w-12 h-12 rounded-xl bg-zinc-100 overflow-hidden shrink-0 border border-zinc-200">
                     <Image
-                      src={(item as any).image || 'https://via.placeholder.com/100'}
-                      alt={(item as any).title || (item as any).name || 'Product'}
+                      src={(item as any).product?.image || (item as any).image || 'https://via.placeholder.com/100'}
+                      alt={(item as any).product?.title || (item as any).title || (item as any).name || 'Product'}
                       fill
                       className="object-cover"
                     />
                   </div>
                   <div>
-                    <h4 className="font-bold text-xs text-slate-800 line-clamp-1">
-                      {(item as any).title || (item as any).name}
+                    <h4 className="font-bold text-xs text-store-dark line-clamp-1">
+                      {(item as any).product?.title || (item as any).title || (item as any).name}
                     </h4>
-                    <span className="text-[11px] text-slate-500">الكمية: {item.quantity || 1}</span>
+                    <span className="text-[11px] text-zinc-500 font-medium">الكمية: {item.quantity || 1}</span>
                   </div>
                 </div>
-                <span className="font-extrabold text-xs text-slate-900">
-                {(((item as any).price || 0) * (item.quantity || 1)).toLocaleString('ar-SA')} ر.س
+                <span className="font-extrabold text-xs text-store-dark">
+                  {((((item as any).product?.price || (item as any).price || 0)) * (item.quantity || 1)).toLocaleString('ar-SA')} ر.س
                 </span>
               </div>
             ))}
           </div>
 
           {/* الحسابات المالية */}
-          <div className="space-y-3 pt-4 border-t border-slate-100 text-sm">
-            <div className="flex justify-between text-slate-600">
+          <div className="space-y-3 pt-4 border-t border-zinc-100 text-sm font-medium">
+            <div className="flex justify-between text-zinc-600">
               <span>مجموع المنتجات</span>
-              <span className="font-bold text-slate-900">{totalPrice.toLocaleString('ar-SA')} ر.س</span>
+              <span className="font-bold text-store-dark">{totalPrice.toLocaleString('ar-SA')} ر.س</span>
             </div>
-            <div className="flex justify-between text-slate-600">
+            <div className="flex justify-between text-zinc-600">
               <span>رسوم الشحن</span>
               <span className="font-bold">
                 {shippingFee === 0 ? (
-                  <span className="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full text-xs font-black">مجاني 🎉</span>
+                  <span className="text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-full text-xs font-black border border-emerald-200">مجاني 🎉</span>
                 ) : (
                   `${shippingFee} ر.س`
                 )}
               </span>
             </div>
-            <div className="flex justify-between text-base font-black text-slate-900 pt-3 border-t border-slate-100">
+            <div className="flex justify-between text-base font-black text-store-dark pt-3 border-t border-zinc-100">
               <span>المبلغ الإجمالي</span>
-              <span className="text-blue-600 text-xl">{finalTotal.toLocaleString('ar-SA')} ر.س</span>
+              <span className="text-store-primary text-xl font-black">{finalTotal.toLocaleString('ar-SA')} ر.س</span>
             </div>
           </div>
 
@@ -271,7 +274,7 @@ export default function CheckoutPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 rounded-2xl transition-all shadow-lg shadow-emerald-200 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 text-base"
+            className="w-full bg-store-primary hover:bg-store-secondary text-white font-black py-4 rounded-2xl transition-all shadow-lg shadow-store-primary/25 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 text-base cursor-pointer"
           >
             {isSubmitting ? (
               <>

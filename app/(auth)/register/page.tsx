@@ -1,4 +1,3 @@
-// app/register/page.tsx
 'use client';
 
 import { useState } from 'react';
@@ -42,22 +41,22 @@ export default function RegisterPage() {
 
   return (
     <main
-      className="min-h-[calc(100vh-5rem)] flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-slate-50/50"
+      className="min-h-[calc(100vh-5rem)] flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-store-light text-store-dark"
       dir="rtl"
     >
-      <div className="w-full max-w-5xl bg-white rounded-3xl border border-slate-200/80 shadow-2xl shadow-slate-200/50 overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[650px]">
+      <div className="w-full max-w-5xl bg-white rounded-3xl border border-zinc-200/80 shadow-2xl shadow-zinc-200/50 overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[650px]">
         {/* القسم الأيمن: النموذج والتفاعل */}
         <div className="lg:col-span-7 p-8 sm:p-12 flex flex-col justify-between">
           <div>
             {/* العنونة */}
             <div className="space-y-2 mb-6">
-              <span className="bg-emerald-50 text-emerald-600 text-xs font-extrabold px-3 py-1 rounded-full border border-emerald-100">
+              <span className="bg-store-primary/10 text-store-primary text-xs font-extrabold px-3 py-1 rounded-full border border-store-primary/20">
                 حساب جديد ✨
               </span>
-              <h1 className="text-3xl font-black text-slate-900 tracking-tight">
+              <h1 className="text-3xl font-black text-store-dark tracking-tight">
                 إنشاء حساب جديد
               </h1>
-              <p className="text-sm font-medium text-slate-500">
+              <p className="text-sm font-medium text-zinc-500">
                 انضم إلينا للاستمتاع بتجربة تسوق فريدة وتتبع طلباتك بكل سهولة
               </p>
             </div>
@@ -74,7 +73,7 @@ export default function RegisterPage() {
             <div className="grid grid-cols-2 gap-3 mb-5">
               <button
                 type="button"
-                className="flex items-center justify-center gap-2 px-4 py-3 border border-slate-200 rounded-2xl hover:bg-slate-50 transition-all font-bold text-xs text-slate-700 active:scale-[0.98]"
+                className="flex items-center justify-center gap-2 px-4 py-3 border border-zinc-200 rounded-2xl hover:bg-zinc-50 transition-all font-bold text-xs text-zinc-700 active:scale-[0.98]"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24">
                   <path
@@ -99,9 +98,9 @@ export default function RegisterPage() {
 
               <button
                 type="button"
-                className="flex items-center justify-center gap-2 px-4 py-3 border border-slate-200 rounded-2xl hover:bg-slate-50 transition-all font-bold text-xs text-slate-700 active:scale-[0.98]"
+                className="flex items-center justify-center gap-2 px-4 py-3 border border-zinc-200 rounded-2xl hover:bg-zinc-50 transition-all font-bold text-xs text-zinc-700 active:scale-[0.98]"
               >
-                <svg className="w-4 h-4 fill-slate-900" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 fill-zinc-900" viewBox="0 0 24 24">
                   <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.85c.62-.76 1.05-1.82.93-2.88-.91.04-2.03.61-2.68 1.37-.58.67-1.09 1.76-.95 2.8.1.01.21.02.31.02 1.02 0 1.77-.55 2.39-1.31z" />
                 </svg>
                 <span>Apple</span>
@@ -110,8 +109,8 @@ export default function RegisterPage() {
 
             {/* فاصل */}
             <div className="relative my-5 flex items-center justify-center">
-              <div className="border-t border-slate-200 w-full" />
-              <span className="bg-white px-3 text-[11px] font-bold text-slate-400 absolute uppercase">
+              <div className="border-t border-zinc-200 w-full" />
+              <span className="bg-white px-3 text-[11px] font-bold text-zinc-400 absolute uppercase">
                 أو بالتسجيل المباشر
               </span>
             </div>
@@ -120,7 +119,7 @@ export default function RegisterPage() {
             <form onSubmit={handleSubmit} className="space-y-3.5">
               {/* حقل الاسم الكامل */}
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
+                <label className="block text-xs font-bold text-zinc-700 mb-1">
                   الاسم الكامل
                 </label>
                 <div className="relative">
@@ -132,9 +131,9 @@ export default function RegisterPage() {
                       setFormData({ ...formData, name: e.target.value })
                     }
                     placeholder="محمد عبدالله"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 pl-10 text-sm font-medium text-slate-900 outline-none focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-600/10 transition-all"
+                    className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-3 pl-10 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/10 transition-all"
                   />
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400">
                     👤
                   </span>
                 </div>
@@ -142,7 +141,7 @@ export default function RegisterPage() {
 
               {/* حقل البريد الإلكتروني */}
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
+                <label className="block text-xs font-bold text-zinc-700 mb-1">
                   البريد الإلكتروني
                 </label>
                 <div className="relative">
@@ -154,9 +153,9 @@ export default function RegisterPage() {
                       setFormData({ ...formData, email: e.target.value })
                     }
                     placeholder="example@domain.com"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 pl-10 text-sm font-medium text-slate-900 outline-none focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-600/10 transition-all"
+                    className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-3 pl-10 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/10 transition-all"
                   />
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400">
                     📧
                   </span>
                 </div>
@@ -165,7 +164,7 @@ export default function RegisterPage() {
               {/* كلمة المرور وتأكيدها */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-zinc-700 mb-1">
                     كلمة المرور
                   </label>
                   <div className="relative">
@@ -177,12 +176,12 @@ export default function RegisterPage() {
                         setFormData({ ...formData, password: e.target.value })
                       }
                       placeholder="••••••••"
-                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 pl-10 text-sm font-medium text-slate-900 outline-none focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-600/10 transition-all"
+                      className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-3 pl-10 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/10 transition-all"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-[11px] font-bold"
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 text-[11px] font-bold"
                     >
                       {showPassword ? 'إخفاء' : 'إظهار'}
                     </button>
@@ -190,7 +189,7 @@ export default function RegisterPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-zinc-700 mb-1">
                     تأكيد كلمة المرور
                   </label>
                   <input
@@ -204,7 +203,7 @@ export default function RegisterPage() {
                       })
                     }
                     placeholder="••••••••"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm font-medium text-slate-900 outline-none focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-600/10 transition-all"
+                    className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/10 transition-all"
                   />
                 </div>
               </div>
@@ -218,23 +217,23 @@ export default function RegisterPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, agreeTerms: e.target.checked })
                   }
-                  className="w-4 h-4 rounded-lg border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                  className="w-4 h-4 rounded-lg border-zinc-300 text-store-primary focus:ring-store-primary cursor-pointer"
                 />
                 <label
                   htmlFor="terms"
-                  className="text-xs text-slate-600 cursor-pointer select-none"
+                  className="text-xs text-zinc-600 cursor-pointer select-none"
                 >
                   أوافق على{' '}
                   <Link
                     href="#"
-                    className="text-blue-600 font-bold hover:underline"
+                    className="text-store-primary font-bold hover:underline"
                   >
                     الشروط والأحكام
                   </Link>{' '}
                   و{' '}
                   <Link
                     href="#"
-                    className="text-blue-600 font-bold hover:underline"
+                    className="text-store-primary font-bold hover:underline"
                   >
                     سياسة الخصوصية
                   </Link>
@@ -245,7 +244,7 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-blue-600/25 transition-all active:scale-[0.98] text-sm flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed mt-2"
+                className="w-full bg-store-primary hover:bg-store-secondary text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-store-primary/25 transition-all active:scale-[0.98] text-sm flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed mt-2"
               >
                 {isLoading ? (
                   <>
@@ -278,12 +277,12 @@ export default function RegisterPage() {
           </div>
 
           {/* التذييل التحتي */}
-          <div className="pt-4 text-center border-t border-slate-100">
-            <p className="text-xs font-bold text-slate-500">
+          <div className="pt-4 text-center border-t border-zinc-100">
+            <p className="text-xs font-bold text-zinc-500">
               لديك حساب بالفعل؟{' '}
               <Link
                 href="/login"
-                className="text-blue-600 font-black hover:underline"
+                className="text-store-primary font-black hover:underline"
               >
                 تسجيل الدخول مباشرة
               </Link>
@@ -291,17 +290,17 @@ export default function RegisterPage() {
           </div>
         </div>
 
-        {/* القسم الأيسر: العرض البصري الجذاب */}
-        <div className="hidden lg:flex lg:col-span-5 bg-gradient-to-br from-indigo-700 via-blue-700 to-slate-900 p-8 flex-col justify-between relative overflow-hidden text-white">
+        {/* القسم الأيسر: العرض البصري الجذاب بالهوية الجديدة */}
+        <div className="hidden lg:flex lg:col-span-5 bg-gradient-to-br from-store-primary via-store-secondary to-store-dark p-8 flex-col justify-between relative overflow-hidden text-white">
           <div className="absolute -top-12 -left-12 w-48 h-48 bg-white/10 rounded-full blur-2xl" />
-          <div className="absolute -bottom-12 -right-12 w-60 h-60 bg-indigo-500/20 rounded-full blur-3xl" />
+          <div className="absolute -bottom-12 -right-12 w-60 h-60 bg-store-primary/20 rounded-full blur-3xl" />
 
           <div className="relative z-10">
             <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl mb-6 border border-white/20">
               🎁
             </div>
             <h2 className="text-2xl font-black mb-3">مزايا عضوية المتجر!</h2>
-            <ul className="space-y-3 text-blue-100 text-xs font-medium">
+            <ul className="space-y-3 text-zinc-100 text-xs font-medium">
               <li className="flex items-center gap-2">
                 <span className="bg-white/20 p-1 rounded-full text-[10px]">
                   ✓
@@ -325,13 +324,13 @@ export default function RegisterPage() {
 
           <div className="relative z-10 bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-2xl">
             <p className="text-xs font-bold mb-1">💡 هل تعلم؟</p>
-            <p className="text-[11px] text-blue-100 leading-relaxed">
+            <p className="text-[11px] text-zinc-100 leading-relaxed">
               يمكنك ربط حسابك بـ Google لتسجيل الدخول الفوري بدون الحاجة لحفظ
               كلمة مرور جديدة.
             </p>
           </div>
 
-          <p className="relative z-10 text-[10px] text-blue-200 font-medium">
+          <p className="relative z-10 text-[10px] text-zinc-200 font-medium">
             © 2026 جميع الحقوق محفوظة لـ متجري
           </p>
         </div>

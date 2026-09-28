@@ -11,9 +11,16 @@ import {
 import { Product } from '@/types';
 import { supabase } from '@/lib/db'; // ملف الاتصال بقاعدة البيانات
 
+interface Category {
+  id: string | number;
+  name: string;
+  slug?: string;
+  [key: string]: any;
+}
+
 interface ProductContextType {
   products: Product[];
-  categories: any[];
+  categories: Category[];
   loading: boolean;
   addProduct: (product: Omit<Product, 'id'>) => Promise<void>;
   updateProduct: (id: string, updatedProduct: Partial<Product>) => Promise<void>;
@@ -24,7 +31,7 @@ const ProductContext = createContext<ProductContextType | undefined>(undefined);
 
 export function ProductProvider({ children }: { children: ReactNode }) {
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
 
   // جلب المنتجات والتصنيفات الحقيقية من Supabase عند التحميل
@@ -103,7 +110,7 @@ export function ProductProvider({ children }: { children: ReactNode }) {
       }
 
       setProducts((prev) =>
-        prev.map((p) => (p.id === id ? { ...p, ...updatedData } : p))
+        prev.map((p) => (String(p.id) === id ? { ...p, ...updatedData } : p))
       );
     } catch (err) {
       console.error('Unexpected error updating product:', err);
@@ -124,7 +131,7 @@ export function ProductProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      setProducts((prev) => prev.filter((p) => p.id !== id));
+      setProducts((prev) => prev.filter((p) => String(p.id) !== id));
     } catch (err) {
       console.error('Unexpected error deleting product:', err);
     }
