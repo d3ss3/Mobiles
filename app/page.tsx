@@ -135,14 +135,14 @@ export default function HomePage() {
                     {product.price} ر.س
                   </span>
                   <button
-  onClick={(e) => {
-    e.stopPropagation(); // منع فتح السلايدر عند الضغط على زر السلة السريع
-    addToCart(product);
-  }}
-  className="bg-store-primary hover:bg-[#a0636a] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center gap-1"
->
-  + السلة
-</button>
+                    onClick={(e) => {
+                      e.stopPropagation(); // منع فتح السلايدر عند الضغط على زر السلة السريع
+                      addToCart(product);
+                    }}
+                    className="bg-store-primary hover:bg-[#a0636a] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center gap-1"
+                  >
+                    + السلة
+                  </button>
                 </div>
               </div>
             ))}
@@ -150,7 +150,7 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* 5. قسم آراء العملاء (Customer Testimonials) */}
+      {/* 4. قسم آراء العملاء (Customer Testimonials) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 py-8">
         <div className="text-center max-w-2xl mx-auto mb-12">
           <span className="bg-store-primary/10 text-store-primary text-xs font-extrabold px-3.5 py-1.5 rounded-full inline-block mb-3">
@@ -168,7 +168,6 @@ export default function HomePage() {
           {/* التقييم الأول */}
           <div className="bg-white p-8 rounded-3xl border border-zinc-200/80 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
             <div className="space-y-4">
-              {/* النجوم */}
               <div className="flex items-center gap-1 text-amber-400">
                 {[...Array(5)].map((_, i) => (
                   <svg key={i} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
@@ -177,7 +176,7 @@ export default function HomePage() {
                 ))}
               </div>
               <p className="text-zinc-600 text-sm leading-relaxed">
-                "تجربة تسوق ممتازة جداً! المنتجات أصلية والتوصيل وصل في أسرع وقت مقارنة بالمتاجر الأخرى. أنصح بالتعامل معهم بشدة."
+                «تجربة تسوق ممتازة جداً! المنتجات أصلية والتوصيل وصل في أسرع وقت مقارنة بالمتاجر الأخرى. أنصح بالتعامل معهم بشدة.»
               </p>
             </div>
             
@@ -203,7 +202,7 @@ export default function HomePage() {
                 ))}
               </div>
               <p className="text-zinc-600 text-sm leading-relaxed">
-                "خدمة العملاء متعاونة جداً وساعدوني في اختيار المنتج المناسب لاحتياجي. جودة التغليف تفوق التوقعات، شكراً لكم!"
+                «خدمة العملاء متعاونة جداً وساعدوني في اختيار المنتج المناسب لاحتياجي. جودة التغليف تفوق التوقعات، شكراً لكم!»
               </p>
             </div>
             
@@ -229,7 +228,7 @@ export default function HomePage() {
                 ))}
               </div>
               <p className="text-zinc-600 text-sm leading-relaxed">
-                "الأسعار جداً تنافسية مقارنة بالمتاجر الكبرى، والدفع الإلكتروني سلس وآمن. بالتأكيد لن تكون آخر تجربة تسوق."
+                «الأسعار جداً تنافسية مقارنة بالمتاجر الكبرى، والدفع الإلكتروني سلس وآمن. بالتأكيد لن تكون آخر تجربة تسوق.»
               </p>
             </div>
             
@@ -246,7 +245,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4. قسم مميزات المتجر (Trust Badges / Features) */}
+      {/* 5. قسم مميزات المتجر (Trust Badges / Features) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8">
         <div className="bg-white rounded-3xl border border-zinc-200/80 p-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
           <div className="space-y-2">
