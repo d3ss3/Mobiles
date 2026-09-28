@@ -150,6 +150,42 @@ export default function HomePage() {
         )}
       </section>
 
+      {/* 🌟 بنر إعلاني / ترويجي بين الأقسام */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-8">
+        <div className="relative overflow-hidden bg-gradient-to-r from-store-primary to-zinc-900 rounded-3xl p-8 sm:p-12 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+          
+          {/* تأثير خلفية جمالي خفيف */}
+          <div className="absolute -left-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+
+          {/* النصوص والوصف */}
+          <div className="space-y-3 text-center md:text-right relative z-10">
+            <span className="bg-white/20 text-white text-xs font-extrabold px-3.5 py-1.5 rounded-full inline-block">
+              عرض لفترة محدودة 🔥
+            </span>
+            <h3 className="text-2xl sm:text-3xl font-black leading-tight">
+              احصل على خصم 20% على طلبك القادم!
+            </h3>
+            <p className="text-zinc-200 text-xs sm:text-sm max-w-xl">
+              استخدم كود الخصم <span className="bg-white/20 px-2 py-0.5 rounded font-mono font-bold text-white">SAVE20</span> عند إتمام السداد واستمتع بتوفير إضافي.
+            </p>
+          </div>
+
+          {/* زر التفاعل (CTA) */}
+          <div className="relative z-10 shrink-0">
+            <Link
+              href="/products"
+              className="inline-flex items-center gap-2 bg-white text-store-dark hover:bg-zinc-100 font-extrabold px-8 py-3.5 rounded-2xl shadow-lg transition-all active:scale-95 text-sm"
+            >
+              <span>تسوق العروض الآن</span>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4 rotate-180">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              </svg>
+            </Link>
+          </div>
+
+        </div>
+      </section>
+
       {/* 4. قسم آراء العملاء (Customer Testimonials) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8 py-8">
         <div className="text-center max-w-2xl mx-auto mb-12">
