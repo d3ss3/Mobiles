@@ -36,18 +36,91 @@ export default function Navbar() {
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-white/85 backdrop-blur-md border-b border-zinc-200/80 shadow-xl shadow-zinc-200/20'
+          ? 'bg-white border-b border-zinc-200/80 shadow-xl shadow-zinc-200/20'
           : 'bg-white border-b border-zinc-100'
       }`}
       dir="rtl"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          {/* 1. الشعار / Logo */}
-          <Link
-            href="/"
-            className="flex items-center gap-3 group focus:outline-none"
+        
+        {/* ================= طريقتنا لتصميم الجوال فقط (يظهر على الجوال ويختفي في الشاشات الكبيرة) ================= */}
+        <div className="flex md:hidden items-center justify-between h-20">
+          {/* 1. زر القائمة (يمين) */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="p-2.5 rounded-2xl bg-zinc-100 hover:bg-zinc-200 text-zinc-600 transition-colors cursor-pointer"
+            aria-label="Toggle Menu"
           >
+            {isMobileMenuOpen ? (
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
+          </button>
+
+          {/* 2. الشعار (في المنتصف تماماً) */}
+          <Link href="/" className="flex items-center gap-2 group focus:outline-none">
+          <img
+    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWv_BiMd-nE8VfVaumxE4v4Ito0ARtWVl31IvTU3oRGg&s=10" 
+    alt="شعار المتجر"
+    className="w-11 h-11 object-contain rounded-2xl group-hover:scale-105 transition-transform"
+  />
+            <div className="flex flex-col">
+              <span className="text-lg font-black text-store-dark tracking-tight">
+                متجر غناتي
+              </span>
+            </div>
+          </Link>
+
+          {/* 3. السلة + تسجيل الدخول (يسار) */}
+          <div className="flex items-center gap-2">
+            {/* زر سلة التسوق */}
+            <Link
+              href="/cart"
+              className={`relative p-2.5 rounded-2xl transition-all active:scale-95 ${
+                pathname === '/cart'
+                  ? 'bg-store-primary text-white shadow-lg shadow-store-primary/25'
+                  : 'bg-zinc-100 text-zinc-700 hover:bg-[#4f1924] hover:text-store-primary'
+              }`}
+              aria-label="سلة التسوق"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.25 10.5a.75.75 0 100-1.5.75.75 0 000 1.5zm7.5 0a.75.75 0 100-1.5.75.75 0 000 1.5z" />
+              </svg>
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 text-[10px] font-black rounded-full bg-store-primary text-white flex items-center justify-center shadow-sm">
+                  {totalItems}
+                </span>
+              )}
+            </Link>
+
+            {/* زر تسجيل الدخول */}
+            <Link
+              href="/login"
+              title="حسابي / تسجيل الدخول"
+              aria-label="تسجيل الدخول"
+              className={`p-2.5 rounded-2xl transition-all active:scale-95 ${
+                pathname === '/login' || pathname === '/register'
+                  ? 'bg-store-primary text-white shadow-lg shadow-store-primary/25'
+                  : 'bg-zinc-100 text-zinc-700 hover:bg-store-primary/10 hover:text-store-primary'
+              }`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+              </svg>
+            </Link>
+          </div>
+        </div>
+
+
+        {/* ================= تصميم الشاشات الكبيرة (Desktop - يظهر على الشاشات الكبيرة فقط ويختفي في الجوال) ================= */}
+        <div className="hidden md:flex items-center justify-between h-20">
+          {/* 1. الشعار / Logo */}
+          <Link href="/" className="flex items-center gap-3 group focus:outline-none">
             <div className="w-11 h-11 rounded-2xl bg-store-primary flex items-center justify-center text-white shadow-lg shadow-store-primary/25 group-hover:scale-105 transition-transform font-black text-xl">
               🛒
             </div>
@@ -62,7 +135,7 @@ export default function Navbar() {
           </Link>
 
           {/* 2. روابط التنقل للشاشات الكبيرة */}
-          <nav className="hidden md:flex items-center gap-1.5 bg-zinc-100/80 p-1.5 rounded-2xl border border-zinc-200/80">
+          <nav className="flex items-center gap-1.5 bg-zinc-100/80 p-1.5 rounded-2xl border border-zinc-200/80">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
@@ -81,112 +154,46 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* 3. إجراءات اليمين (السلة + أيقونة الحساب + زر الجوال) */}
-          <div className="flex items-center gap-2.5 sm:gap-3">
-            {/* زر سلة التسوق */}
+          {/* 3. إجراءات اليمين (السلة + الحساب) */}
+          <div className="flex items-center gap-3">
             <Link
               href="/cart"
-              className={`relative flex items-center gap-2.5 px-3.5 sm:px-4 py-2.5 rounded-2xl text-sm font-bold transition-all active:scale-95 ${
+              className={`relative flex items-center gap-2.5 px-4 py-2.5 rounded-2xl text-sm font-bold transition-all active:scale-95 ${
                 pathname === '/cart'
                   ? 'bg-store-primary text-white shadow-lg shadow-store-primary/25'
                   : 'bg-zinc-100 text-zinc-700 hover:bg-store-primary/10 hover:text-store-primary'
               }`}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className="w-5 h-5"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.25 10.5a.75.75 0 100-1.5.75.75 0 000 1.5zm7.5 0a.75.75 0 100-1.5.75.75 0 000 1.5z"
-                />
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.25 10.5a.75.75 0 100-1.5.75.75 0 000 1.5zm7.5 0a.75.75 0 100-1.5.75.75 0 000 1.5z" />
               </svg>
+              <span>السلة</span>
               {totalItems > 0 && (
-                <span
-                  className={`min-w-[20px] h-5 px-1.5 text-[11px] font-black rounded-full flex items-center justify-center transition-transform animate-bounce ${
-                    pathname === '/cart'
-                      ? 'bg-white text-store-primary'
-                      : 'bg-store-primary text-white shadow-sm'
-                  }`}
-                >
+                <span className="min-w-[20px] h-5 px-1.5 text-[11px] font-black rounded-full bg-white text-store-primary flex items-center justify-center shadow-sm">
                   {totalItems}
                 </span>
               )}
             </Link>
 
-            {/* أيقونة الحساب الشخصي / تسجيل الدخول الموحدة */}
             <Link
               href="/login"
               title="حسابي / تسجيل الدخول"
-              aria-label="تسجيل الدخول"
               className={`p-2.5 rounded-2xl transition-all active:scale-95 ${
                 pathname === '/login' || pathname === '/register'
                   ? 'bg-store-primary text-white shadow-lg shadow-store-primary/25'
                   : 'bg-zinc-100 text-zinc-700 hover:bg-store-primary/10 hover:text-store-primary'
               }`}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className="w-5 h-5"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-                />
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
               </svg>
             </Link>
-
-            {/* زر القائمة المنسدلة للجوال */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2.5 rounded-2xl bg-zinc-100 hover:bg-zinc-200 text-zinc-600 transition-colors cursor-pointer"
-              aria-label="Toggle Menu"
-            >
-              {isMobileMenuOpen ? (
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
-              )}
-            </button>
           </div>
         </div>
+
       </div>
 
-      {/* 4. القائمة المنسدلة للجوال (Mobile Drawer) */}
+      {/* 4. القائمة المنسدلة للجوال (Mobile Drawer) عند الضغط على زر القائمة */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-white border-b border-zinc-200 px-4 pt-3 pb-6 space-y-2 shadow-xl animate-fadeIn">
           {navLinks.map((link) => {
