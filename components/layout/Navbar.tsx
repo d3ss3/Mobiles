@@ -83,8 +83,8 @@ export default function Navbar() {
               href="/cart"
               className={`relative p-2.5 rounded-2xl transition-all active:scale-95 ${
                 pathname === '/cart'
-                  ? 'bg-store-primary text-white shadow-lg shadow-store-primary/25'
-                  : 'bg-zinc-100 text-zinc-700 hover:bg-[#4f1924] hover:text-store-primary'
+                ? 'bg-store-primary text-white shadow-lg shadow-store-primary/25'
+                : 'bg-zinc-100 text-zinc-700 hover:bg-store-primary/10 hover:text-store-primary'
               }`}
               aria-label="سلة التسوق"
             >
