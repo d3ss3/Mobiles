@@ -141,7 +141,7 @@ export default function HomePage() {
                     }}
                     className="bg-store-primary hover:bg-[#a0636a] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center gap-1"
                   >
-                    + السلة
+                    +
                   </button>
                 </div>
               </div>
