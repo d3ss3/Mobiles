@@ -186,8 +186,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 🌟 قسم آراء العملاء (دوران لا نهائي سلس) */}
-      <section className="py-12 overflow-hidden bg-zinc-50/50 border-y border-zinc-200/60">
+      {/* 🌟 قسم آراء العملاء (دوران لا نهائي مستقر وثابت) */}
+      <section className="py-12 overflow-hidden bg-zinc-50/50 border-y border-zinc-200/60" dir="rtl">
         <div className="text-center max-w-2xl mx-auto mb-10 px-4">
           <span className="bg-store-primary/10 text-store-primary text-xs font-extrabold px-3.5 py-1.5 rounded-full inline-block mb-3">
             آراء العملاء
@@ -201,7 +201,7 @@ export default function HomePage() {
         </div>
 
         {/* حاوية الشريط مع تأثير التلاشي في الأطراف */}
-        <div className="relative w-full overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
+        <div className="relative w-full overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_64px,_black_calc(100%-64px),transparent_100%)]">
           
           <style jsx>{`
             @keyframes infiniteScroll {
@@ -211,14 +211,14 @@ export default function HomePage() {
             .animate-infinite-scroll {
               display: flex;
               width: max-content;
-              animation: infiniteScroll 25s linear infinite;
+              animation: infiniteScroll 30s linear infinite;
             }
             .animate-infinite-scroll:hover {
               animation-play-state: paused;
             }
           `}</style>
 
-          {/* الشريط المتحرك (تم مضاعفة العناصر لضمان اللوب المستمر بدون فراغات) */}
+          {/* الشريط المتحرك */}
           <div className="animate-infinite-scroll gap-6 px-3">
             {[
               { name: 'أحمد الغامدي', city: 'الرياض', text: '«تجربة تسوق ممتازة جداً! المنتجات أصلية والتوصيل وصل في أسرع وقت مقارنة بالمتاجر الأخرى.»', initial: 'أ' },
@@ -227,7 +227,7 @@ export default function HomePage() {
               { name: 'فهد العتيبي', city: 'المدينة المنورة', text: '«متجر احترافي بمعنى الكلمة، سرعة في التوصيل ودعم فني متجاوب طوال الوقت. شكراً لكم.»', initial: 'ف' },
               { name: 'نورة الدوسري', city: 'الخبر', text: '«الطلب وصلني مغلف بعناية فائقة وفي خلال يومين فقط. شكراً لكم على الاحترافية العالية.»', initial: 'ن' },
             ].concat([
-              // النسخة المكررة لضمان اكتمال حلقة الدوران بسلاسة تامة
+              // النسخة المكررة لضمان اكتمال الحلقة بسلاسة تامة
               { name: 'أحمد الغامدي', city: 'الرياض', text: '«تجربة تسوق ممتازة جداً! المنتجات أصلية والتوصيل وصل في أسرع وقت مقارنة بالمتاجر الأخرى.»', initial: 'أ' },
               { name: 'سارة القحطاني', city: 'جدة', text: '«خدمة العملاء متعاونة جداً وساعدوني في اختيار المنتج المناسب لاحتياجي. جودة التغليف تفوق التوقعات!»', initial: 'س' },
               { name: 'محمد الشمري', city: 'الدمام', text: '«الأسعار جداً تنافسية مقارنة بالمتاجر الكبرى، والدفع الإلكتروني سلس وآمن. بالتأكيد لن تكون آخر تجربة.»', initial: 'م' },
@@ -236,7 +236,7 @@ export default function HomePage() {
             ]).map((review, index) => (
               <div
                 key={index}
-                className="bg-white p-6 rounded-3xl border border-zinc-200/80 shadow-sm w-[320px] sm:w-[380px] shrink-0 flex flex-col justify-between"
+                className="bg-white p-6 rounded-3xl border border-zinc-200/80 shadow-sm w-[340px] shrink-0 flex flex-col justify-between"
               >
                 <div className="space-y-4">
                   {/* النجوم */}
