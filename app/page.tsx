@@ -135,14 +135,14 @@ export default function HomePage() {
                     {product.price} ر.س
                   </span>
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation(); // منع فتح السلايدر عند الضغط على زر السلة السريع
-                      addToCart(product);
-                    }}
-                    className="bg-store-primary hover:bg-store-secondary text-white px-4 py-2 rounded-xl text-xs font-bold transition-colors shadow-sm"
-                  >
-                    + السلة
-                  </button>
+  onClick={(e) => {
+    e.stopPropagation(); // منع فتح السلايدر عند الضغط على زر السلة السريع
+    addToCart(product);
+  }}
+  className="bg-store-primary hover:bg-[#a0636a] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center gap-1"
+>
+  + السلة
+</button>
                 </div>
               </div>
             ))}
