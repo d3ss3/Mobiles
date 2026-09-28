@@ -64,9 +64,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 3. قسم المنتجات المضافة حديثاً */}
+      {/* 3. قسم المنتجات المضافة حديثاً (شريط أفقي في الجوال وشبكة في الديسكटॉप) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-2xl font-black text-store-dark">
               المنتجات المضافة حديثاً
@@ -88,11 +88,11 @@ export default function HomePage() {
             <p className="text-zinc-400">لا توجد منتجات متوفرة حالياً.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 overflow-x-auto sm:overflow-visible gap-4 sm:gap-6 pb-4 sm:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] snap-x -mx-4 px-4 sm:mx-0 sm:px-0">
             {featuredProducts.map((product) => (
               <div
                 key={product.id}
-                className="bg-white rounded-3xl border border-zinc-200/80 shadow-sm hover:shadow-md transition-all overflow-hidden flex flex-col justify-between group"
+                className="bg-white rounded-3xl border border-zinc-200/80 shadow-sm hover:shadow-md transition-all overflow-hidden flex flex-col justify-between group w-[260px] sm:w-auto shrink-0 snap-start"
               >
                 {/* النقر على محتوى الكرت يفتح السلايدر */}
                 <div
@@ -136,7 +136,7 @@ export default function HomePage() {
                   </span>
                   <button
                     onClick={(e) => {
-                      e.stopPropagation(); // منع فتح السلايدر عند الضغط على زر السلة السريع
+                      e.stopPropagation();
                       addToCart(product);
                     }}
                     className="bg-store-primary hover:bg-[#a0636a] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center gap-1"
