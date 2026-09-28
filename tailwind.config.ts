@@ -8,6 +8,14 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      colors: {
+        store: {
+          dark: '#2C2C2C',      // للنصوص والعناصر الداكنة والترويسة
+          primary: '#853953',   // اللون الأساسي للأزرار والعناصر البارزة
+          secondary: '#612D53', // اللون الثانوي وتأثيرات المرور (Hover)
+          light: '#F3F4F4',     // خلفيات الصفحات والعناصر الفاتحة
+        },
+      },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':
