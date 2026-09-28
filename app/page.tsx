@@ -20,7 +20,7 @@ export default function HomePage() {
   return (
     <div className="space-y-12 pb-12 text-store-dark" dir="rtl">
       {/* قسم الهيرو / Hero Section */}
-      <section className="relative w-full bg-[url('/images/background.png')] bg-cover bg-center py-24 px-6 overflow-hidden text-white shadow-xl">
+      <section className="relative w-full bg-[url('https://images.pexels.com/photos/1242348/pexels-photo-1242348.jpeg')] bg-cover bg-center py-24 px-6 overflow-hidden text-white shadow-xl">
         <div className="backdrop-blur-[2px]" />
         <div className="relative z-10 max-w-4xl mx-auto text-center space-y-4">
           <h1 className="text-3xl sm:text-5xl font-black leading-tight">

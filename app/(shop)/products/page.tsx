@@ -47,7 +47,7 @@ export default function ShopProductsPage() {
         </span>
         <h1 className="text-3xl font-black text-store-dark tracking-tight mt-2">جميع المنتجات</h1>
         <p className="text-sm font-medium text-zinc-500 mt-1">
-          تصفحافة منتجات المتجر المتاحة واستكشف عروضنا المميزة
+          تصفح كافة منتجات المتجر المتاحة واستكشف عروضنا المميزة
         </p>
       </div>
 
