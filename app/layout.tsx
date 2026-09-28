@@ -7,6 +7,9 @@ import Footer from '@/components/layout/Footer';
 import { CartProvider } from '@/context/CartContext';
 import { ProductProvider } from '@/context/ProductContext';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: 'المتجر الإلكتروني',
   description: 'منصة تسوق إلكتروني متكاملة بأفضل الأسعار',
