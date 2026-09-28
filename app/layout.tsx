@@ -35,7 +35,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="font-['Cairo',sans-serif] min-h-screen flex flex-col bg-[#F3F4F4] text-[#2C2C2C] antialiased">
+      <body className="font-['Cairo',sans-serif] min-h-screen flex flex-col bg-[#853953] text-[#2C2C2C] antialiased">
         {/* تغليف كافة المكونات بـ ProductProvider و CartProvider لضمان عمل كافة الوظائف */}
         <ProductProvider>
           <CartProvider>
