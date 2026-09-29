@@ -18,9 +18,9 @@ export default function HomePage() {
 
 // مصفوفة روابط الصور (يمكنك إضافة أي عدد تريد هنا)
 const banners = [
-  "banner1.png",
-  "banner2.png",
-  "banner3.jpg", // الصورة الثالثة أضيفت هنا
+  "/images/banner1.png",
+  "/images/banner2.png",
+  "/images/banner3.jpg", // الصورة الثالثة أضيفت هنا
 ];
 
 // مؤقت لتبديل الصور تلقائياً كل 4 ثوانٍ لجميع الصور بشكل دائرى
