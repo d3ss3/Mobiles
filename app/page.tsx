@@ -30,7 +30,7 @@ useEffect(() => {
   return (
     <div className="space-y-16 pb-16 text-store-dark" dir="rtl">
       {/* 1. قسم الهيرو / Hero Section */}
-      <section className="relative w-full bg-[url('/images/background.jpg')] bg-cover bg-center py-28 px-6 overflow-hidden text-white shadow-xl">
+      <section className="relative w-full bg-[url('/images/background.png')] bg-cover bg-center py-28 px-6 overflow-hidden text-white shadow-xl">
         <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px]" />
         <div className="relative z-10 max-w-4xl mx-auto text-center space-y-4">
           <h1 className="text-3xl sm:text-5xl font-black leading-tight">
