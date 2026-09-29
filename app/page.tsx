@@ -16,13 +16,20 @@ export default function HomePage() {
 
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
 
-// مؤقت لتبديل الصور تلقائياً كل 4 ثوانٍ
+// مصفوفة روابط الصور (يمكنك إضافة أي عدد تريد هنا)
+const banners = [
+  "banner1.png",
+  "banner2.png",
+  "banner3.jpg", // الصورة الثالثة أضيفت هنا
+];
+
+// مؤقت لتبديل الصور تلقائياً كل 4 ثوانٍ لجميع الصور بشكل دائرى
 useEffect(() => {
   const timer = setInterval(() => {
-    setCurrentBannerIndex((prev) => (prev === 0 ? 1 : 0));
+    setCurrentBannerIndex((prev) => (prev + 1) % banners.length);
   }, 4000);
   return () => clearInterval(timer);
-}, []);
+}, [banners.length]);
 
   // عرض أحدث 4 منتجات في الصفحة الرئيسية
   const featuredProducts = products ? products.slice(0, 4) : [];
@@ -80,11 +87,7 @@ useEffect(() => {
           href="/products" 
           className="block relative rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all group h-44 sm:h-64 lg:h-80"
         >
-          {[
-            "banner1.png", // استبدل هذا برابط أو مسار الصورة الأولى
-            "banner2.png",
-            "banner3.jpg", // استبدل هذا برابط أو مسار الصورة الثانية
-          ].map((imgSrc, index) => (
+          {banners.map((imgSrc, index) => (
             <div
               key={index}
               className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
@@ -99,9 +102,9 @@ useEffect(() => {
             </div>
           ))}
 
-          {/* نقاط المؤشر في أسفل البنر لتوضيح الصورة الحالية */}
+          {/* نقاط المؤشر في أسفل البنر (تتولد تلقائياً حسب عدد الصور) */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
-            {[0, 1].map((idx) => (
+            {banners.map((_, idx) => (
               <button
                 key={idx}
                 onClick={(e) => {
