@@ -14,6 +14,16 @@ export default function HomePage() {
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+
+// مؤقت لتبديل الصور تلقائياً كل 4 ثوانٍ
+useEffect(() => {
+  const timer = setInterval(() => {
+    setCurrentBannerIndex((prev) => (prev === 0 ? 1 : 0));
+  }, 4000);
+  return () => clearInterval(timer);
+}, []);
+
   // عرض أحدث 4 منتجات في الصفحة الرئيسية
   const featuredProducts = products ? products.slice(0, 4) : [];
 
@@ -62,6 +72,49 @@ export default function HomePage() {
             </Link>
           ))}
         </div>
+      </section>
+
+      {/* 🌟 بنر الصور المتحركة التلقائي */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-8">
+        <Link 
+          href="/products" 
+          className="block relative rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all group h-44 sm:h-64 lg:h-80"
+        >
+          {[
+            "banner1.png", // استبدل هذا برابط أو مسار الصورة الأولى
+            "banner2.png", // استبدل هذا برابط أو مسار الصورة الثانية
+          ].map((imgSrc, index) => (
+            <div
+              key={index}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                currentBannerIndex === index ? 'opacity-100 z-10' : 'opacity-0 z-0'
+              }`}
+            >
+              <img
+                src={imgSrc}
+                alt={`بنر المتجر ${index + 1}`}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+          ))}
+
+          {/* نقاط المؤشر في أسفل البنر لتوضيح الصورة الحالية */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+            {[0, 1].map((idx) => (
+              <button
+                key={idx}
+                onClick={(e) => {
+                  e.preventDefault(); // منع الانتقال لصفحة المنتجات عند الضغط على النقطة
+                  setCurrentBannerIndex(idx);
+                }}
+                className={`h-2 rounded-full transition-all ${
+                  currentBannerIndex === idx ? 'w-6 bg-white' : 'w-2 bg-white/50'
+                }`}
+                aria-label={`الانتقال للصورة ${idx + 1}`}
+              />
+            ))}
+          </div>
+        </Link>
       </section>
 
       {/* 3. قسم المنتجات المضافة حديثاً (شريط أفقي في الجوال وشبكة في الديسكटॉप) */}
