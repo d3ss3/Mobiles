@@ -43,7 +43,7 @@ export default function HomePage() {
 
     fetchCategories();
 
-    // مؤقت لتبديل الصور تلقائياً كل 4 ثوانٍ لجميع الصور بشكل دائري
+    // مؤقت لتبديل الصور تلقائياً كل 4 ثوانٍ
     const timer = setInterval(() => {
       setCurrentBannerIndex((prev) => (prev + 1) % banners.length);
     }, 4000);
@@ -53,67 +53,141 @@ export default function HomePage() {
   // عرض أحدث 4 منتجات في الصفحة الرئيسية
   const featuredProducts = products ? products.slice(0, 4) : [];
 
+  // تكرار التصنيفات للجوال لضمان حركة سلسة ومستمرة
+  const marqueeItems = categories.length > 0 
+    ? Array(6).fill(categories).flat() 
+    : [];
+
   return (
     <div className="space-y-16 pb-16 text-store-dark" dir="rtl">
-      {/* 1. قسم الهيرو / Hero Section */}
-      <section className="relative w-full bg-[url('/images/background.png')] bg-cover bg-center py-28 px-6 overflow-hidden text-white shadow-xl">
-        <div className="relative z-10 max-w-4xl mx-auto text-center space-y-4">
-          <h1 className="text-3xl sm:text-5xl font-black leading-tight">
-            أحدث المنتجات والتقنيات بين يديك
-          </h1>
-          <p className="text-zinc-200 text-sm sm:text-base max-w-2xl mx-auto">
-            تسوق أفضل المنتجات الرقمية والإلكترونيات بأسعار تنافسية وجودة مضمونة.
-          </p>
-          <div className="pt-2">
-            <Link
-              href="/products"
-              className="inline-block bg-white text-store-primary font-extrabold px-8 py-3.5 rounded-2xl shadow-lg hover:bg-store-light transition-all active:scale-95"
-            >
-              استكشف كل المنتجات
-            </Link>
-          </div>
-        </div>
-      </section>
+      {/* قسم الهيرو المخصص لقطع الغيار */}
+<section className="relative w-full bg-gradient-to-br from-store-dark via-zinc-900 to-store-primary py-20 px-6 overflow-hidden text-white shadow-xl">
+  <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
+    <span className="bg-white/10 backdrop-blur-md text-store-light text-xs font-extrabold px-4 py-1.5 rounded-full inline-block border border-white/10">
+      🇨🇳 جسرك المباشر لسوق ومصانع قطع الغيار الصينية
+    </span>
+    
+    <h1 className="text-3xl sm:text-5xl font-black leading-tight">
+      ابحث عن قطع غيار سيارتك الصينية بدقة وثقة
+    </h1>
+    
+    <p className="text-zinc-300 text-sm sm:text-base max-w-2xl mx-auto">
+      وفرنا لك آلاف القطع الأصلية والتجارية لجميع الماركات الصينية بأسعار تنافسية وضمان المطابقة برقم الهيكل.
+    </p>
 
-      {/* 2. قسم التصنيفات السريعة (يتحرك بالسحب بالماوس أو الإصبع) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-8">
-        <div className="mb-6 text-center sm:text-right">
-          <h2 className="text-2xl font-black text-store-dark">تصفح حسب الشركة</h2>
-          <p className="text-xs text-zinc-500 mt-1">اختر شركة السيارات المناسبة لبحثك</p>
+    {/* صندوق البحث السريع (مطابق للمواقع العالمية) */}
+    <div className="bg-white p-3 rounded-2xl shadow-2xl max-w-2xl mx-auto text-zinc-800 flex flex-col sm:flex-row gap-2">
+      <div className="flex-1 relative">
+        <input 
+          type="text" 
+          placeholder="أدخل رقم الهيكل (VIN) أو رقم القطعة (OEM)..." 
+          className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3.5 text-xs sm:text-sm focus:outline-none focus:border-store-primary"
+        />
+      </div>
+      <button className="bg-store-primary hover:bg-[#a0636a] text-white font-extrabold px-8 py-3.5 rounded-xl text-sm transition-all shadow-md active:scale-95 shrink-0">
+        بحث بالهيكل 🔍
+      </button>
+    </div>
+
+    <div className="flex items-center justify-center gap-6 text-xs text-zinc-400 pt-2">
+      <span>✨ ضمان مطابقة 100%</span>
+      <span>•</span>
+      <span>📦 شحن مباشر من الصين</span>
+      <span>•</span>
+      <span>🛠️ دعم فني متخصص</span>
+    </div>
+  </div>
+</section>
+
+      {/* 2. قسم الشركات / التصنيفات (متحرك على الجوال وثابت على الكمبيوتر - بمقاسات أكبر وأوضح) */}
+      <section className="homepage_section py-6 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 mb-6 text-center">
+          <h2 className="text-2xl font-black text-store-dark">تصفح حسب الشركة الصينية</h2>
+          <p className="text-xs sm:text-sm text-zinc-500 mt-1">اختر ماركة سيارتك لعرض القطع المتوافقة</p>
         </div>
 
-        {!categories || categories.length === 0 ? (
-          <div className="text-center py-8 bg-white rounded-3xl border border-dashed border-zinc-200">
+        {categories.length === 0 ? (
+          <div className="max-w-7xl mx-auto px-4 sm:px-8 text-center py-8 bg-white rounded-3xl border border-dashed border-zinc-200">
             <p className="text-zinc-400 text-sm">جاري تحميل التصنيفات أو لا توجد تصنيفات مضافة حالياً.</p>
           </div>
         ) : (
-          <div className="flex overflow-x-auto gap-4 pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] snap-x -mx-4 px-4 sm:mx-0 sm:px-0">
-            {categories.map((cat) => (
-              <Link
-                key={cat.id}
-                href={`/products?category=${cat.slug || cat.id}`}
-                className="bg-white p-4 rounded-3xl border border-zinc-200/80 shadow-sm hover:border-store-primary hover:shadow-md transition-all text-center group flex flex-col items-center justify-between w-[160px] sm:w-[180px] shrink-0 snap-start"
-              >
-                <div className="w-16 h-16 bg-zinc-50 rounded-2xl overflow-hidden mb-3 flex items-center justify-center group-hover:scale-105 transition-transform border border-zinc-100">
-                  {cat.image ? (
-                    <img 
-                      src={cat.image} 
-                      alt={cat.name} 
-                      className="w-full h-full object-contain p-2"
-                    />
-                  ) : (
-                    <span className="text-store-primary font-black text-lg">
-                      {cat.name.charAt(0)}
-                    </span>
-                  )}
-                </div>
+          <>
+            {/* أ. النسخة الخاصة بالجوال: شريط متحرك (Marquee) */}
+            <div className="block md:hidden relative w-full overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_64px,_black_calc(100%-64px),transparent_100%)]">
+              <style jsx>{`
+                @keyframes logoMarquee {
+                  0% { transform: translateX(0); }
+                  100% { transform: translateX(-50%); }
+                }
+                .animate-logo-marquee {
+                  display: flex;
+                  width: max-content;
+                  animation: logoMarquee 35s linear infinite;
+                }
+                .animate-logo-marquee:hover {
+                  animation-play-state: paused;
+                }
+              `}</style>
 
-                <h3 className="font-bold text-store-dark text-xs sm:text-sm group-hover:text-store-primary transition-colors line-clamp-1">
-                  {cat.name}
-                </h3>
-              </Link>
-            ))}
-          </div>
+              <ul role="list" aria-label="Logo marquee" className="animate-logo-marquee gap-6 px-2 items-center">
+                {marqueeItems.map((cat, index) => (
+                  <li key={`mob-${cat.id}-${index}`} className="shrink-0">
+                    <Link
+                      href={`/products?category=${cat.slug || cat.id}`}
+                      className="group flex flex-col items-center text-center w-[120px]"
+                    >
+                      <div className="w-24 h-24 bg-white rounded-3xl shadow-md border border-zinc-200/80 overflow-hidden mb-3 flex items-center justify-center group-hover:border-store-primary group-hover:shadow-lg transition-all">
+                        {cat.image ? (
+                          <img 
+                            src={cat.image} 
+                            alt={cat.name} 
+                            className="w-full h-full object-contain p-3"
+                          />
+                        ) : (
+                          <span className="text-store-primary font-black text-2xl">
+                            {cat.name.charAt(0)}
+                          </span>
+                        )}
+                      </div>
+
+                      <h3 className="font-bold text-store-dark text-sm group-hover:text-store-primary transition-colors line-clamp-1">
+                        {cat.name}
+                      </h3>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* ب. النسخة الخاصة بالكمبيوتر: شبكة ثابتة (Grid) منظمة */}
+            <div className="hidden md:grid max-w-7xl mx-auto px-4 sm:px-8 grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-6 justify-items-center">
+              {categories.map((cat) => (
+                <Link
+                  key={`desk-${cat.id}`}
+                  href={`/products?category=${cat.slug || cat.id}`}
+                  className="group flex flex-col items-center text-center w-[130px]"
+                >
+                  <div className="w-24 h-24 bg-white rounded-3xl shadow-md border border-zinc-200/80 overflow-hidden mb-3 flex items-center justify-center group-hover:border-store-primary group-hover:shadow-lg transition-all">
+                    {cat.image ? (
+                      <img 
+                        src={cat.image} 
+                        alt={cat.name} 
+                        className="w-full h-full object-contain p-3"
+                      />
+                    ) : (
+                      <span className="text-store-primary font-black text-2xl">
+                        {cat.name.charAt(0)}
+                      </span>
+                    )}
+                  </div>
+
+                  <h3 className="font-bold text-store-dark text-sm group-hover:text-store-primary transition-colors line-clamp-1">
+                    {cat.name}
+                  </h3>
+                </Link>
+              ))}
+            </div>
+          </>
         )}
       </section>
 
