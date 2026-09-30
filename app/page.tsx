@@ -100,11 +100,11 @@ export default function HomePage() {
   </div>
 </section>
 
-      {/* 2. قسم الشركات / التصنيفات (بدون إطار خارجي / تصميم نظيف ومباشر) */}
-<section className="homepage_section py-8">
+      {/* 2. قسم الشركات / التصنيفات (بحجم أكبر وبتصميم نظيف بدون إطار خارجي) */}
+<section className="homepage_section py-10">
   <div className="max-w-7xl mx-auto px-4 sm:px-8" dir="rtl">
-    <div className="text-center mb-6 space-y-1">
-      <h2 className="text-2xl font-black text-store-dark">تصفح حسب الشركة الصينية</h2>
+    <div className="text-center mb-8 space-y-1">
+      <h2 className="text-2xl sm:text-3xl font-black text-store-dark">تصفح حسب الشركة الصينية</h2>
       <p className="text-xs sm:text-sm text-zinc-500">اختر ماركة سيارتك لعرض القطع المتوافقة بدقة</p>
     </div>
 
@@ -113,15 +113,15 @@ export default function HomePage() {
         <p className="text-zinc-400 text-sm">جاري تحميل التصنيفات أو لا توجد تصنيفات مضافة حالياً.</p>
       </div>
     ) : (
-      <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
         {categories.map((cat) => (
           <Link
             key={cat.id || cat.name}
             href={`/products?category=${cat.slug || cat.id}`}
-            className="group flex flex-col items-center justify-center gap-2.5 p-2 transition-all"
+            className="group flex flex-col items-center justify-center gap-3 p-3 transition-all"
           >
-            {/* الشعار فقط داخل مساحة خفيفة تتفاعل عند التمرير بدون إطار خارجي ثقيل */}
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-zinc-50/80 border border-zinc-200/60 flex items-center justify-center p-3 group-hover:border-store-primary group-hover:bg-store-primary/5 group-hover:scale-105 transition-all shadow-sm">
+            {/* تم تكبير أبعاد الشعار لتصبح واضحة وبارزة */}
+            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-zinc-50/90 border border-zinc-200/70 flex items-center justify-center p-4 group-hover:border-store-primary group-hover:bg-store-primary/5 group-hover:scale-105 transition-all shadow-sm">
               {cat.image ? (
                 <img
                   src={cat.image}
@@ -129,14 +129,14 @@ export default function HomePage() {
                   className="w-full h-full object-contain"
                 />
               ) : (
-                <span className="text-store-primary font-black text-2xl">
+                <span className="text-store-primary font-black text-3xl">
                   {cat.name.charAt(0)}
                 </span>
               )}
             </div>
             
-            {/* اسم الشركة تحته مباشرة بدون أي مربعات محيطة */}
-            <span className="text-xs sm:text-sm font-bold text-zinc-700 text-center line-clamp-1 group-hover:text-store-primary transition-colors">
+            {/* اسم الشركة بخط واضح وأكبر يناسب حجم الشعارات */}
+            <span className="text-sm sm:text-base font-bold text-zinc-800 text-center line-clamp-1 group-hover:text-store-primary transition-colors">
               {cat.name}
             </span>
           </Link>
