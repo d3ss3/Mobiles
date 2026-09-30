@@ -5,31 +5,50 @@ import Link from 'next/link';
 import { useProducts } from '@/context/ProductContext';
 import { useCart } from '@/context/CartContext';
 import ProductDrawer from '@/components/products/ProductDrawer';
+import { supabase } from '@/lib/db';
 
 export default function HomePage() {
   const { products } = useProducts();
   const { addToCart } = useCart();
 
-  // حالات السلايدر الجانبي
+  // حالة تخزين التصنيفات المسترجعة من قاعدة البيانات
+  const [categories, setCategories] = useState<any[]>([]);
+
+  // حالات السلايدر الجانبي للمنتجات
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
+  // حالة البنر المتحرك
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
 
-// مصفوفة روابط الصور (يمكنك إضافة أي عدد تريد هنا)
-const banners = [
-  "/images/banner1.png",
-  "/images/banner2.png",
-  "/images/banner3.jpg", // الصورة الثالثة أضيفت هنا
-];
+  // مصفوفة روابط الصور للبنر المتحرك
+  const banners = [
+    "/images/banner1.png",
+    "/images/banner2.png",
+    "/images/banner3.jpg",
+  ];
 
-// مؤقت لتبديل الصور تلقائياً كل 4 ثوانٍ لجميع الصور بشكل دائرى
-useEffect(() => {
-  const timer = setInterval(() => {
-    setCurrentBannerIndex((prev) => (prev + 1) % banners.length);
-  }, 4000);
-  return () => clearInterval(timer);
-}, [banners.length]);
+  // جلب التصنيفات وتشغيل مؤقت البنر تلقائياً عند تحميل الصفحة
+  useEffect(() => {
+    async function fetchCategories() {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .order('created_at', { ascending: true });
+      
+      if (data) {
+        setCategories(data);
+      }
+    }
+
+    fetchCategories();
+
+    // مؤقت لتبديل الصور تلقائياً كل 4 ثوانٍ لجميع الصور بشكل دائري
+    const timer = setInterval(() => {
+      setCurrentBannerIndex((prev) => (prev + 1) % banners.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [banners.length]);
 
   // عرض أحدث 4 منتجات في الصفحة الرئيسية
   const featuredProducts = products ? products.slice(0, 4) : [];
@@ -56,28 +75,46 @@ useEffect(() => {
         </div>
       </section>
 
-      {/* 2. قسم التصنيفات السريعة (يعطي حيوية للمتجر) */}
+      {/* 2. قسم التصنيفات السريعة (يتحرك بالسحب بالماوس أو الإصبع) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-black text-store-dark">تصفح حسب القسم</h2>
-          <p className="text-xs text-zinc-500 mt-1">اختر التصنيف المناسب لاحتياجك</p>
+        <div className="mb-6 text-center sm:text-right">
+          <h2 className="text-2xl font-black text-store-dark">تصفح حسب الشركة</h2>
+          <p className="text-xs text-zinc-500 mt-1">اختر شركة السيارات المناسبة لبحثك</p>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {['إلكترونيات', 'إكسسوارات', 'أجهزة ذكية', 'عروض مميزة'].map((cat, idx) => (
-            <Link
-              key={idx}
-              href="/products"
-              className="bg-white p-6 rounded-3xl border border-zinc-200/80 shadow-sm hover:border-store-primary hover:shadow-md transition-all text-center group"
-            >
-              <div className="w-12 h-12 bg-store-light rounded-2xl mx-auto flex items-center justify-center text-store-primary font-black mb-3 group-hover:scale-110 transition-transform">
-                {idx + 1}
-              </div>
-              <h3 className="font-bold text-store-dark text-sm group-hover:text-store-primary transition-colors">
-                {cat}
-              </h3>
-            </Link>
-          ))}
-        </div>
+
+        {!categories || categories.length === 0 ? (
+          <div className="text-center py-8 bg-white rounded-3xl border border-dashed border-zinc-200">
+            <p className="text-zinc-400 text-sm">جاري تحميل التصنيفات أو لا توجد تصنيفات مضافة حالياً.</p>
+          </div>
+        ) : (
+          <div className="flex overflow-x-auto gap-4 pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] snap-x -mx-4 px-4 sm:mx-0 sm:px-0">
+            {categories.map((cat) => (
+              <Link
+                key={cat.id}
+                href={`/products?category=${cat.slug || cat.id}`}
+                className="bg-white p-4 rounded-3xl border border-zinc-200/80 shadow-sm hover:border-store-primary hover:shadow-md transition-all text-center group flex flex-col items-center justify-between w-[160px] sm:w-[180px] shrink-0 snap-start"
+              >
+                <div className="w-16 h-16 bg-zinc-50 rounded-2xl overflow-hidden mb-3 flex items-center justify-center group-hover:scale-105 transition-transform border border-zinc-100">
+                  {cat.image ? (
+                    <img 
+                      src={cat.image} 
+                      alt={cat.name} 
+                      className="w-full h-full object-contain p-2"
+                    />
+                  ) : (
+                    <span className="text-store-primary font-black text-lg">
+                      {cat.name.charAt(0)}
+                    </span>
+                  )}
+                </div>
+
+                <h3 className="font-bold text-store-dark text-xs sm:text-sm group-hover:text-store-primary transition-colors line-clamp-1">
+                  {cat.name}
+                </h3>
+              </Link>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* 🌟 بنر الصور المتحركة التلقائي */}
@@ -101,13 +138,12 @@ useEffect(() => {
             </div>
           ))}
 
-          {/* نقاط المؤشر في أسفل البنر (تتولد تلقائياً حسب عدد الصور) */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
             {banners.map((_, idx) => (
               <button
                 key={idx}
                 onClick={(e) => {
-                  e.preventDefault(); // منع الانتقال لصفحة المنتجات عند الضغط على النقطة
+                  e.preventDefault();
                   setCurrentBannerIndex(idx);
                 }}
                 className={`h-2 rounded-full transition-all ${
@@ -120,7 +156,7 @@ useEffect(() => {
         </Link>
       </section>
 
-      {/* 3. قسم المنتجات المضافة حديثاً (شريط أفقي في الجوال وشبكة في الديسكटॉप) */}
+      {/* 3. قسم المنتجات المضافة حديثاً */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -150,7 +186,6 @@ useEffect(() => {
                 key={product.id}
                 className="bg-white rounded-3xl border border-zinc-200/80 shadow-sm hover:shadow-md transition-all overflow-hidden flex flex-col justify-between group w-[260px] sm:w-auto shrink-0 snap-start"
               >
-                {/* النقر على محتوى الكرت يفتح السلايدر */}
                 <div
                   onClick={() => {
                     setSelectedProduct({
@@ -209,11 +244,8 @@ useEffect(() => {
       {/* 🌟 بنر إعلاني / ترويجي بين الأقسام */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8">
         <div className="relative overflow-hidden bg-gradient-to-r from-store-primary to-zinc-900 rounded-3xl p-8 sm:p-12 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
-          
-          {/* تأثير خلفية جمالي خفيف */}
           <div className="absolute -left-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
 
-          {/* النصوص والوصف */}
           <div className="space-y-3 text-center md:text-right relative z-10">
             <span className="bg-white/20 text-white text-xs font-extrabold px-3.5 py-1.5 rounded-full inline-block">
               عرض لفترة محدودة 🔥
@@ -226,7 +258,6 @@ useEffect(() => {
             </p>
           </div>
 
-          {/* زر التفاعل (CTA) */}
           <div className="relative z-10 shrink-0">
             <Link
               href="/products"
@@ -238,11 +269,10 @@ useEffect(() => {
               </svg>
             </Link>
           </div>
-
         </div>
       </section>
 
-      {/* 🌟 قسم آراء العملاء (دوران لا نهائي مستقر وثابت) */}
+      {/* 🌟 قسم آراء العملاء */}
       <section className="py-12 overflow-hidden bg-zinc-50/50 border-y border-zinc-200/60" dir="rtl">
         <div className="text-center max-w-2xl mx-auto mb-10 px-4">
           <span className="bg-store-primary/10 text-store-primary text-xs font-extrabold px-3.5 py-1.5 rounded-full inline-block mb-3">
@@ -256,9 +286,7 @@ useEffect(() => {
           </p>
         </div>
 
-        {/* حاوية الشريط مع تأثير التلاشي في الأطراف */}
         <div className="relative w-full overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_64px,_black_calc(100%-64px),transparent_100%)]">
-          
           <style jsx>{`
             @keyframes infiniteScroll {
               0% { transform: translateX(0); }
@@ -274,7 +302,6 @@ useEffect(() => {
             }
           `}</style>
 
-          {/* الشريط المتحرك */}
           <div className="animate-infinite-scroll gap-6 px-3">
             {[
               { name: 'أحمد الغامدي', city: 'الرياض', text: '«تجربة تسوق ممتازة جداً! المنتجات أصلية والتوصيل وصل في أسرع وقت مقارنة بالمتاجر الأخرى.»', initial: 'أ' },
@@ -283,7 +310,6 @@ useEffect(() => {
               { name: 'فهد العتيبي', city: 'المدينة المنورة', text: '«متجر احترافي بمعنى الكلمة، سرعة في التوصيل ودعم فني متجاوب طوال الوقت. شكراً لكم.»', initial: 'ف' },
               { name: 'نورة الدوسري', city: 'الخبر', text: '«الطلب وصلني مغلف بعناية فائقة وفي خلال يومين فقط. شكراً لكم على الاحترافية العالية.»', initial: 'ن' },
             ].concat([
-              // النسخة المكررة لضمان اكتمال الحلقة بسلاسة تامة
               { name: 'أحمد الغامدي', city: 'الرياض', text: '«تجربة تسوق ممتازة جداً! المنتجات أصلية والتوصيل وصل في أسرع وقت مقارنة بالمتاجر الأخرى.»', initial: 'أ' },
               { name: 'سارة القحطاني', city: 'جدة', text: '«خدمة العملاء متعاونة جداً وساعدوني في اختيار المنتج المناسب لاحتياجي. جودة التغليف تفوق التوقعات!»', initial: 'س' },
               { name: 'محمد الشمري', city: 'الدمام', text: '«الأسعار جداً تنافسية مقارنة بالمتاجر الكبرى، والدفع الإلكتروني سلس وآمن. بالتأكيد لن تكون آخر تجربة.»', initial: 'م' },
@@ -295,7 +321,6 @@ useEffect(() => {
                 className="bg-white p-6 rounded-3xl border border-zinc-200/80 shadow-sm w-[340px] shrink-0 flex flex-col justify-between"
               >
                 <div className="space-y-4">
-                  {/* النجوم */}
                   <div className="flex items-center gap-1 text-amber-400">
                     {[...Array(5)].map((_, i) => (
                       <svg key={i} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
@@ -320,11 +345,10 @@ useEffect(() => {
               </div>
             ))}
           </div>
-
         </div>
       </section>
 
-      {/* 5. قسم مميزات المتجر (Trust Badges / Features) */}
+      {/* 5. قسم مميزات المتجر */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8">
         <div className="bg-white rounded-3xl border border-zinc-200/80 p-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
           <div className="space-y-2">
