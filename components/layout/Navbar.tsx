@@ -43,9 +43,9 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* ================= طريقتنا لتصميم الجوال فقط (يظهر على الجوال ويختفي في الشاشات الكبيرة) ================= */}
+        {/* ================= تصميم الجوال ================= */}
         <div className="flex md:hidden items-center justify-between h-20">
-          {/* 1. زر القائمة (يمين) */}
+          {/* 1. زر القائمة */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="p-2.5 rounded-2xl bg-zinc-100 hover:bg-zinc-200 text-zinc-600 transition-colors cursor-pointer"
@@ -62,13 +62,13 @@ export default function Navbar() {
             )}
           </button>
 
-          {/* 2. الشعار (في المنتصف تماماً) */}
+          {/* 2. الشعار في المنتصف */}
           <Link href="/" className="flex items-center gap-2 group focus:outline-none">
-          <img
-    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWv_BiMd-nE8VfVaumxE4v4Ito0ARtWVl31IvTU3oRGg&s=10" 
-    alt="شعار المتجر"
-    className="w-11 h-11 object-contain rounded-2xl group-hover:scale-105 transition-transform"
-  />
+            <img
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWv_BiMd-nE8VfVaumxE4v4Ito0ARtWVl31IvTU3oRGg&s=10" 
+              alt="شعار المتجر"
+              className="w-11 h-11 object-contain rounded-2xl group-hover:scale-105 transition-transform"
+            />
             <div className="flex flex-col">
               <span className="text-lg font-black text-store-dark tracking-tight">
                 متجر غناتي
@@ -76,9 +76,8 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* 3. السلة + تسجيل الدخول (يسار) */}
+          {/* 3. السلة + تسجيل الدخول */}
           <div className="flex items-center gap-2">
-            {/* زر سلة التسوق */}
             <Link
               href="/cart"
               className={`relative p-2.5 rounded-2xl transition-all active:scale-95 ${
@@ -98,7 +97,6 @@ export default function Navbar() {
               )}
             </Link>
 
-            {/* زر تسجيل الدخول */}
             <Link
               href="/login"
               title="حسابي / تسجيل الدخول"
@@ -116,10 +114,8 @@ export default function Navbar() {
           </div>
         </div>
 
-
-        {/* ================= تصميم الشاشات الكبيرة (Desktop - يظهر على الشاشات الكبيرة فقط ويختفي في الجوال) ================= */}
+        {/* ================= تصميم الشاشات الكبيرة (Desktop) ================= */}
         <div className="hidden md:flex items-center justify-between h-20">
-          {/* 1. الشعار / Logo */}
           <Link href="/" className="flex items-center gap-3 group focus:outline-none">
             <div className="w-11 h-11 rounded-2xl bg-store-primary flex items-center justify-center text-white shadow-lg shadow-store-primary/25 group-hover:scale-105 transition-transform font-black text-xl">
               🛒
@@ -134,7 +130,6 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* 2. روابط التنقل للشاشات الكبيرة */}
           <nav className="flex items-center gap-1.5 bg-zinc-100/80 p-1.5 rounded-2xl border border-zinc-200/80">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
@@ -154,7 +149,6 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* 3. إجراءات اليمين (السلة + الحساب) */}
           <div className="flex items-center gap-3">
             <Link
               href="/cart"
@@ -192,9 +186,9 @@ export default function Navbar() {
 
       </div>
 
-      {/* 4. القائمة المنسدلة للجوال (Mobile Drawer) عند الضغط على زر القائمة */}
+      {/* 4. القائمة المنسدلة للجوال */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-white border-b border-zinc-200 px-4 pt-3 pb-6 space-y-2 shadow-xl animate-fadeIn">
+        <div className="md:hidden bg-white border-b border-zinc-200 px-4 pt-3 pb-6 space-y-2 shadow-xl">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
