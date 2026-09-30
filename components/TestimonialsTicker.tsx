@@ -1,3 +1,4 @@
+// components/TestimonialsTicker.tsx
 'use client';
 
 export default function TestimonialsTicker() {
@@ -31,7 +32,7 @@ export default function TestimonialsTicker() {
                 </span>
               </div>
               <p className="text-xs text-zinc-300 whitespace-normal line-clamp-2">
-                "{review.text}"
+                &ldquo;{review.text}&rdquo;
               </p>
             </div>
           ))}
