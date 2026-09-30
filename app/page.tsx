@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { supabase } from '@/lib/db';
 import { useProducts } from '@/context/ProductContext';
 import { useCart } from '@/context/CartContext';
 import ProductDrawer from '@/components/products/ProductDrawer';
-import { supabase } from '@/lib/db';
+import TestimonialsTicker from '@/components/TestimonialsTicker';
 
 export default function HomePage() {
   const { products } = useProducts();
@@ -99,96 +100,47 @@ export default function HomePage() {
   </div>
 </section>
 
-      {/* 2. قسم الشركات / التصنيفات (متحرك على الجوال وثابت على الكمبيوتر - بمقاسات أكبر وأوضح) */}
-      <section className="homepage_section py-6 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 mb-6 text-center">
-          <h2 className="text-2xl font-black text-store-dark">تصفح حسب الشركة الصينية</h2>
-          <p className="text-xs sm:text-sm text-zinc-500 mt-1">اختر ماركة سيارتك لعرض القطع المتوافقة</p>
-        </div>
-
-        {categories.length === 0 ? (
-          <div className="max-w-7xl mx-auto px-4 sm:px-8 text-center py-8 bg-white rounded-3xl border border-dashed border-zinc-200">
-            <p className="text-zinc-400 text-sm">جاري تحميل التصنيفات أو لا توجد تصنيفات مضافة حالياً.</p>
+      {/* 2. قسم الشركات / التصنيفات (شبكة متجاوبة Grid تعمل بامتياز على الجوال والكمبيوتر) */}
+      <section className="homepage_section py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8" dir="rtl">
+          <div className="text-center mb-6 space-y-1">
+            <h2 className="text-2xl font-black text-store-dark">تصفح حسب الشركة الصينية</h2>
+            <p className="text-xs sm:text-sm text-zinc-500">اختر ماركة سيارتك لعرض القطع المتوافقة بدقة</p>
           </div>
-        ) : (
-          <>
-            {/* أ. النسخة الخاصة بالجوال: شريط متحرك (Marquee) */}
-            <div className="block md:hidden relative w-full overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_64px,_black_calc(100%-64px),transparent_100%)]">
-              <style jsx>{`
-                @keyframes logoMarquee {
-                  0% { transform: translateX(0); }
-                  100% { transform: translateX(-50%); }
-                }
-                .animate-logo-marquee {
-                  display: flex;
-                  width: max-content;
-                  animation: logoMarquee 35s linear infinite;
-                }
-                .animate-logo-marquee:hover {
-                  animation-play-state: paused;
-                }
-              `}</style>
 
-              <ul role="list" aria-label="Logo marquee" className="animate-logo-marquee gap-6 px-2 items-center">
-                {marqueeItems.map((cat, index) => (
-                  <li key={`mob-${cat.id}-${index}`} className="shrink-0">
-                    <Link
-                      href={`/products?category=${cat.slug || cat.id}`}
-                      className="group flex flex-col items-center text-center w-[120px]"
-                    >
-                      <div className="w-24 h-24 bg-white rounded-3xl shadow-md border border-zinc-200/80 overflow-hidden mb-3 flex items-center justify-center group-hover:border-store-primary group-hover:shadow-lg transition-all">
-                        {cat.image ? (
-                          <img 
-                            src={cat.image} 
-                            alt={cat.name} 
-                            className="w-full h-full object-contain p-3"
-                          />
-                        ) : (
-                          <span className="text-store-primary font-black text-2xl">
-                            {cat.name.charAt(0)}
-                          </span>
-                        )}
-                      </div>
-
-                      <h3 className="font-bold text-store-dark text-sm group-hover:text-store-primary transition-colors line-clamp-1">
-                        {cat.name}
-                      </h3>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+          {categories.length === 0 ? (
+            <div className="text-center py-8 bg-white rounded-3xl border border-dashed border-zinc-200">
+              <p className="text-zinc-400 text-sm">جاري تحميل التصنيفات أو لا توجد تصنيفات مضافة حالياً.</p>
             </div>
-
-            {/* ب. النسخة الخاصة بالكمبيوتر: شبكة ثابتة (Grid) منظمة */}
-            <div className="hidden md:grid max-w-7xl mx-auto px-4 sm:px-8 grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-6 justify-items-center">
+          ) : (
+            <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
               {categories.map((cat) => (
                 <Link
-                  key={`desk-${cat.id}`}
+                  key={cat.id || cat.name}
                   href={`/products?category=${cat.slug || cat.id}`}
-                  className="group flex flex-col items-center text-center w-[130px]"
+                  className="bg-white p-3 sm:p-4 rounded-2xl border border-zinc-200/80 shadow-sm hover:shadow-md hover:border-store-primary transition-all flex flex-col items-center justify-center gap-2 group"
                 >
-                  <div className="w-24 h-24 bg-white rounded-3xl shadow-md border border-zinc-200/80 overflow-hidden mb-3 flex items-center justify-center group-hover:border-store-primary group-hover:shadow-lg transition-all">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl bg-zinc-50 flex items-center justify-center p-2 group-hover:scale-105 transition-transform overflow-hidden">
                     {cat.image ? (
-                      <img 
-                        src={cat.image} 
-                        alt={cat.name} 
-                        className="w-full h-full object-contain p-3"
+                      <img
+                        src={cat.image}
+                        alt={cat.name}
+                        className="w-full h-full object-contain"
                       />
                     ) : (
-                      <span className="text-store-primary font-black text-2xl">
+                      <span className="text-store-primary font-black text-xl">
                         {cat.name.charAt(0)}
                       </span>
                     )}
                   </div>
-
-                  <h3 className="font-bold text-store-dark text-sm group-hover:text-store-primary transition-colors line-clamp-1">
+                  <span className="text-xs sm:text-sm font-bold text-store-dark text-center line-clamp-1 group-hover:text-store-primary">
                     {cat.name}
-                  </h3>
+                  </span>
                 </Link>
               ))}
             </div>
-          </>
-        )}
+          )}
+        </div>
       </section>
 
       {/* 🌟 بنر الصور المتحركة التلقائي */}
@@ -347,80 +299,7 @@ export default function HomePage() {
       </section>
 
       {/* 🌟 قسم آراء العملاء */}
-      <section className="py-12 overflow-hidden bg-zinc-50/50 border-y border-zinc-200/60" dir="rtl">
-        <div className="text-center max-w-2xl mx-auto mb-10 px-4">
-          <span className="bg-store-primary/10 text-store-primary text-xs font-extrabold px-3.5 py-1.5 rounded-full inline-block mb-3">
-            آراء العملاء
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-black text-store-dark">
-            ماذا يقول عملاؤنا عن تجربتهم معنا؟
-          </h2>
-          <p className="text-xs sm:text-sm text-zinc-500 mt-2">
-            نفتخر بثقة عملائنا ونسعى دائماً لتقديم أفضل تجربة تسوق إلكتروني
-          </p>
-        </div>
-
-        <div className="relative w-full overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_64px,_black_calc(100%-64px),transparent_100%)]">
-          <style jsx>{`
-            @keyframes infiniteScroll {
-              0% { transform: translateX(0); }
-              100% { transform: translateX(-50%); }
-            }
-            .animate-infinite-scroll {
-              display: flex;
-              width: max-content;
-              animation: infiniteScroll 30s linear infinite;
-            }
-            .animate-infinite-scroll:hover {
-              animation-play-state: paused;
-            }
-          `}</style>
-
-          <div className="animate-infinite-scroll gap-6 px-3">
-            {[
-              { name: 'أحمد الغامدي', city: 'الرياض', text: '«تجربة تسوق ممتازة جداً! المنتجات أصلية والتوصيل وصل في أسرع وقت مقارنة بالمتاجر الأخرى.»', initial: 'أ' },
-              { name: 'سارة القحطاني', city: 'جدة', text: '«خدمة العملاء متعاونة جداً وساعدوني في اختيار المنتج المناسب لاحتياجي. جودة التغليف تفوق التوقعات!»', initial: 'س' },
-              { name: 'محمد الشمري', city: 'الدمام', text: '«الأسعار جداً تنافسية مقارنة بالمتاجر الكبرى، والدفع الإلكتروني سلس وآمن. بالتأكيد لن تكون آخر تجربة.»', initial: 'م' },
-              { name: 'فهد العتيبي', city: 'المدينة المنورة', text: '«متجر احترافي بمعنى الكلمة، سرعة في التوصيل ودعم فني متجاوب طوال الوقت. شكراً لكم.»', initial: 'ف' },
-              { name: 'نورة الدوسري', city: 'الخبر', text: '«الطلب وصلني مغلف بعناية فائقة وفي خلال يومين فقط. شكراً لكم على الاحترافية العالية.»', initial: 'ن' },
-            ].concat([
-              { name: 'أحمد الغامدي', city: 'الرياض', text: '«تجربة تسوق ممتازة جداً! المنتجات أصلية والتوصيل وصل في أسرع وقت مقارنة بالمتاجر الأخرى.»', initial: 'أ' },
-              { name: 'سارة القحطاني', city: 'جدة', text: '«خدمة العملاء متعاونة جداً وساعدوني في اختيار المنتج المناسب لاحتياجي. جودة التغليف تفوق التوقعات!»', initial: 'س' },
-              { name: 'محمد الشمري', city: 'الدمام', text: '«الأسعار جداً تنافسية مقارنة بالمتاجر الكبرى، والدفع الإلكتروني سلس وآمن. بالتأكيد لن تكون آخر تجربة.»', initial: 'م' },
-              { name: 'فهد العتيبي', city: 'المدينة المنورة', text: '«متجر احترافي بمعنى الكلمة، سرعة في التوصيل ودعم فني متجاوب طوال الوقت. شكراً لكم.»', initial: 'ف' },
-              { name: 'نورة الدوسري', city: 'الخبر', text: '«الطلب وصلني مغلف بعناية فائقة وفي خلال يومين فقط. شكراً لكم على الاحترافية العالية.»', initial: 'ن' },
-            ]).map((review, index) => (
-              <div
-                key={index}
-                className="bg-white p-6 rounded-3xl border border-zinc-200/80 shadow-sm w-[340px] shrink-0 flex flex-col justify-between"
-              >
-                <div className="space-y-4">
-                  <div className="flex items-center gap-1 text-amber-400">
-                    {[...Array(5)].map((_, i) => (
-                      <svg key={i} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-                        <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
-                      </svg>
-                    ))}
-                  </div>
-                  <p className="text-zinc-600 text-xs sm:text-sm leading-relaxed">
-                    {review.text}
-                  </p>
-                </div>
-                
-                <div className="flex items-center gap-3 pt-4 mt-4 border-t border-zinc-100">
-                  <div className="w-9 h-9 rounded-full bg-store-primary/10 text-store-primary font-black flex items-center justify-center text-xs">
-                    {review.initial}
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-store-dark text-xs sm:text-sm">{review.name}</h4>
-                    <span className="text-[10px] text-zinc-400">{review.city}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <TestimonialsTicker />
 
       {/* 5. قسم مميزات المتجر */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8">
