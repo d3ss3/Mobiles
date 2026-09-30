@@ -12,7 +12,7 @@ export default function TestimonialsTicker() {
   return (
     <div className="bg-zinc-900 text-white py-4 overflow-hidden relative" dir="rtl">
       <div className="max-w-7xl mx-auto px-4 mb-2 flex items-center justify-between">
-        <span className="text-xs font-bold text-store-primary tracking-wider">💬 آراء العملاء الثقات</span>
+        <span className="text-xs font-bold text-store-primary tracking-wider">💬 آراء عملائنا</span>
         <span className="text-[10px] text-zinc-400">تقييم معتمد 4.9 / 5.0 ⭐</span>
       </div>
 
