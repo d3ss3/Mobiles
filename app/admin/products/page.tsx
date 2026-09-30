@@ -1,17 +1,12 @@
 // app/admin/products/page.tsx
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { createClient } from '@/lib/supabase/client'; // تأكد من مسار عميل Supabase في مشروعك
+import { useState, useMemo } from 'react';
+import { useProducts } from '@/context/ProductContext';
 import { Product } from '@/types';
 
 export default function AdminProductsPage() {
-  const supabase = createClient();
-
-  // حالات البيانات والتحميل
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { products, addProduct, updateProduct, deleteProduct } = useProducts();
 
   // حالات التحكم في الواجهة (UI States)
   const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
@@ -35,34 +30,11 @@ export default function AdminProductsPage() {
     image: '',
   });
 
-  // جلب المنتجات من قاعدة البيانات عند تحميل الصفحة
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const fetchProducts = async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      if (data) setProducts(data);
-    } catch (error: any) {
-      console.error('خطأ في جلب المنتجات:', error.message);
-      alert('فشل جلب المنتجات من قاعدة البيانات');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // حساب الإحصائيات العامة ديناميكياً
   const stats = useMemo(() => {
     const totalProducts = products.length;
     const totalValue = products.reduce(
-      (sum, p) => sum + (p.price || 0) * (p.stock || 0),
+      (sum, p) => sum + p.price * (p.stock || 0),
       0
     );
     const lowStockCount = products.filter(
@@ -78,7 +50,7 @@ export default function AdminProductsPage() {
     return products
       .filter((product) => {
         const matchesSearch =
-          product.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           product.description
             ?.toLowerCase()
             .includes(searchQuery.toLowerCase());
@@ -87,9 +59,9 @@ export default function AdminProductsPage() {
         return matchesSearch && matchesCategory;
       })
       .sort((a, b) => {
-        if (sortBy === 'price-asc') return (a.price || 0) - (b.price || 0);
-        if (sortBy === 'price-desc') return (b.price || 0) - (a.price || 0);
-        return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
+        if (sortBy === 'price-asc') return a.price - b.price;
+        if (sortBy === 'price-desc') return b.price - a.price;
+        return Number(b.id) - Number(a.id); // الافتراضي: الأحدث
       });
   }, [products, searchQuery, selectedCategory, sortBy]);
 
@@ -112,84 +84,49 @@ export default function AdminProductsPage() {
   const handleOpenEditModal = (product: Product) => {
     setEditingProduct(product);
     setFormData({
-      title: product.title || '',
+      title: product.title,
       description: product.description || '',
-      price: product.price ? product.price.toString() : '',
-      category: product.category || 'إلكترونيات',
-      stock: product.stock !== undefined ? product.stock.toString() : '0',
-      image: product.image || '',
+      price: product.price.toString(),
+      category: product.category,
+      stock: (product.stock ?? 0).toString(),
+      image: product.image,
     });
     setIsModalOpen(true);
   };
 
-  // حفظ بيانات المنتج (إضافة أو تعديل في قاعدة البيانات)
-  const handleSaveProduct = async (e: React.FormEvent) => {
+  // حفظ بيانات المنتج
+  const handleSaveProduct = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!formData.title.trim() || !formData.price) {
-      alert('يرجى تعبئة الحقول الأساسية المطلوبة');
+      alert('يرجى تعبئة جميع الحقول المطلوبة');
       return;
     }
-
-    setIsSubmitting(true);
 
     const payload = {
       title: formData.title.trim(),
       description: formData.description.trim(),
       price: Number(formData.price),
       category: formData.category,
-      stock: Number(formData.stock) || 0,
+      stock: Number(formData.stock),
       image:
         formData.image.trim() ||
         'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500',
     };
 
-    try {
-      if (editingProduct) {
-        // تحديث منتج موجود
-        const { error } = await supabase
-          .from('products')
-          .update(payload)
-          .eq('id', editingProduct.id);
-
-        if (error) throw error;
-      } else {
-        // إضافة منتج جديد
-        const { error } = await supabase
-          .from('products')
-          .insert([payload]);
-
-        if (error) throw error;
-      }
-
-      // إعادة جلب المنتجات لتحديث الواجهة فوراً
-      await fetchProducts();
-      setIsModalOpen(false);
-    } catch (error: any) {
-      console.error('خطأ أثناء حفظ المنتج:', error.message);
-      alert('حدث خطأ أثناء حفظ المنتج في قاعدة البيانات: ' + error.message);
-    } finally {
-      setIsSubmitting(false);
+    if (editingProduct) {
+      updateProduct(editingProduct.id, payload);
+    } else {
+      addProduct(payload);
     }
+
+    setIsModalOpen(false);
   };
 
-  // حذف المنتج من قاعدة البيانات
-  const handleDeleteProduct = async (id: string | number) => {
-    if (!confirm('هل أنت متأكد من حذف هذا المنتج نهائياً من قاعدة البيانات؟')) return;
-
-    try {
-      const { error } = await supabase
-        .from('products')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-
-      // تحديث الحالة المحلية لحذف العنصر فوراً دون الحاجة لإعادة تحميل كاملة
-      setProducts((prev) => prev.filter((p) => p.id !== id));
-    } catch (error: any) {
-      console.error('خطأ أثناء حذف المنتج:', error.message);
-      alert('فشل حذف المنتج من قاعدة البيانات');
+  // حذف المنتج
+  const handleDeleteProduct = (id: string) => {
+    if (confirm('هل أنت تأكد من حذف هذا المنتج نهائياً؟')) {
+      deleteProduct(id);
     }
   };
 
@@ -203,11 +140,11 @@ export default function AdminProductsPage() {
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded-full bg-store-primary animate-pulse"></span>
               <h1 className="text-2xl font-black text-store-dark">
-                إدارة المنتجات والمخزون (قاعدة البيانات)
+                إدارة المنتجات والمخزون
               </h1>
             </div>
             <p className="text-zinc-500 text-sm mt-1 font-medium">
-              لوحة تحكم مرتبطة مباشرة بقاعدة البيانات الحية لتنظيم المخزون والمنتجات.
+              لوحة تحكم ذكية لتنظيم واستعراض جميع منتجات المتجر وتحديد المخزون.
             </p>
           </div>
 
@@ -281,13 +218,14 @@ export default function AdminProductsPage() {
 
         {/* 3. شريط أدوات التحكم والفلترة */}
         <div className="bg-white p-4 sm:p-5 rounded-3xl border border-zinc-200/80 shadow-xl shadow-zinc-200/40 space-y-3 md:space-y-0 md:flex md:items-center md:justify-between gap-4">
+          {/* البحث */}
           <div className="relative flex-1">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="ابحث باسم المنتج أو الوصف..."
-              className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl px-4 py-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/15 transition-all placeholder:text-zinc-400"
+              className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl px-4 py-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/10 transition-all placeholder:text-zinc-400"
             />
             {searchQuery && (
               <button
@@ -299,11 +237,12 @@ export default function AdminProductsPage() {
             )}
           </div>
 
+          {/* الخيارات والتصنيف والتبديل */}
           <div className="flex flex-wrap items-center gap-3">
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="bg-zinc-50/50 border border-zinc-200 rounded-2xl px-4 py-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/15 transition-all cursor-pointer"
+              className="bg-zinc-50/50 border border-zinc-200 rounded-2xl px-4 py-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/10 transition-all cursor-pointer"
             >
               <option value="all">جميع التصنيفات</option>
               <option value="إلكترونيات">إلكترونيات</option>
@@ -315,13 +254,14 @@ export default function AdminProductsPage() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="bg-zinc-50/50 border border-zinc-200 rounded-2xl px-4 py-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/15 transition-all cursor-pointer"
+              className="bg-zinc-50/50 border border-zinc-200 rounded-2xl px-4 py-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/10 transition-all cursor-pointer"
             >
               <option value="newest">الأحدث أولاً</option>
               <option value="price-asc">السعر: من الأقل للأعلى</option>
               <option value="price-desc">السعر: من الأعلى للأقل</option>
             </select>
 
+            {/* أزرار التبديل بين Grid و Table */}
             <div className="bg-zinc-100 p-1 rounded-2xl flex items-center gap-1 border border-zinc-200/80">
               <button
                 onClick={() => setViewMode('table')}
@@ -347,23 +287,19 @@ export default function AdminProductsPage() {
           </div>
         </div>
 
-        {/* 4. عرض المحتوى (حالة التحميل أو البيانات) */}
-        {loading ? (
-          <div className="bg-white rounded-3xl p-16 text-center border border-zinc-200 shadow-sm">
-            <div className="w-10 h-10 border-4 border-store-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-sm font-bold text-zinc-500">جاري تحميل المنتجات من قاعدة البيانات...</p>
-          </div>
-        ) : filteredProducts.length === 0 ? (
+        {/* 4. عرض المحتوى (Table / Grid) */}
+        {filteredProducts.length === 0 ? (
           <div className="bg-white rounded-3xl p-16 text-center border border-dashed border-zinc-300 shadow-sm">
             <div className="w-16 h-16 bg-store-primary/10 text-store-primary rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl border border-store-primary/20">
               📭
             </div>
             <h3 className="text-lg font-bold text-store-dark mb-1">لا توجد منتجات مطابقة</h3>
             <p className="text-sm font-medium text-zinc-400">
-              لم يتم العثور على أية منتجات في قاعدة البيانات تطابق بحثك.
+              لم يتم العثور على أية منتجات مطابقة للبحث.
             </p>
           </div>
         ) : viewMode === 'table' ? (
+          /* جدول البيانات العصري */
           <div className="bg-white rounded-3xl border border-zinc-200/80 shadow-xl shadow-zinc-200/40 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-right border-collapse">
@@ -405,7 +341,7 @@ export default function AdminProductsPage() {
                         </span>
                       </td>
                       <td className="p-4 font-black text-store-dark">
-                        {product.price?.toLocaleString('ar-SA')} ر.س
+                        {product.price.toLocaleString('ar-SA')} ر.س
                       </td>
                       <td className="p-4">
                         {product.stock === 0 ? (
@@ -445,6 +381,7 @@ export default function AdminProductsPage() {
             </div>
           </div>
         ) : (
+          /* العرض الشبكي (Cards Grid View) */
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProducts.map((product) => (
               <div
@@ -500,7 +437,7 @@ export default function AdminProductsPage() {
         )}
       </div>
 
-      {/* 5. النافذة المنبثقة للنموذج (Modal) */}
+      {/* 5. النافذة المنبثقة (Dynamic Glassmorphic Modal) */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 bg-store-dark/40 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto animate-fadeIn">
           <div className="bg-white rounded-3xl w-full max-w-xl p-6 sm:p-8 shadow-2xl border border-zinc-200/80 my-8">
@@ -510,7 +447,7 @@ export default function AdminProductsPage() {
                   {editingProduct ? 'تعديل بيانات المنتج' : 'إضافة منتج جديد'}
                 </h3>
                 <p className="text-xs text-zinc-400 mt-1 font-medium">
-                  سيتم حفظ التغييرات مباشرة في قاعدة البيانات
+                  قم بتعبئة بيانات المنتج للتحديث الفوري في المتجر
                 </p>
               </div>
               <button
@@ -533,7 +470,7 @@ export default function AdminProductsPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, title: e.target.value })
                   }
-                  className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/15 transition-all"
+                  className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/10 transition-all"
                   placeholder="مثال: سماعة رأس لاسلكية"
                 />
               </div>
@@ -547,12 +484,11 @@ export default function AdminProductsPage() {
                     type="number"
                     required
                     min="0"
-                    step="0.01"
                     value={formData.price}
                     onChange={(e) =>
                       setFormData({ ...formData, price: e.target.value })
                     }
-                    className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/15 transition-all"
+                    className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/10 transition-all"
                     placeholder="250"
                   />
                 </div>
@@ -568,7 +504,7 @@ export default function AdminProductsPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, stock: e.target.value })
                     }
-                    className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/15 transition-all"
+                    className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/10 transition-all"
                     placeholder="10"
                   />
                 </div>
@@ -583,7 +519,7 @@ export default function AdminProductsPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, category: e.target.value })
                   }
-                  className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/15 transition-all cursor-pointer"
+                  className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/10 transition-all cursor-pointer"
                 >
                   <option value="إلكترونيات">إلكترونيات</option>
                   <option value="إكسسوارات">إكسسوارات</option>
@@ -602,7 +538,7 @@ export default function AdminProductsPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, image: e.target.value })
                   }
-                  className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/15 transition-all"
+                  className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/10 transition-all"
                   placeholder="https://..."
                 />
               </div>
@@ -617,7 +553,7 @@ export default function AdminProductsPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, description: e.target.value })
                   }
-                  className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/15 transition-all resize-none"
+                  className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/10 transition-all resize-none"
                   placeholder="اكتب وصفاً موجزاً للمنتج..."
                 />
               </div>
@@ -626,21 +562,15 @@ export default function AdminProductsPage() {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  disabled={isSubmitting}
                   className="px-6 py-3 rounded-2xl border border-zinc-200 text-zinc-600 font-bold text-sm hover:bg-zinc-50 transition-colors cursor-pointer"
                 >
                   إلغاء
                 </button>
                 <button
                   type="submit"
-                  disabled={isSubmitting}
-                  className="px-6 py-3 bg-store-primary hover:bg-store-secondary text-white rounded-2xl font-bold text-sm transition-all shadow-lg shadow-store-primary/25 cursor-pointer active:scale-[0.98] disabled:opacity-50"
+                  className="px-6 py-3 bg-store-primary hover:bg-store-secondary text-white rounded-2xl font-bold text-sm transition-all shadow-lg shadow-store-primary/25 cursor-pointer active:scale-[0.98]"
                 >
-                  {isSubmitting
-                    ? 'جاري الحفظ...'
-                    : editingProduct
-                    ? 'حفظ التغييرات'
-                    : 'تأكيد إضافة المنتج'}
+                  {editingProduct ? 'حفظ التغييرات' : 'تأكيد إضافة المنتج'}
                 </button>
               </div>
             </form>
