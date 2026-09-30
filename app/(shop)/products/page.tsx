@@ -123,20 +123,22 @@ function ProductsContent() {
                   {product.price} ر.س
                 </span>
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    addToCart({
-                      id: product.id,
-                      title: product.title || product.name,
-                      price: product.price,
-                      image: product.image || 'https://via.placeholder.com/300',
-                      description: product.description,
-                    });
-                  }}
-                  className="bg-store-primary hover:bg-[#a0636a] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center gap-1"
-                >
-                  + السلة
-                </button>
+  onClick={(e) => {
+    e.stopPropagation();
+    addToCart({
+      id: product.id,
+      title: product.title || product.name,
+      price: product.price,
+      image: product.image || 'https://via.placeholder.com/300',
+      description: product.description,
+      category: product.category, // أضف هذا السطر
+      stock: product.stock || 10,  // أضف هذا السطر لتجنب خطأ النوع
+    });
+  }}
+  className="bg-store-primary hover:bg-[#a0636a] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center gap-1"
+>
+  + السلة
+</button>
               </div>
             </div>
           ))}
