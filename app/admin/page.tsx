@@ -1,9 +1,34 @@
-// app/admin/page.tsx
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { supabase } from '@/lib/db'; // استيراد اتصال Supabase
 
 export default function AdminDashboardPage() {
+  const [totalProducts, setTotalProducts] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  // جلب إحصائيات المنتجات من قاعدة البيانات عند تحميل الصفحة
+  useEffect(() => {
+    async function fetchStats() {
+      try {
+        // جلب عدد المنتجات الفعلية من جدول products
+        const { count, error } = await supabase
+          .from('products')
+          .select('*', { count: 'exact', head: true });
+
+        if (error) throw error;
+        setTotalProducts(count || 0);
+      } catch (err) {
+        console.error('خطأ في جلب الإحصائيات:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchStats();
+  }, []);
+
   return (
     <main className="min-h-[calc(100vh-5rem)] bg-store-light text-store-dark p-6 md:p-8" dir="rtl">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -32,6 +57,7 @@ export default function AdminDashboardPage() {
         {/* بطاقات الإحصائيات (KPI Cards) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           
+          {/* بطاقة المبيعات (يمكن ربطها لاحقاً بجدول الطلبات) */}
           <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200/80 shadow-xl shadow-zinc-200/40 flex justify-between items-center">
             <div>
               <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
@@ -46,6 +72,7 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
+          {/* بطاقة الطلبات (يمكن ربطها لاحقاً بجدول الطلبات) */}
           <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200/80 shadow-xl shadow-zinc-200/40 flex justify-between items-center">
             <div>
               <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
@@ -60,13 +87,15 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
+          {/* بطاقة إجمالي المنتجات (مرتبطة الآن بقاعدة البيانات بشكل حقيقي!) */}
           <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200/80 shadow-xl shadow-zinc-200/40 flex justify-between items-center">
             <div>
               <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
                 إجمالي المنتجات
               </p>
               <h3 className="text-2xl sm:text-3xl font-black text-store-dark mt-2">
-                3 <span className="text-sm font-bold text-zinc-500">منتجات</span>
+                {loading ? '...' : totalProducts}{' '}
+                <span className="text-sm font-bold text-zinc-500">منتج</span>
               </h3>
             </div>
             <div className="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-black text-xl border border-amber-200">
