@@ -34,10 +34,30 @@ export default function AdminProductsPage() {
     image: '',
   });
 
+  const [allCategories, setAllCategories] = useState<string[]>([]);
+
   // جلب المنتجات من قاعدة البيانات عند تحميل الصفحة
+
   useEffect(() => {
     fetchProducts();
+    fetchCategoriesList(); // جلب قائمة الشركات المستقلة
   }, []);
+
+  const fetchCategoriesList = async () => {
+    try {
+      // استبدل 'categories' باسم جدول الشركات أو التصنيفات الحقيقي لديك في Supabase
+      const { data, error } = await supabase.from('categories').select('name'); // أو select('*') حسب اسم العمود لديك
+      
+      if (error) throw error;
+      if (data) {
+        // استخراج الأسماء وضمان عدم تكرارها
+        const names = data.map((item: any) => item.name || item.title);
+        setAllCategories(names);
+      }
+    } catch (error) {
+      console.error('خطأ في جلب قائمة الشركات:', error);
+    }
+  };
 
   const fetchProducts = async () => {
     try {
@@ -583,23 +603,31 @@ export default function AdminProductsPage() {
   <label className="block text-xs font-bold text-zinc-700 mb-1.5">
     اسم الشركة / التصنيف *
   </label>
-  <input
-    type="text"
-    name="category"
-    list="database-categories"
-    value={formData.category}
-    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-    placeholder="اختر من القائمة أو اكتب شركة جديدة..."
-    required
-    className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/15 transition-all"
-  />
-  <datalist id="database-categories">
-    {dynamicCategories.map((cat) => (
-      <option key={cat} value={cat} />
-    ))}
-  </datalist>
+  <select
+  name="category"
+  value={formData.category}
+  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+  required
+  className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/15 transition-all cursor-pointer"
+>
+  <option value="" disabled>اختر الشركة أو التصنيف...</option>
+  {allCategories.length > 0 ? (
+    allCategories.map((cat) => (
+      <option key={cat} value={cat}>
+        {cat}
+      </option>
+    ))
+  ) : (
+    // كاحتياط في حال لم يتم جلب الجدول بعد، تعرض المنتجات الحالية
+    dynamicCategories.map((cat) => (
+      <option key={cat} value={cat}>
+        {cat}
+      </option>
+    ))
+  )}
+</select>
   <p className="text-[11px] text-zinc-400 mt-1">
-    يتم جلب الخيارات تلقائياً من الشركات المسجلة مسبقاً في قاعدة البيانات.
+    تظهر في هذه القائمة الشركات والتصنيفات المسجلة مسبقاً في قاعدة بيانات المنتجات.
   </p>
 </div>
 
