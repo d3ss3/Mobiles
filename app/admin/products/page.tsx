@@ -304,18 +304,18 @@ export default function AdminProductsPage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-          <select
-  value={selectedCategory}
-  onChange={(e) => setSelectedCategory(e.target.value)}
-  className="..."
->
-  <option value="all">جميع التصنيفات / الشركات</option>
-  {dynamicCategories.map((cat) => (
-    <option key={cat} value={cat}>
-      {cat}
-    </option>
-  ))}
-</select>
+          <div>
+  <label className="block text-sm font-bold text-zinc-700 mb-2">اسم الشركة / التصنيف</label>
+  <input
+    type="text"
+    name="category"
+    value={formData.category}
+    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+    placeholder="مثال: شانجان، جيلي، شيري، هافال، إم جي..."
+    required
+    className="w-full px-4 py-3 rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-store-primary bg-white text-zinc-800 font-medium"
+  />
+</div>
 
             <select
               value={sortBy}
@@ -580,16 +580,27 @@ export default function AdminProductsPage() {
               </div>
 
               <div>
-  <label className="block text-sm font-bold text-zinc-700 mb-2">اسم الشركة / التصنيف</label>
+  <label className="block text-xs font-bold text-zinc-700 mb-1.5">
+    اسم الشركة / التصنيف *
+  </label>
   <input
     type="text"
     name="category"
+    list="database-categories"
     value={formData.category}
     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-    placeholder="مثال: شانجان، جيلي، شيري، هافال، إم جي..."
+    placeholder="اختر من القائمة أو اكتب شركة جديدة..."
     required
-    className="w-full px-4 py-3 rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-store-primary bg-white text-zinc-800 font-medium"
+    className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/15 transition-all"
   />
+  <datalist id="database-categories">
+    {dynamicCategories.map((cat) => (
+      <option key={cat} value={cat} />
+    ))}
+  </datalist>
+  <p className="text-[11px] text-zinc-400 mt-1">
+    يتم جلب الخيارات تلقائياً من الشركات المسجلة مسبقاً في قاعدة البيانات.
+  </p>
 </div>
 
               <div>
