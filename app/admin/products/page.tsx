@@ -29,7 +29,7 @@ export default function AdminProductsPage() {
     title: '',
     description: '',
     price: '',
-    category: 'إلكترونيات',
+    category: '',
     stock: '',
     image: '',
   });
@@ -124,7 +124,7 @@ export default function AdminProductsPage() {
       title: '',
       description: '',
       price: '',
-      category: 'إلكترونيات',
+      category: '',
       stock: '10',
       image:
         'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500',
@@ -139,7 +139,7 @@ export default function AdminProductsPage() {
       title: product.title || '',
       description: product.description || '',
       price: product.price ? product.price.toString() : '',
-      category: product.category || 'إلكترونيات',
+      category: product.category || '',
       stock: product.stock !== undefined ? product.stock.toString() : '0',
       image: product.image || '',
     });
@@ -305,6 +305,7 @@ export default function AdminProductsPage() {
 
         {/* 3. شريط أدوات التحكم والفلترة */}
         <div className="bg-white p-4 sm:p-5 rounded-3xl border border-zinc-200/80 shadow-xl shadow-zinc-200/40 space-y-3 md:space-y-0 md:flex md:items-center md:justify-between gap-4">
+          {/* حقل البحث */}
           <div className="relative flex-1">
             <input
               type="text"
@@ -323,20 +324,23 @@ export default function AdminProductsPage() {
             )}
           </div>
 
+          {/* أدوات الفلترة والعرض (متناسقة ومرتبة على نفس السطر) */}
           <div className="flex flex-wrap items-center gap-3">
-          <div>
-  <label className="block text-sm font-bold text-zinc-700 mb-2">اسم الشركة / التصنيف</label>
-  <input
-    type="text"
-    name="category"
-    value={formData.category}
-    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-    placeholder="مثال: شانجان، جيلي، شيري، هافال، إم جي..."
-    required
-    className="w-full px-4 py-3 rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-store-primary bg-white text-zinc-800 font-medium"
-  />
-</div>
+            {/* قائمة فلترة التصنيفات / الشركات */}
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="bg-zinc-50/50 border border-zinc-200 rounded-2xl px-4 py-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/15 transition-all cursor-pointer"
+            >
+              <option value="all">جميع التصنيفات / الشركات</option>
+              {dynamicCategories.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
 
+            {/* قائمة الترتيب */}
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
@@ -347,10 +351,11 @@ export default function AdminProductsPage() {
               <option value="price-desc">السعر: من الأعلى للأقل</option>
             </select>
 
-            <div className="bg-zinc-100 p-1 rounded-2xl flex items-center gap-1 border border-zinc-200/80">
+            {/* أزرار تبديل طريقة العرض (جدول / شبكي) */}
+            <div className="bg-zinc-100 p-1 rounded-2xl flex items-center gap-1 border border-zinc-200/80 h-[46px]">
               <button
                 onClick={() => setViewMode('table')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`px-4 h-full rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center ${
                   viewMode === 'table'
                     ? 'bg-white text-store-primary shadow-sm'
                     : 'text-zinc-500 hover:text-store-dark'
@@ -360,7 +365,7 @@ export default function AdminProductsPage() {
               </button>
               <button
                 onClick={() => setViewMode('grid')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`px-4 h-full rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center ${
                   viewMode === 'grid'
                     ? 'bg-white text-store-primary shadow-sm'
                     : 'text-zinc-500 hover:text-store-dark'
@@ -526,166 +531,169 @@ export default function AdminProductsPage() {
       </div>
 
       {/* 5. النافذة المنبثقة للنموذج (Modal) */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-store-dark/40 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto animate-fadeIn">
-          <div className="bg-white rounded-3xl w-full max-w-xl p-6 sm:p-8 shadow-2xl border border-zinc-200/80 my-8">
-            <div className="flex justify-between items-center border-b border-zinc-100 pb-4 mb-6">
-              <div>
-                <h3 className="text-xl font-black text-store-dark">
-                  {editingProduct ? 'تعديل بيانات المنتج' : 'إضافة منتج جديد'}
-                </h3>
-                <p className="text-xs text-zinc-400 mt-1 font-medium">
-                  سيتم حفظ التغييرات مباشرة في قاعدة البيانات
-                </p>
-              </div>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="w-9 h-9 rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-500 flex items-center justify-center font-bold text-sm transition-colors cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
+{isModalOpen && (
+  <div className="fixed inset-0 z-50 bg-store-dark/40 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-fadeIn">
+    <div className="bg-white rounded-3xl w-full max-w-xl p-4 sm:p-8 shadow-2xl border border-zinc-200/80 my-4 sm:my-8">
+      
+      {/* رأس النافذة */}
+      <div className="flex justify-between items-center border-b border-zinc-100 pb-4 mb-6">
+        <div>
+          <h3 className="text-lg sm:text-xl font-black text-store-dark">
+            {editingProduct ? 'تعديل بيانات المنتج' : 'إضافة منتج جديد'}
+          </h3>
+          <p className="text-[11px] sm:text-xs text-zinc-400 mt-1 font-medium">
+            سيتم حفظ التغييرات مباشرة في قاعدة البيانات
+          </p>
+        </div>
+        <button
+          onClick={() => setIsModalOpen(false)}
+          className="w-9 h-9 rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-500 flex items-center justify-center font-bold text-sm transition-colors cursor-pointer shrink-0"
+        >
+          ✕
+        </button>
+      </div>
 
-            <form onSubmit={handleSaveProduct} className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-zinc-700 mb-1.5">
-                  اسم المنتج *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.title}
-                  onChange={(e) =>
-                    setFormData({ ...formData, title: e.target.value })
-                  }
-                  className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/15 transition-all"
-                  placeholder="مثال: سماعة رأس لاسلكية"
-                />
-              </div>
+      {/* نموذج الإدخال */}
+      <form onSubmit={handleSaveProduct} className="space-y-4">
+        <div>
+          <label className="block text-xs font-bold text-zinc-700 mb-1.5">
+            اسم المنتج *
+          </label>
+          <input
+            type="text"
+            required
+            value={formData.title}
+            onChange={(e) =>
+              setFormData({ ...formData, title: e.target.value })
+            }
+            className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/15 transition-all"
+            placeholder="مثال: سماعة رأس لاسلكية"
+          />
+        </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-zinc-700 mb-1.5">
-                    السعر (ر.س) *
-                  </label>
-                  <input
-                    type="number"
-                    required
-                    min="0"
-                    step="0.01"
-                    value={formData.price}
-                    onChange={(e) =>
-                      setFormData({ ...formData, price: e.target.value })
-                    }
-                    className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/15 transition-all"
-                    placeholder="250"
-                  />
-                </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-bold text-zinc-700 mb-1.5">
+              السعر (ر.س) *
+            </label>
+            <input
+              type="number"
+              required
+              min="0"
+              step="0.01"
+              value={formData.price}
+              onChange={(e) =>
+                setFormData({ ...formData, price: e.target.value })
+              }
+              className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/15 transition-all"
+              placeholder="250"
+            />
+          </div>
 
-                <div>
-                  <label className="block text-xs font-bold text-zinc-700 mb-1.5">
-                    الكمية بالمخزون
-                  </label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={formData.stock}
-                    onChange={(e) =>
-                      setFormData({ ...formData, stock: e.target.value })
-                    }
-                    className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/15 transition-all"
-                    placeholder="10"
-                  />
-                </div>
-              </div>
-
-              <div>
-  <label className="block text-xs font-bold text-zinc-700 mb-1.5">
-    اسم الشركة / التصنيف *
-  </label>
-  <select
-  name="category"
-  value={formData.category}
-  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-  required
-  className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/15 transition-all cursor-pointer"
->
-  <option value="" disabled>اختر الشركة أو التصنيف...</option>
-  {allCategories.length > 0 ? (
-    allCategories.map((cat) => (
-      <option key={cat} value={cat}>
-        {cat}
-      </option>
-    ))
-  ) : (
-    // كاحتياط في حال لم يتم جلب الجدول بعد، تعرض المنتجات الحالية
-    dynamicCategories.map((cat) => (
-      <option key={cat} value={cat}>
-        {cat}
-      </option>
-    ))
-  )}
-</select>
-  <p className="text-[11px] text-zinc-400 mt-1">
-    تظهر في هذه القائمة الشركات والتصنيفات المسجلة مسبقاً في قاعدة بيانات المنتجات.
-  </p>
-</div>
-
-              <div>
-                <label className="block text-xs font-bold text-zinc-700 mb-1.5">
-                  رابط الصورة (Image URL)
-                </label>
-                <input
-                  type="url"
-                  value={formData.image}
-                  onChange={(e) =>
-                    setFormData({ ...formData, image: e.target.value })
-                  }
-                  className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/15 transition-all"
-                  placeholder="https://..."
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-zinc-700 mb-1.5">
-                  وصف المنتج
-                </label>
-                <textarea
-                  rows={3}
-                  value={formData.description}
-                  onChange={(e) =>
-                    setFormData({ ...formData, description: e.target.value })
-                  }
-                  className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/15 transition-all resize-none"
-                  placeholder="اكتب وصفاً موجزاً للمنتج..."
-                />
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-zinc-100">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  disabled={isSubmitting}
-                  className="px-6 py-3 rounded-2xl border border-zinc-200 text-zinc-600 font-bold text-sm hover:bg-zinc-50 transition-colors cursor-pointer"
-                >
-                  إلغاء
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="px-6 py-3 bg-store-primary hover:bg-store-secondary text-white rounded-2xl font-bold text-sm transition-all shadow-lg shadow-store-primary/25 cursor-pointer active:scale-[0.98] disabled:opacity-50"
-                >
-                  {isSubmitting
-                    ? 'جاري الحفظ...'
-                    : editingProduct
-                    ? 'حفظ التغييرات'
-                    : 'تأكيد إضافة المنتج'}
-                </button>
-              </div>
-            </form>
+          <div>
+            <label className="block text-xs font-bold text-zinc-700 mb-1.5">
+              الكمية بالمخزون
+            </label>
+            <input
+              type="number"
+              min="0"
+              value={formData.stock}
+              onChange={(e) =>
+                setFormData({ ...formData, stock: e.target.value })
+              }
+              className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/15 transition-all"
+              placeholder="10"
+            />
           </div>
         </div>
-      )}
+
+        <div>
+          <label className="block text-xs font-bold text-zinc-700 mb-1.5">
+            اسم الشركة / التصنيف *
+          </label>
+          <select
+            name="category"
+            value={formData.category}
+            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+            required
+            className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/15 transition-all cursor-pointer"
+          >
+            <option value="" disabled>اختر الشركة أو التصنيف...</option>
+            {allCategories.length > 0 ? (
+              allCategories.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))
+            ) : (
+              dynamicCategories.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))
+            )}
+          </select>
+          <p className="text-[11px] text-zinc-400 mt-1">
+            تظهر في هذه القائمة الشركات والتصنيفات المسجلة مسبقاً في قاعدة بيانات المنتجات.
+          </p>
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold text-zinc-700 mb-1.5">
+            رابط الصورة (Image URL)
+          </label>
+          <input
+            type="url"
+            value={formData.image}
+            onChange={(e) =>
+              setFormData({ ...formData, image: e.target.value })
+            }
+            className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/15 transition-all"
+            placeholder="https://..."
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold text-zinc-700 mb-1.5">
+            وصف المنتج
+          </label>
+          <textarea
+            rows={3}
+            value={formData.description}
+            onChange={(e) =>
+              setFormData({ ...formData, description: e.target.value })
+            }
+            className="w-full bg-zinc-50/50 border border-zinc-200 rounded-2xl p-3 text-sm font-medium text-store-dark outline-none focus:border-store-primary focus:bg-white focus:ring-4 focus:ring-store-primary/15 transition-all resize-none"
+            placeholder="اكتب وصفاً موجزاً للمنتج..."
+          />
+        </div>
+
+        {/* أزرار الإجراءات المتوافقة مع الجوال (تتخذ عرض كامل وتتراصف عمودياً) */}
+        <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-4 border-t border-zinc-100">
+          <button
+            type="button"
+            onClick={() => setIsModalOpen(false)}
+            disabled={isSubmitting}
+            className="w-full sm:w-auto px-6 py-3.5 rounded-2xl border border-zinc-200 text-zinc-600 font-bold text-sm hover:bg-zinc-50 transition-colors cursor-pointer text-center"
+          >
+            إلغاء
+          </button>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full sm:w-auto px-6 py-3.5 bg-store-primary hover:bg-store-secondary text-white rounded-2xl font-bold text-sm transition-all shadow-lg shadow-store-primary/25 cursor-pointer active:scale-[0.98] disabled:opacity-50 text-center"
+          >
+            {isSubmitting
+              ? 'جاري الحفظ...'
+              : editingProduct
+              ? 'حفظ التغييرات'
+              : 'تأكيد إضافة المنتج'}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+)}
     </main>
   );
 }
