@@ -100,12 +100,12 @@ export default function HomePage() {
   </div>
 </section>
 
-      {/* 2. قسم الشركات / التصنيفات (بحجم أكبر وبتصميم نظيف بدون إطار خارجي) */}
+      {/* 2. قسم الشركات / التصنيفات (بدون إطار خارجي، بحجم كبير وبارز للجوال والكمبيوتر) */}
 <section className="homepage_section py-10">
   <div className="max-w-7xl mx-auto px-4 sm:px-8" dir="rtl">
-    <div className="text-center mb-8 space-y-1">
-      <h2 className="text-2xl sm:text-3xl font-black text-store-dark">تصفح حسب الشركة الصينية</h2>
-      <p className="text-xs sm:text-sm text-zinc-500">اختر ماركة سيارتك لعرض القطع المتوافقة بدقة</p>
+    <div className="text-center mb-10 space-y-2">
+      <h2 className="text-2xl sm:text-4xl font-black text-store-dark">تصفح حسب الشركة الصينية</h2>
+      <p className="text-xs sm:text-base text-zinc-500">اختر ماركة سيارتك لعرض القطع المتوافقة بدقة</p>
     </div>
 
     {categories.length === 0 ? (
@@ -113,30 +113,30 @@ export default function HomePage() {
         <p className="text-zinc-400 text-sm">جاري تحميل التصنيفات أو لا توجد تصنيفات مضافة حالياً.</p>
       </div>
     ) : (
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8">
         {categories.map((cat) => (
           <Link
             key={cat.id || cat.name}
             href={`/products?category=${cat.slug || cat.id}`}
-            className="group flex flex-col items-center justify-center gap-3 p-3 transition-all"
+            className="group flex flex-col items-center justify-center gap-4 p-2 transition-all active:scale-95"
           >
-            {/* تم تكبير أبعاد الشعار لتصبح واضحة وبارزة */}
-            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-zinc-50/90 border border-zinc-200/70 flex items-center justify-center p-4 group-hover:border-store-primary group-hover:bg-store-primary/5 group-hover:scale-105 transition-all shadow-sm">
+            {/* صندوق الشعار الداخلي (بدون إطار خارجي للبطاقة)، تم تكبير أبعاده للجوال والكمبيوتر */}
+            <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-[2.5rem] bg-zinc-50/90 border border-zinc-200/70 flex items-center justify-center p-5 group-hover:border-store-primary group-hover:bg-store-primary/5 group-hover:scale-105 transition-all duration-300 shadow-sm">
               {cat.image ? (
                 <img
                   src={cat.image}
                   alt={cat.name}
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-contain filter drop-shadow-sm"
                 />
               ) : (
-                <span className="text-store-primary font-black text-3xl">
+                <span className="text-store-primary font-black text-4xl">
                   {cat.name.charAt(0)}
                 </span>
               )}
             </div>
             
-            {/* اسم الشركة بخط واضح وأكبر يناسب حجم الشعارات */}
-            <span className="text-sm sm:text-base font-bold text-zinc-800 text-center line-clamp-1 group-hover:text-store-primary transition-colors">
+            {/* اسم الشركة بخط أكبر وأكثر وضوحاً */}
+            <span className="text-base sm:text-lg font-black text-zinc-800 text-center line-clamp-1 group-hover:text-store-primary transition-colors">
               {cat.name}
             </span>
           </Link>
