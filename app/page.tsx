@@ -22,6 +22,23 @@ export default function HomePage() {
   // حالة البنر المتحرك
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
 
+  // حالات محدد السيارة الذكي (Vehicle Selector)
+  const [selectedBrand, setSelectedBrand] = useState('');
+  const [selectedModel, setSelectedModel] = useState('');
+  const [selectedYear, setSelectedYear] = useState('');
+  const [availableModels, setAvailableModels] = useState<string[]>([]);
+
+  // خريطة الموديلات للشركات الصينية الكبرى
+  const carModelsMap: Record<string, string[]> = {
+    'changan': ['CS35 Plus', 'CS75 Plus', 'Alsvin', 'Eado', 'Uni-T', 'Uni-K', 'Uni-V'],
+    'geely': ['Coolray', 'Monjaro', 'Tugella', 'Emgrand', 'Azkara'],
+    'chery': ['Tiggo 4 Pro', 'Tiggo 7 Pro', 'Tiggo 8 Pro', 'Arrizo 6 Pro'],
+    'haval': ['H6', 'Jolion', 'H9', 'Dargo'],
+    'mg': ['MG 5', 'MG 6', 'MG RX5', 'MG ZS', 'MG Whale'],
+    'jetour': ['X70', 'X70 Plus', 'X90 Plus', 'Dashing'],
+    'tank': ['Tank 300', 'Tank 500'],
+  };
+
   // مصفوفة روابط الصور للبنر المتحرك
   const banners = [
     "/images/banner1.png",
@@ -54,182 +71,188 @@ export default function HomePage() {
   // عرض أحدث 4 منتجات في الصفحة الرئيسية
   const featuredProducts = products ? products.slice(0, 4) : [];
 
-  // تكرار التصنيفات للجوال لضمان حركة سلسة ومستمرة
-  const marqueeItems = categories.length > 0 
-    ? Array(6).fill(categories).flat() 
-    : [];
-
   return (
     <div className="space-y-16 pb-16 text-store-dark" dir="rtl">
       {/* قسم الهيرو المخصص لقطع الغيار */}
-<section className="relative w-full bg-gradient-to-br from-store-dark via-zinc-900 to-store-primary py-20 px-6 overflow-hidden text-white shadow-xl">
-  <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
-    <span className="bg-white/10 backdrop-blur-md text-store-light text-xs font-extrabold px-4 py-1.5 rounded-full inline-block border border-white/10">
-      🇨🇳 جسرك المباشر لسوق ومصانع قطع الغيار الصينية
-    </span>
-    
-    <h1 className="text-3xl sm:text-5xl font-black leading-tight">
-      ابحث عن قطع غيار سيارتك الصينية بدقة وثقة
-    </h1>
-    
-    <p className="text-zinc-300 text-sm sm:text-base max-w-2xl mx-auto">
-      وفرنا لك آلاف القطع الأصلية والتجارية لجميع الماركات الصينية بأسعار تنافسية وضمان المطابقة برقم الهيكل.
-    </p>
+      <section className="relative w-full bg-gradient-to-br from-store-dark via-zinc-900 to-store-primary py-20 px-6 overflow-hidden text-white shadow-xl">
+        <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
+          <span className="bg-white/10 backdrop-blur-md text-store-light text-xs font-extrabold px-4 py-1.5 rounded-full inline-block border border-white/10">
+            🇨🇳 جسرك المباشر لسوق ومصانع قطع الغيار الصينية
+          </span>
+          
+          <h1 className="text-3xl sm:text-5xl font-black leading-tight">
+            ابحث عن قطع غيار سيارتك الصينية بدقة وثقة
+          </h1>
+          
+          <p className="text-zinc-300 text-sm sm:text-base max-w-2xl mx-auto">
+            وفرنا لك آلاف القطع الأصلية والتجارية لجميع الماركات الصينية بأسعار تنافسية وضمان المطابقة برقم الهيكل.
+          </p>
 
-    {/* صندوق البحث السريع (مطابق للمواقع العالمية) */}
-    <div className="bg-white p-3 rounded-2xl shadow-2xl max-w-2xl mx-auto text-zinc-800 flex flex-col sm:flex-row gap-2">
-      <div className="flex-1 relative">
-        <input 
-          type="text" 
-          placeholder="أدخل رقم الهيكل (VIN) أو رقم القطعة (OEM)..." 
-          className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3.5 text-xs sm:text-sm focus:outline-none focus:border-store-primary"
-        />
-      </div>
-      <button className="bg-store-primary hover:bg-[#a0636a] text-white font-extrabold px-8 py-3.5 rounded-xl text-sm transition-all shadow-md active:scale-95 shrink-0">
-        بحث بالهيكل 🔍
-      </button>
-    </div>
+          {/* صندوق البحث السريع (مطابق للمواقع العالمية) */}
+          <div className="bg-white p-3 rounded-2xl shadow-2xl max-w-2xl mx-auto text-zinc-800 flex flex-col sm:flex-row gap-2">
+            <div className="flex-1 relative">
+              <input 
+                type="text" 
+                placeholder="أدخل رقم الهيكل (VIN) أو رقم القطعة (OEM)..." 
+                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3.5 text-xs sm:text-sm focus:outline-none focus:border-store-primary"
+              />
+            </div>
+            <button className="bg-store-primary hover:bg-[#a0636a] text-white font-extrabold px-8 py-3.5 rounded-xl text-sm transition-all shadow-md active:scale-95 shrink-0">
+              بحث بالهيكل 🔍
+            </button>
+          </div>
 
-    <div className="flex items-center justify-center gap-6 text-xs text-zinc-400 pt-2">
-      <span>✨ ضمان مطابقة 100%</span>
-      <span>•</span>
-      <span>📦 شحن مباشر من الصين</span>
-      <span>•</span>
-      <span>🛠️ دعم فني متخصص</span>
-    </div>
-  </div>
-</section>
-
-<section className="homepage_section py-0 overflow-hidden bg-gradient-to-b from-transparent via-zinc-50/50 to-transparent" dir="rtl">
-  <div className="max-w-7xl mx-auto px-4 sm:px-8 mb-10">
-    
-    {/* هيدر القسم */}
-    <div className="text-center space-y-2 mb-8">
-      <h2 className="text-2xl sm:text-4xl font-black text-store-dark tracking-tight">
-        ابحث بقطع غيار سيارتك الصينية
-      </h2>
-      <p className="text-xs sm:text-base text-zinc-500 font-medium">
-        اختر ماركة سيارتك، الموديل، وسنة الصنع للوصول الفوري للقطع المتوافقة
-      </p>
-    </div>
-
-    {/* شريط محدد السيارة الذكي (Vehicle Selector Bar) */}
-    <div className="bg-white p-4 sm:p-6 rounded-3xl border border-zinc-200/80 shadow-xl shadow-zinc-200/50 max-w-4xl mx-auto backdrop-blur-xl">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-        
-        {/* 1. قائمة اختيار الماركة / الشركة */}
-        <div className="space-y-1.5">
-          <label className="text-xs font-bold text-zinc-500 mr-1">1. اختر الماركة</label>
-          <select 
-            className="w-full bg-zinc-50 text-zinc-800 text-sm font-bold px-4 py-3 rounded-2xl border border-zinc-200 focus:outline-none focus:border-store-primary focus:ring-2 focus:ring-store-primary/20 transition-all cursor-pointer"
-            onChange={(e) => {
-              // ضع هنا منطق تحديث الموديلات بناءً على الماركة المختارة
-            }}
-          >
-            <option value="">اختر الشركة الصينية...</option>
-            {categories.map((cat) => (
-              <option key={cat.id || cat.name} value={cat.slug || cat.id}>
-                {cat.name}
-              </option>
-            ))}
-          </select>
+          <div className="flex items-center justify-center gap-6 text-xs text-zinc-400 pt-2">
+            <span>✨ ضمان مطابقة 100%</span>
+            <span>•</span>
+            <span>📦 شحن مباشر من الصين</span>
+            <span>•</span>
+            <span>🛠️ دعم فني متخصص</span>
+          </div>
         </div>
+      </section>
 
-        {/* 2. قائمة اختيار الموديل */}
-        <div className="space-y-1.5">
-          <label className="text-xs font-bold text-zinc-500 mr-1">2. اختر نوع السيارة</label>
-          <select 
-            className="w-full bg-zinc-50 text-zinc-800 text-sm font-bold px-4 py-3 rounded-2xl border border-zinc-200 focus:outline-none focus:border-store-primary focus:ring-2 focus:ring-store-primary/20 transition-all cursor-pointer"
-            disabled
-          >
-            <option value="">اختر نوع السيارة أولاً...</option>
-            {/* يتم تعبئة الموديلات ديناميكياً هنا */}
-          </select>
+      {/* شريط البحث المطور (محدد السيارة الذكي) */}
+      <section className="homepage_section py-0 overflow-hidden bg-gradient-to-b from-transparent via-zinc-50/50 to-transparent" dir="rtl">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 mb-10">
+          
+          {/* هيدر القسم */}
+          <div className="text-center space-y-2 mb-8">
+            <h2 className="text-2xl sm:text-4xl font-black text-store-dark tracking-tight">
+              ابحث بقطع غيار سيارتك الصينية
+            </h2>
+            <p className="text-xs sm:text-base text-zinc-500 font-medium">
+              اختر ماركة سيارتك، الموديل، وسنة الصنع للوصول الفوري للقطع المتوافقة
+            </p>
+          </div>
+
+          {/* شريط محدد السيارة الذكي (Vehicle Selector Bar) */}
+          <div className="bg-white p-4 sm:p-6 rounded-3xl border border-zinc-200/80 shadow-xl shadow-zinc-200/50 max-w-4xl mx-auto backdrop-blur-xl">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+              
+              {/* 1. قائمة اختيار الماركة / الشركة */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-zinc-500 mr-1">1. اختر الماركة</label>
+                <select 
+                  value={selectedBrand}
+                  onChange={(e) => {
+                    const brandSlug = e.target.value.toLowerCase();
+                    setSelectedBrand(e.target.value);
+                    setSelectedModel('');
+                    setAvailableModels(carModelsMap[brandSlug] || ['موديلات عامة']);
+                  }}
+                  className="w-full bg-zinc-50 text-zinc-800 text-sm font-bold px-4 py-3 rounded-2xl border border-zinc-200 focus:outline-none focus:border-store-primary focus:ring-2 focus:ring-store-primary/20 transition-all cursor-pointer"
+                >
+                  <option value="">اختر الشركة الصينية...</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id || cat.name} value={cat.slug || cat.name}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* 2. قائمة اختيار الموديل (تتعلّق وتتفعّل فور اختيار الماركة) */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-zinc-500 mr-1">2. اختر نوع السيارة</label>
+                <select 
+                  value={selectedModel}
+                  onChange={(e) => setSelectedModel(e.target.value)}
+                  disabled={!selectedBrand}
+                  className="w-full bg-zinc-50 text-zinc-800 text-sm font-bold px-4 py-3 rounded-2xl border border-zinc-200 focus:outline-none focus:border-store-primary focus:ring-2 focus:ring-store-primary/20 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <option value="">{!selectedBrand ? 'اختر الشركة أولاً...' : 'اختر نوع السيارة...'}</option>
+                  {availableModels.map((modelName) => (
+                    <option key={modelName} value={modelName}>
+                      {modelName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* 3. قائمة اختيار سنة الصنع */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-zinc-500 mr-1">3. سنة الصنع</label>
+                <select 
+                  value={selectedYear}
+                  onChange={(e) => setSelectedYear(e.target.value)}
+                  className="w-full bg-zinc-50 text-zinc-800 text-sm font-bold px-4 py-3 rounded-2xl border border-zinc-200 focus:outline-none focus:border-store-primary focus:ring-2 focus:ring-store-primary/20 transition-all cursor-pointer"
+                >
+                  <option value="">جميع السنوات</option>
+                  <option value="2026">2026</option>
+                  <option value="2025">2025</option>
+                  <option value="2024">2024</option>
+                  <option value="2023">2023</option>
+                  <option value="2022">2022</option>
+                  <option value="2021">2021 وما قبلها</option>
+                </select>
+              </div>
+
+            </div>
+
+            {/* زر البحث والانتقال لصفحة القطع */}
+            <button 
+              onClick={() => {
+                const queryParams = new URLSearchParams();
+                if (selectedBrand) queryParams.append('brand', selectedBrand);
+                if (selectedModel) queryParams.append('model', selectedModel);
+                if (selectedYear) queryParams.append('year', selectedYear);
+                
+                window.location.href = `/products?${queryParams.toString()}`;
+              }}
+              className="w-full bg-store-primary text-white font-black py-3.5 rounded-2xl shadow-lg shadow-store-primary/30 hover:bg-store-primary/90 active:scale-[0.99] transition-all flex items-center justify-center gap-2 text-base cursor-pointer"
+            >
+              <span>عرض قطع الغيار المتوافقة</span>
+              <svg className="w-5 h-5 rtl:rotate-180" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+
         </div>
-
-        {/* 3. قائمة اختيار سنة الصنع */}
-        <div className="space-y-1.5">
-          <label className="text-xs font-bold text-zinc-500 mr-1">3. سنة الصنع</label>
-          <select 
-            className="w-full bg-zinc-50 text-zinc-800 text-sm font-bold px-4 py-3 rounded-2xl border border-zinc-200 focus:outline-none focus:border-store-primary focus:ring-2 focus:ring-store-primary/20 transition-all cursor-pointer"
-          >
-            <option value="">جميع السنوات</option>
-            <option value="2026">2026</option>
-            <option value="2025">2025</option>
-            <option value="2024">2024</option>
-            <option value="2023">2023</option>
-            <option value="2022">2022</option>
-            <option value="2021">2021 وما قبلها</option>
-          </select>
-        </div>
-
-      </div>
-
-      {/* زر البحث والانتقال لصفحة القطع */}
-      <button 
-        onClick={() => {
-          // هنا يتم توجيه العميل لصفحة القطع بناءً على الاختيارات
-          window.location.href = '/products';
-        }}
-        className="w-full bg-store-primary text-white font-black py-3.5 rounded-2xl shadow-lg shadow-store-primary/30 hover:bg-store-primary/90 active:scale-[0.99] transition-all flex items-center justify-center gap-2 text-base cursor-pointer"
-      >
-        <span>عرض قطع الغيار المتوافقة</span>
-        <svg className="w-5 h-5 rtl:rotate-180" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
-    </div>
-
-  </div>
-</section>
+      </section>
 
       {/* 2. قسم الشركات / شريط متحرك فاخر ببطاقات كبيرة وبارزة */}
-<section className="homepage_section py-4 overflow-hidden bg-gradient-to-b from-transparent via-zinc-50/50 to-transparent">
+      <section className="homepage_section py-4 overflow-hidden bg-gradient-to-b from-transparent via-zinc-50/50 to-transparent">
+        {categories.length === 0 ? (
+          <div className="max-w-7xl mx-auto px-4 text-center py-8 bg-white rounded-3xl border border-dashed border-zinc-200">
+            <p className="text-zinc-400 text-sm">جاري تحميل التصنيفات أو لا توجد تصنيفات مضافة حالياً.</p>
+          </div>
+        ) : (
+          <div className="relative w-full flex overflow-x-hidden group py-4">
+            <div className="absolute left-0 inset-y-0 w-24 sm:w-40 bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 inset-y-0 w-24 sm:w-40 bg-gradient-to-l from-white via-white/80 to-transparent z-10 pointer-events-none" />
 
-  {categories.length === 0 ? (
-    <div className="max-w-7xl mx-auto px-4 text-center py-8 bg-white rounded-3xl border border-dashed border-zinc-200">
-      <p className="text-zinc-400 text-sm">جاري تحميل التصنيفات أو لا توجد تصنيفات مضافة حالياً.</p>
-    </div>
-  ) : (
-    /* حاوية الشريط المتحرك مع تأثير التلاشي على الأطراف (Fade Edges) */
-    <div className="relative w-full flex overflow-x-hidden group py-4">
-      {/* تأثير التلاشي الأيمن والأيسر لدمج الشريط بسلاسة مع خلفية الموقع */}
-      <div className="absolute left-0 inset-y-0 w-24 sm:w-40 bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none" />
-      <div className="absolute right-0 inset-y-0 w-24 sm:w-40 bg-gradient-to-l from-white via-white/80 to-transparent z-10 pointer-events-none" />
-
-      {/* الشريط المتحرك (نكرر القائمة لضمان التكرار اللانهائي السلس) */}
-      <div className="flex animate-marquee whitespace-nowrap gap-6 sm:gap-8 group-hover:[animation-play-state:paused]">
-        {[...categories, ...categories, ...categories].map((cat, index) => (
-          <Link
-            key={`${cat.id || cat.name}-${index}`}
-            href={`/products?category=${cat.slug || cat.id}`}
-            className="group/card flex flex-col items-center justify-center gap-4 p-3 transition-all duration-300 shrink-0 active:scale-95"
-          >
-            {/* حاوية الشعار الكبيرة والبارزة (بدون إطار خارجي، بنفس روح التصميم النظيف) */}
-            <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-[2.5rem] bg-white border border-zinc-200/80 flex items-center justify-center p-6 shadow-sm group-hover/card:border-store-primary group-hover/card:scale-105 group-hover/card:shadow-xl group-hover/card:shadow-store-primary/15 transition-all duration-300">
-              {cat.image ? (
-                <img
-                  src={cat.image}
-                  alt={cat.name}
-                  className="w-full h-full object-contain filter drop-shadow-sm group-hover/card:scale-110 transition-transform duration-300"
-                />
-              ) : (
-                <span className="text-store-primary font-black text-4xl group-hover/card:scale-110 transition-transform duration-300">
-                  {cat.name.charAt(0)}
-                </span>
-              )}
+            <div className="flex animate-marquee whitespace-nowrap gap-6 sm:gap-8 group-hover:[animation-play-state:paused]">
+              {[...categories, ...categories, ...categories].map((cat, index) => (
+                <Link
+                  key={`${cat.id || cat.name}-${index}`}
+                  href={`/products?category=${cat.slug || cat.id}`}
+                  className="group/card flex flex-col items-center justify-center gap-4 p-3 transition-all duration-300 shrink-0 active:scale-95"
+                >
+                  <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-[2.5rem] bg-white border border-zinc-200/80 flex items-center justify-center p-6 shadow-sm group-hover/card:border-store-primary group-hover/card:scale-105 group-hover/card:shadow-xl group-hover/card:shadow-store-primary/15 transition-all duration-300">
+                    {cat.image ? (
+                      <img
+                        src={cat.image}
+                        alt={cat.name}
+                        className="w-full h-full object-contain filter drop-shadow-sm group-hover/card:scale-110 transition-transform duration-300"
+                      />
+                    ) : (
+                      <span className="text-store-primary font-black text-4xl group-hover/card:scale-110 transition-transform duration-300">
+                        {cat.name.charAt(0)}
+                      </span>
+                    )}
+                  </div>
+                  
+                  <span className="text-base sm:text-lg font-black text-zinc-800 text-center line-clamp-1 group-hover/card:text-store-primary transition-colors duration-300">
+                    {cat.name}
+                  </span>
+                </Link>
+              ))}
             </div>
-            
-            {/* اسم الشركة */}
-            <span className="text-base sm:text-lg font-black text-zinc-800 text-center line-clamp-1 group-hover/card:text-store-primary transition-colors duration-300">
-              {cat.name}
-            </span>
-          </Link>
-        ))}
-      </div>
-    </div>
-  )}
-</section>
+          </div>
+        )}
+      </section>
 
       {/* 🌟 بنر الصور المتحركة التلقائي */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8">
