@@ -27,24 +27,90 @@ export default function HomePage() {
   const [selectedModel, setSelectedModel] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
   const [availableModels, setAvailableModels] = useState<string[]>([]);
-
-  // خريطة الموديلات للشركات الصينية الكبرى
-  const carModelsMap: Record<string, string[]> = {
-    'changan': ['CS35 Plus', 'CS75 Plus', 'Alsvin', 'Eado', 'Uni-T', 'Uni-K', 'Uni-V'],
-    'geely': ['Coolray', 'Monjaro', 'Tugella', 'Emgrand', 'Azkara'],
-    'chery': ['Tiggo 4 Pro', 'Tiggo 7 Pro', 'Tiggo 8 Pro', 'Arrizo 6 Pro'],
-    'haval': ['H6', 'Jolion', 'H9', 'Dargo'],
-    'mg': ['MG 5', 'MG 6', 'MG RX5', 'MG ZS', 'MG Whale'],
-    'jetour': ['X70', 'X70 Plus', 'X90 Plus', 'Dashing'],
-    'tank': ['Tank 300', 'Tank 500'],
-  };
-
+  const [loadingModels, setLoadingModels] = useState(false);
+  const [loadingYears, setLoadingYears] = useState(false);
+  const [availableYears, setAvailableYears] = useState<string[]>([]);
   // مصفوفة روابط الصور للبنر المتحرك
   const banners = [
     "/images/banner1.png",
     "/images/banner2.png",
     "/images/banner3.jpg",
   ];
+
+  // جلب موديلات السيارات ديناميكياً من قاعدة البيانات بناءً على الماركة المختارة
+  useEffect(() => {
+    async function fetchModels() {
+      if (!selectedBrand) {
+        setAvailableModels([]);
+        setSelectedModel('');
+        setSelectedYear('');
+        return;
+      }
+
+      setLoadingModels(true);
+      try {
+        // نفترض أن الماركة مخزنة في category أو عبر category_id حسب هيكل جدولك
+        const { data, error } = await supabase
+          .from('products')
+          .select('car_model')
+          .eq('category', selectedBrand); // أو eq('category_id', selectedBrand)
+
+        if (error) throw error;
+
+        if (data) {
+          // استخراج الموديلات الفريدة بدون تكرار وتصفية القيم الفارغة
+          const uniqueModels = Array.from(
+            new Set(data.map((item) => item.car_model).filter(Boolean))
+          ) as string[];
+          
+          setAvailableModels(uniqueModels);
+        }
+      } catch (err) {
+        console.error('Error fetching models:', err);
+      } finally {
+        setLoadingModels(false);
+      }
+    }
+
+    fetchModels();
+  }, [selectedBrand]);
+
+  // جلب السنوات ديناميكياً بناءً على الماركة والموديل المختارين
+  useEffect(() => {
+    async function fetchYears() {
+      if (!selectedBrand || !selectedModel) {
+        setAvailableYears([]);
+        setSelectedYear('');
+        return;
+      }
+
+      setLoadingYears(true);
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('car_year')
+          .eq('category', selectedBrand)
+          .eq('car_model', selectedModel);
+
+        if (error) throw error;
+
+        if (data) {
+          // استخراج السنوات الفريدة
+          const uniqueYears = Array.from(
+            new Set(data.map((item) => item.car_year).filter(Boolean))
+          ) as string[];
+
+          setAvailableYears(uniqueYears);
+        }
+      } catch (err) {
+        console.error('Error fetching years:', err);
+      } finally {
+        setLoadingYears(false);
+      }
+    }
+
+    fetchYears();
+  }, [selectedBrand, selectedModel]);
 
   // جلب التصنيفات وتشغيل مؤقت البنر تلقائياً عند تحميل الصفحة
   useEffect(() => {
@@ -132,14 +198,13 @@ export default function HomePage() {
               
               {/* 1. قائمة اختيار الماركة / الشركة */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-zinc-500 mr-1">1. اختر الماركة</label>
+                <label className="text-xs font-bold text-zinc-500 mr-1">اختر الماركة</label>
                 <select 
                   value={selectedBrand}
                   onChange={(e) => {
-                    const brandSlug = e.target.value.toLowerCase();
                     setSelectedBrand(e.target.value);
                     setSelectedModel('');
-                    setAvailableModels(carModelsMap[brandSlug] || ['موديلات عامة']);
+                    setSelectedYear('');
                   }}
                   className="w-full bg-zinc-50 text-zinc-800 text-sm font-bold px-4 py-3 rounded-2xl border border-zinc-200 focus:outline-none focus:border-store-primary focus:ring-2 focus:ring-store-primary/20 transition-all cursor-pointer"
                 >
@@ -171,22 +236,24 @@ export default function HomePage() {
               </div>
 
               {/* 3. قائمة اختيار سنة الصنع */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-zinc-500 mr-1">3. سنة الصنع</label>
-                <select 
-                  value={selectedYear}
-                  onChange={(e) => setSelectedYear(e.target.value)}
-                  className="w-full bg-zinc-50 text-zinc-800 text-sm font-bold px-4 py-3 rounded-2xl border border-zinc-200 focus:outline-none focus:border-store-primary focus:ring-2 focus:ring-store-primary/20 transition-all cursor-pointer"
-                >
-                  <option value="">جميع السنوات</option>
-                  <option value="2026">2026</option>
-                  <option value="2025">2025</option>
-                  <option value="2024">2024</option>
-                  <option value="2023">2023</option>
-                  <option value="2022">2022</option>
-                  <option value="2021">2021 وما قبلها</option>
-                </select>
-              </div>
+<div className="space-y-1.5">
+  <label className="text-xs font-bold text-zinc-500 mr-1">3. سنة الصنع</label>
+  <select 
+    value={selectedYear}
+    onChange={(e) => setSelectedYear(e.target.value)}
+    disabled={!selectedModel || loadingYears}
+    className="w-full bg-zinc-50 text-zinc-800 text-sm font-bold px-4 py-3 rounded-2xl border border-zinc-200 focus:outline-none focus:border-store-primary focus:ring-2 focus:ring-store-primary/20 transition-all cursor-pointer disabled:opacity-50"
+  >
+    <option value="">
+      {loadingYears ? "جاري التحميل..." : (!selectedModel ? "اختر الموديل أولاً" : "اختر سنة الصنع...")}
+    </option>
+    {availableYears.map((year) => (
+      <option key={year} value={year}>
+        {year}
+      </option>
+    ))}
+  </select>
+</div>
 
             </div>
 

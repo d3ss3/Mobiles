@@ -9,6 +9,9 @@ import ProductDrawer from '@/components/products/ProductDrawer';
 function ProductsContent() {
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get('category');
+  const brand = searchParams.get('brand');
+  const model = searchParams.get('model');
+  const year = searchParams.get('year');
   
   const { products, categories, loading } = useProducts();
   const { addToCart } = useCart();
@@ -24,41 +27,57 @@ function ProductsContent() {
       String(cat.name).toLowerCase() === String(categoryParam).toLowerCase()
   );
 
-  const categoryTitle = currentCategory ? currentCategory.name : categoryParam || '';
+  const categoryTitle = currentCategory ? currentCategory.name : categoryParam || brand || '';
 
-  // 2. فلترة المنتجات بدقة مطابقة تامة (حسب المعرف، الـ slug، أو اسم الفئة النصي)
-  const filteredProducts = categoryParam
-    ? products.filter((p: any) => {
-        const pCategory = String(p.category || '').toLowerCase();
-        const pCatId = String(p.category_id || '');
-        const targetParam = String(categoryParam).toLowerCase();
-        const catName = currentCategory ? String(currentCategory.name).toLowerCase() : '';
-        const catSlug = currentCategory ? String(currentCategory.slug).toLowerCase() : '';
-        const catId = currentCategory ? String(currentCategory.id) : '';
+  // 2. تصفية المنتجات بدقة شاملة (تدعم التصنيفات + محدد السيارة: الماركة، الموديل، السنة)
+  const filteredProducts = products.filter((product: any) => {
+    // أ. فلترة محدد السيارة (إذا تم اختيارها من الصفحة الرئيسية)
+    if (brand && String(product.category || '').toLowerCase() !== String(brand).toLowerCase()) {
+      return false;
+    }
+    if (model && String(product.car_model || '').toLowerCase() !== String(model).toLowerCase()) {
+      return false;
+    }
+    if (year && String(product.car_year || '') !== String(year)) {
+      return false;
+    }
 
-        return (
-          pCategory === targetParam ||
-          pCatId === targetParam ||
-          (catName && pCategory === catName) ||
-          (catSlug && pCategory === catSlug) ||
-          (catId && pCatId === catId)
-        );
-      })
-    : products;
+    // ب. فلترة التصنيف العام (إذا تم النقر على شعار شركة من القائمة المتحركة)
+    if (categoryParam) {
+      const pCategory = String(product.category || '').toLowerCase();
+      const pCatId = String(product.category_id || '');
+      const targetParam = String(categoryParam).toLowerCase();
+      const catName = currentCategory ? String(currentCategory.name).toLowerCase() : '';
+      const catSlug = currentCategory ? String(currentCategory.slug).toLowerCase() : '';
+      const catId = currentCategory ? String(currentCategory.id) : '';
+
+      const matchesCategory = (
+        pCategory === targetParam ||
+        pCatId === targetParam ||
+        (catName && pCategory === catName) ||
+        (catSlug && pCategory === catSlug) ||
+        (catId && pCatId === catId)
+      );
+
+      if (!matchesCategory) return false;
+    }
+
+    return true;
+  });
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-8 py-10 text-store-dark" dir="rtl">
       {/* عنوان الصفحة */}
       <div className="mb-10 text-center space-y-2">
         <span className="bg-store-primary/10 text-store-primary text-xs font-extrabold px-3.5 py-1.5 rounded-full inline-block">
-          {categoryTitle ? `قطع غيار أصلية ومطابقة` : `كافة قطع الغيار المتوفرة`}
+          {categoryTitle || brand ? `قطع غيار أصلية ومطابقة` : `كافة قطع الغيار المتوفرة`}
         </span>
         <h1 className="text-3xl sm:text-4xl font-black text-store-dark">
-          {categoryTitle ? `قطع غيار سيارات: ${categoryTitle}` : 'جميع قطع الغيار الصينية'}
+          {categoryTitle || brand ? `قطع غيار سيارات: ${categoryTitle || brand}` : 'جميع قطع الغيار الصينية'}
         </h1>
         <p className="text-zinc-500 text-xs sm:text-sm max-w-xl mx-auto">
-          {categoryTitle 
-            ? `استعرض قطع الغيار المخصصة لـ ${categoryTitle} مع ضمان المطابقة برقم الهيكل (VIN).`
+          {categoryTitle || brand
+            ? `استعرض قطع الغيار المخصصة مع ضمان المطابقة برقم الهيكل (VIN).`
             : 'تصفح أحدث قطع الغيار المستوردة مباشرة من مصانع الصين لكافة الماركات.'}
         </p>
       </div>
@@ -69,11 +88,9 @@ function ProductsContent() {
       ) : filteredProducts.length === 0 ? (
         <div className="text-center py-16 bg-white rounded-3xl border border-dashed border-zinc-200 shadow-sm max-w-xl mx-auto space-y-3">
           <div className="text-4xl">🔍</div>
-          <h3 className="font-bold text-store-dark text-base">لا توجد منتجات متاحة لهذه الشركة حالياً</h3>
+          <h3 className="font-bold text-store-dark text-base">لا توجد منتجات مطابقة لخياراتك حالياً</h3>
           <p className="text-zinc-400 text-xs px-4">
-            {categoryTitle 
-              ? `عذراً، لا توجد قطع غيار مسجلة حالياً لـ (${categoryTitle}). يمكنك إضافة منتجات جديدة لهذه الشركة من لوحة التحكم.`
-              : 'لا توجد منتجات مضافة في المتجر حالياً.'}
+            عذراً، لا توجد قطع غيار مسجلة تطابق الماركة أو الموديل أو السنة المحددة. يمكنك تعديل خيارات البحث أو إضافة منتجات مطابقة من لوحة التحكم.
           </p>
         </div>
       ) : (
@@ -123,22 +140,22 @@ function ProductsContent() {
                   {product.price} ر.س
                 </span>
                 <button
-  onClick={(e) => {
-    e.stopPropagation();
-    addToCart({
-      id: product.id,
-      title: product.title || product.name,
-      price: product.price,
-      image: product.image || 'https://via.placeholder.com/300',
-      description: product.description,
-      category: product.category, // أضف هذا السطر
-      stock: product.stock || 10,  // أضف هذا السطر لتجنب خطأ النوع
-    });
-  }}
-  className="bg-store-primary hover:bg-[#a0636a] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center gap-1"
->
-  + السلة
-</button>
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    addToCart({
+                      id: product.id,
+                      title: product.title || product.name,
+                      price: product.price,
+                      image: product.image || 'https://via.placeholder.com/300',
+                      description: product.description,
+                      category: product.category,
+                      stock: product.stock || 10,
+                    });
+                  }}
+                  className="bg-store-primary hover:bg-[#a0636a] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center gap-1"
+                >
+                  + السلة
+                </button>
               </div>
             </div>
           ))}

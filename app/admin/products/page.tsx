@@ -35,7 +35,7 @@ export default function AdminProductsPage() {
   });
 
   const [allCategories, setAllCategories] = useState<string[]>([]);
-
+  
   // جلب المنتجات من قاعدة البيانات عند تحميل الصفحة
 
   useEffect(() => {
