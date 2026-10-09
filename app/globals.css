@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 body {
-  background-color: #F3F4F4;
-  color: #2C2C2C;
+  background-color: #F4F6EE; /* متوافق مع لون store.light الجديد */
+  color: #38324E;          /* متوافق مع لون store.dark الجديد */
 }
 
 @keyframes marquee {

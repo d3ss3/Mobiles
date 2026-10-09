@@ -12,10 +12,14 @@ export default function Footer() {
         <div className="space-y-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-store-primary flex items-center justify-center text-white shadow-lg shadow-store-primary/25 font-black text-xl">
-              🛒
+            <img
+              src="https://i.pinimg.com/736x/c9/9b/27/c99b27b7ece4d9894ed490fb3529f0f5.jpg" 
+              alt="شعار المتجر"
+              className="w-12 h-12 object-contain rounded-2xl group-hover:scale-105 transition-transform shadow-sm"
+            />
             </div>
             <h3 className="text-xl font-black text-white tracking-tight">
-              متجري الإلكتروني
+            PortParts
             </h3>
           </div>
           <p className="text-zinc-400 text-sm leading-relaxed font-medium">
