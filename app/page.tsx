@@ -12,17 +12,12 @@ export default function HomePage() {
   const { products } = useProducts();
   const { addToCart } = useCart();
 
-  // حالة تخزين التصنيفات المسترجعة من قاعدة البيانات
   const [categories, setCategories] = useState<any[]>([]);
-
-  // حالات السلايدر الجانبي للمنتجات
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-  // حالة البنر المتحرك
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
 
-  // حالات محدد السيارة الذكي (Vehicle Selector)
+  // حالات محدد السيارة الذكي
   const [selectedBrand, setSelectedBrand] = useState('');
   const [selectedModel, setSelectedModel] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
@@ -30,14 +25,34 @@ export default function HomePage() {
   const [loadingModels, setLoadingModels] = useState(false);
   const [loadingYears, setLoadingYears] = useState(false);
   const [availableYears, setAvailableYears] = useState<string[]>([]);
-  // مصفوفة روابط الصور للبنر المتحرك
+
   const banners = [
     "/images/banner1.png",
     "/images/banner2.png",
     "/images/banner3.jpg",
   ];
 
-  // جلب موديلات السيارات ديناميكياً من قاعدة البيانات بناءً على الماركة المختارة
+  // 1. جلب جميع الشركات من جدول categories الأساسي
+  useEffect(() => {
+    async function fetchCategories() {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .order('created_at', { ascending: true });
+      
+      if (data) {
+        setCategories(data);
+      }
+    }
+    fetchCategories();
+
+    const timer = setInterval(() => {
+      setCurrentBannerIndex((prev) => (prev + 1) % banners.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [banners.length]);
+
+  // 2. جلب الموديلات من جدول vehicles بناءً على اسم الشركة المختارة
   useEffect(() => {
     async function fetchModels() {
       if (!selectedBrand) {
@@ -49,18 +64,22 @@ export default function HomePage() {
 
       setLoadingModels(true);
       try {
-        // نفترض أن الماركة مخزنة في category أو عبر category_id حسب هيكل جدولك
+        // استخراج الاسم الإنجليزي من بين القوسين (مثل Changan من "شانجان (Changan)")
+        const match = selectedBrand.match(/\(([^)]+)\)/);
+        const englishBrand = match ? match[1].trim() : selectedBrand;
+        const arabicPart = selectedBrand.split('(')[0].trim();
+
+        // البحث بمرونة إما بالاسم الإنجليزي أو العربي
         const { data, error } = await supabase
-          .from('products')
-          .select('car_model')
-          .eq('category', selectedBrand); // أو eq('category_id', selectedBrand)
+          .from('vehicles')
+          .select('model')
+          .or(`brand.ilike.%${englishBrand}%,brand.ilike.%${arabicPart}%`);
 
         if (error) throw error;
 
         if (data) {
-          // استخراج الموديلات الفريدة بدون تكرار وتصفية القيم الفارغة
           const uniqueModels = Array.from(
-            new Set(data.map((item) => item.car_model).filter(Boolean))
+            new Set(data.map((item) => item.model).filter(Boolean))
           ) as string[];
           
           setAvailableModels(uniqueModels);
@@ -75,7 +94,7 @@ export default function HomePage() {
     fetchModels();
   }, [selectedBrand]);
 
-  // جلب السنوات ديناميكياً بناءً على الماركة والموديل المختارين
+  // 3. جلب السنوات من جدول vehicles بناءً على الشركة والموديل
   useEffect(() => {
     async function fetchYears() {
       if (!selectedBrand || !selectedModel) {
@@ -87,17 +106,15 @@ export default function HomePage() {
       setLoadingYears(true);
       try {
         const { data, error } = await supabase
-          .from('products')
-          .select('car_year')
-          .eq('category', selectedBrand)
-          .eq('car_model', selectedModel);
+          .from('vehicles')
+          .select('year')
+          .ilike('model', selectedModel);
 
         if (error) throw error;
 
         if (data) {
-          // استخراج السنوات الفريدة
           const uniqueYears = Array.from(
-            new Set(data.map((item) => item.car_year).filter(Boolean))
+            new Set(data.map((item) => item.year).filter(Boolean))
           ) as string[];
 
           setAvailableYears(uniqueYears);
@@ -112,37 +129,14 @@ export default function HomePage() {
     fetchYears();
   }, [selectedBrand, selectedModel]);
 
-  // جلب التصنيفات وتشغيل مؤقت البنر تلقائياً عند تحميل الصفحة
-  useEffect(() => {
-    async function fetchCategories() {
-      const { data, error } = await supabase
-        .from('categories')
-        .select('*')
-        .order('created_at', { ascending: true });
-      
-      if (data) {
-        setCategories(data);
-      }
-    }
-
-    fetchCategories();
-
-    // مؤقت لتبديل الصور تلقائياً كل 4 ثوانٍ
-    const timer = setInterval(() => {
-      setCurrentBannerIndex((prev) => (prev + 1) % banners.length);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, [banners.length]);
-
-  // عرض أحدث 4 منتجات في الصفحة الرئيسية
   const featuredProducts = products ? products.slice(0, 4) : [];
 
   return (
     <div className="space-y-16 pb-16 text-store-dark" dir="rtl">
-      {/* قسم الهيرو المخصص لقطع الغيار */}
+      {/* قسم الهيرو */}
       <section className="relative w-full bg-gradient-to-br from-store-dark via-zinc-900 to-store-primary py-20 px-6 overflow-hidden text-white shadow-xl">
         <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
-          <span className="bg-white/10 backdrop-blur-md text-store-light text-xs font-extrabold px-4 py-1.5 rounded-full inline-block border border-white/10">
+          <span className="bg-store-accent/20 backdrop-blur-md text-store-accent text-xs font-extrabold px-4 py-1.5 rounded-full inline-block border border-store-accent/30">
             🇨🇳 جسرك المباشر لسوق ومصانع قطع الغيار الصينية
           </span>
           
@@ -154,35 +148,25 @@ export default function HomePage() {
             وفرنا لك آلاف القطع الأصلية والتجارية لجميع الماركات الصينية بأسعار تنافسية وضمان المطابقة برقم الهيكل.
           </p>
 
-          {/* صندوق البحث السريع (مطابق للمواقع العالمية) */}
-          <div className="bg-white p-3 rounded-2xl shadow-2xl max-w-2xl mx-auto text-zinc-800 flex flex-col sm:flex-row gap-2">
+          <div className="bg-store-light p-3 rounded-2xl shadow-2xl max-w-2xl mx-auto text-zinc-800 flex flex-col sm:flex-row gap-2 border border-zinc-200">
             <div className="flex-1 relative">
               <input 
                 type="text" 
                 placeholder="أدخل رقم الهيكل (VIN) أو رقم القطعة (OEM)..." 
-                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3.5 text-xs sm:text-sm focus:outline-none focus:border-store-primary"
+                className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-3.5 text-xs sm:text-sm focus:outline-none focus:border-store-secondary"
               />
             </div>
-            <button className="bg-store-primary hover:bg-[#a0636a] text-white font-extrabold px-8 py-3.5 rounded-xl text-sm transition-all shadow-md active:scale-95 shrink-0">
+            <button className="bg-store-primary hover:bg-store-secondary text-white font-extrabold px-8 py-3.5 rounded-xl text-sm transition-all shadow-md active:scale-95 shrink-0">
               بحث بالهيكل 🔍
             </button>
-          </div>
-
-          <div className="flex items-center justify-center gap-6 text-xs text-zinc-400 pt-2">
-            <span>✨ ضمان مطابقة 100%</span>
-            <span>•</span>
-            <span>📦 شحن مباشر من الصين</span>
-            <span>•</span>
-            <span>🛠️ دعم فني متخصص</span>
           </div>
         </div>
       </section>
 
-      {/* شريط البحث المطور (محدد السيارة الذكي) */}
-      <section className="homepage_section py-0 overflow-hidden bg-gradient-to-b from-transparent via-zinc-50/50 to-transparent" dir="rtl">
+      {/* محدد السيارة الذكي */}
+      <section className="homepage_section py-0 overflow-hidden" dir="rtl">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 mb-10">
           
-          {/* هيدر القسم */}
           <div className="text-center space-y-2 mb-8">
             <h2 className="text-2xl sm:text-4xl font-black text-store-dark tracking-tight">
               ابحث بقطع غيار سيارتك الصينية
@@ -192,13 +176,12 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* شريط محدد السيارة الذكي (Vehicle Selector Bar) */}
-          <div className="bg-white p-4 sm:p-6 rounded-3xl border border-zinc-200/80 shadow-xl shadow-zinc-200/50 max-w-4xl mx-auto backdrop-blur-xl">
+          <div className="bg-store-light p-4 sm:p-6 rounded-3xl border border-zinc-200 shadow-xl max-w-4xl mx-auto backdrop-blur-xl">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
               
-              {/* 1. قائمة اختيار الماركة / الشركة */}
+              {/* 1. قائمة الماركات من جدول categories لتظهر كاملة */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-zinc-500 mr-1">اختر الماركة</label>
+                <label className="text-xs font-bold text-store-dark mr-1">اختر الماركة</label>
                 <select 
                   value={selectedBrand}
                   onChange={(e) => {
@@ -206,27 +189,29 @@ export default function HomePage() {
                     setSelectedModel('');
                     setSelectedYear('');
                   }}
-                  className="w-full bg-zinc-50 text-zinc-800 text-sm font-bold px-4 py-3 rounded-2xl border border-zinc-200 focus:outline-none focus:border-store-primary focus:ring-2 focus:ring-store-primary/20 transition-all cursor-pointer"
+                  className="w-full bg-white text-zinc-800 text-sm font-bold px-4 py-3 rounded-2xl border border-zinc-200 focus:outline-none focus:border-store-secondary transition-all cursor-pointer"
                 >
                   <option value="">اختر الشركة الصينية...</option>
                   {categories.map((cat) => (
-                    <option key={cat.id || cat.name} value={cat.slug || cat.name}>
+                    <option key={cat.id || cat.name} value={cat.name}>
                       {cat.name}
                     </option>
                   ))}
                 </select>
               </div>
 
-              {/* 2. قائمة اختيار الموديل (تتعلّق وتتفعّل فور اختيار الماركة) */}
+              {/* 2. قائمة الموديلات من جدول vehicles */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-zinc-500 mr-1">2. اختر نوع السيارة</label>
+                <label className="text-xs font-bold text-store-dark mr-1">2. اختر نوع السيارة</label>
                 <select 
                   value={selectedModel}
                   onChange={(e) => setSelectedModel(e.target.value)}
-                  disabled={!selectedBrand}
-                  className="w-full bg-zinc-50 text-zinc-800 text-sm font-bold px-4 py-3 rounded-2xl border border-zinc-200 focus:outline-none focus:border-store-primary focus:ring-2 focus:ring-store-primary/20 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={!selectedBrand || loadingModels}
+                  className="w-full bg-white text-zinc-800 text-sm font-bold px-4 py-3 rounded-2xl border border-zinc-200 focus:outline-none focus:border-store-secondary transition-all cursor-pointer disabled:opacity-50"
                 >
-                  <option value="">{!selectedBrand ? 'اختر الشركة أولاً...' : 'اختر نوع السيارة...'}</option>
+                  <option value="">
+                    {loadingModels ? "جاري التحميل..." : (!selectedBrand ? 'اختر الشركة أولاً...' : 'اختر نوع السيارة...')}
+                  </option>
                   {availableModels.map((modelName) => (
                     <option key={modelName} value={modelName}>
                       {modelName}
@@ -235,29 +220,28 @@ export default function HomePage() {
                 </select>
               </div>
 
-              {/* 3. قائمة اختيار سنة الصنع */}
-<div className="space-y-1.5">
-  <label className="text-xs font-bold text-zinc-500 mr-1">3. سنة الصنع</label>
-  <select 
-    value={selectedYear}
-    onChange={(e) => setSelectedYear(e.target.value)}
-    disabled={!selectedModel || loadingYears}
-    className="w-full bg-zinc-50 text-zinc-800 text-sm font-bold px-4 py-3 rounded-2xl border border-zinc-200 focus:outline-none focus:border-store-primary focus:ring-2 focus:ring-store-primary/20 transition-all cursor-pointer disabled:opacity-50"
-  >
-    <option value="">
-      {loadingYears ? "جاري التحميل..." : (!selectedModel ? "اختر الموديل أولاً" : "اختر سنة الصنع...")}
-    </option>
-    {availableYears.map((year) => (
-      <option key={year} value={year}>
-        {year}
-      </option>
-    ))}
-  </select>
-</div>
+              {/* 3. قائمة سنوات الصنع */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-store-dark mr-1">3. سنة الصنع</label>
+                <select 
+                  value={selectedYear}
+                  onChange={(e) => setSelectedYear(e.target.value)}
+                  disabled={!selectedModel || loadingYears}
+                  className="w-full bg-white text-zinc-800 text-sm font-bold px-4 py-3 rounded-2xl border border-zinc-200 focus:outline-none focus:border-store-secondary transition-all cursor-pointer disabled:opacity-50"
+                >
+                  <option value="">
+                    {loadingYears ? "جاري التحميل..." : (!selectedModel ? "اختر الموديل أولاً" : "اختر سنة الصنع...")}
+                  </option>
+                  {availableYears.map((year) => (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
             </div>
 
-            {/* زر البحث والانتقال لصفحة القطع */}
             <button 
               onClick={() => {
                 const queryParams = new URLSearchParams();
@@ -267,7 +251,7 @@ export default function HomePage() {
                 
                 window.location.href = `/products?${queryParams.toString()}`;
               }}
-              className="w-full bg-store-primary text-white font-black py-3.5 rounded-2xl shadow-lg shadow-store-primary/30 hover:bg-store-primary/90 active:scale-[0.99] transition-all flex items-center justify-center gap-2 text-base cursor-pointer"
+              className="w-full bg-store-secondary hover:bg-store-primary text-white font-black py-3.5 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 text-base cursor-pointer"
             >
               <span>عرض قطع الغيار المتوافقة</span>
               <svg className="w-5 h-5 rtl:rotate-180" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
@@ -279,41 +263,28 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 2. قسم الشركات / شريط متحرك فاخر ببطاقات كبيرة وبارزة */}
-      <section className="homepage_section py-4 overflow-hidden bg-gradient-to-b from-transparent via-zinc-50/50 to-transparent">
-        {categories.length === 0 ? (
-          <div className="max-w-7xl mx-auto px-4 text-center py-8 bg-white rounded-3xl border border-dashed border-zinc-200">
-            <p className="text-zinc-400 text-sm">جاري تحميل التصنيفات أو لا توجد تصنيفات مضافة حالياً.</p>
-          </div>
-        ) : (
+      {/* شريط الشركات المتحرك */}
+      <section className="homepage_section py-4 overflow-hidden">
+        {categories.length > 0 && (
           <div className="relative w-full flex overflow-x-hidden group py-4">
-            <div className="absolute left-0 inset-y-0 w-24 sm:w-40 bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none" />
-            <div className="absolute right-0 inset-y-0 w-24 sm:w-40 bg-gradient-to-l from-white via-white/80 to-transparent z-10 pointer-events-none" />
+            <div className="absolute left-0 inset-y-0 w-24 sm:w-40 bg-gradient-to-r from-store-light via-store-light/80 to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 inset-y-0 w-24 sm:w-40 bg-gradient-to-l from-store-light via-store-light/80 to-transparent z-10 pointer-events-none" />
 
             <div className="flex animate-marquee whitespace-nowrap gap-6 sm:gap-8 group-hover:[animation-play-state:paused]">
               {[...categories, ...categories, ...categories].map((cat, index) => (
                 <Link
                   key={`${cat.id || cat.name}-${index}`}
-                  href={`/products?category=${cat.slug || cat.id}`}
+                  href={`/products?category=${cat.slug || cat.name}`}
                   className="group/card flex flex-col items-center justify-center gap-4 p-3 transition-all duration-300 shrink-0 active:scale-95"
                 >
-                  <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-[2.5rem] bg-white border border-zinc-200/80 flex items-center justify-center p-6 shadow-sm group-hover/card:border-store-primary group-hover/card:scale-105 group-hover/card:shadow-xl group-hover/card:shadow-store-primary/15 transition-all duration-300">
+                  <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-[2.5rem] bg-store-light border border-zinc-200 flex items-center justify-center p-6 shadow-sm group-hover/card:border-store-secondary group-hover/card:scale-105 group-hover/card:shadow-xl transition-all duration-300">
                     {cat.image ? (
-                      <img
-                        src={cat.image}
-                        alt={cat.name}
-                        className="w-full h-full object-contain filter drop-shadow-sm group-hover/card:scale-110 transition-transform duration-300"
-                      />
+                      <img src={cat.image} alt={cat.name} className="w-full h-full object-contain filter drop-shadow-sm" />
                     ) : (
-                      <span className="text-store-primary font-black text-4xl group-hover/card:scale-110 transition-transform duration-300">
-                        {cat.name.charAt(0)}
-                      </span>
+                      <span className="text-store-primary font-black text-4xl">{cat.name.charAt(0)}</span>
                     )}
                   </div>
-                  
-                  <span className="text-base sm:text-lg font-black text-zinc-800 text-center line-clamp-1 group-hover/card:text-store-primary transition-colors duration-300">
-                    {cat.name}
-                  </span>
+                  <span className="text-base sm:text-lg font-black text-store-dark text-center line-clamp-1">{cat.name}</span>
                 </Link>
               ))}
             </div>
@@ -321,7 +292,7 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* 🌟 بنر الصور المتحركة التلقائي */}
+      {/* بنر الصور المتحركة التلقائي */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8">
         <Link 
           href="/products" 
@@ -360,7 +331,7 @@ export default function HomePage() {
         </Link>
       </section>
 
-      {/* 3. قسم المنتجات المضافة حديثاً */}
+      {/* قسم المنتجات المضافة حديثاً */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -373,14 +344,14 @@ export default function HomePage() {
           </div>
           <Link
             href="/products"
-            className="text-sm font-bold text-store-primary hover:text-store-secondary flex items-center gap-1"
+            className="text-sm font-bold text-store-secondary hover:text-store-primary flex items-center gap-1"
           >
             عرض الكل ←
           </Link>
         </div>
 
         {featuredProducts.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-3xl border border-dashed border-zinc-200">
+          <div className="text-center py-12 bg-store-light rounded-3xl border border-dashed border-zinc-200">
             <p className="text-zinc-400">لا توجد منتجات متوفرة حالياً.</p>
           </div>
         ) : (
@@ -388,7 +359,7 @@ export default function HomePage() {
             {featuredProducts.map((product) => (
               <div
                 key={product.id}
-                className="bg-white rounded-3xl border border-zinc-200/80 shadow-sm hover:shadow-md transition-all overflow-hidden flex flex-col justify-between group w-[260px] sm:w-auto shrink-0 snap-start"
+                className="bg-white rounded-3xl border border-zinc-200 shadow-sm hover:shadow-md transition-all overflow-hidden flex flex-col justify-between group w-[260px] sm:w-auto shrink-0 snap-start"
               >
                 <div
                   onClick={() => {
@@ -404,20 +375,20 @@ export default function HomePage() {
                   }}
                   className="p-4 cursor-pointer"
                 >
-                  <div className="relative h-48 rounded-2xl overflow-hidden bg-zinc-100 mb-4">
+                  <div className="relative h-48 rounded-2xl overflow-hidden bg-store-light mb-4">
                     <img
                       src={product.image || 'https://via.placeholder.com/300'}
                       alt={product.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     {product.category && (
-                      <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-md text-store-dark text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
+                      <span className="absolute top-3 right-3 bg-store-accent/90 backdrop-blur-md text-store-dark text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
                         {product.category}
                       </span>
                     )}
                   </div>
 
-                  <h3 className="font-bold text-store-dark text-base mb-1 line-clamp-1 group-hover:text-store-primary transition-colors">
+                  <h3 className="font-bold text-store-dark text-base mb-1 line-clamp-1 group-hover:text-store-secondary transition-colors">
                     {product.title}
                   </h3>
                   <p className="text-xs text-zinc-500 line-clamp-2 mb-4">
@@ -425,7 +396,7 @@ export default function HomePage() {
                   </p>
                 </div>
 
-                <div className="p-4 bg-zinc-50 border-t border-zinc-100 flex items-center justify-between">
+                <div className="p-4 bg-store-light border-t border-zinc-100 flex items-center justify-between">
                   <span className="text-base font-black text-store-dark">
                     {product.price} ر.س
                   </span>
@@ -434,7 +405,7 @@ export default function HomePage() {
                       e.stopPropagation();
                       addToCart(product);
                     }}
-                    className="bg-store-primary hover:bg-[#a0636a] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center gap-1"
+                    className="bg-store-primary hover:bg-store-secondary text-white px-4 py-2 rounded-2xl text-xs font-bold transition-all duration-200 shadow-sm active:scale-95 flex items-center justify-center gap-1"
                   >
                     + السلة
                   </button>
@@ -445,17 +416,17 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* 🌟 بنر إعلاني / ترويجي بين الأقسام */}
+      {/* بنر ترويجي */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8">
-        <div className="relative overflow-hidden bg-gradient-to-r from-store-primary to-zinc-900 rounded-3xl p-8 sm:p-12 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="absolute -left-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="relative overflow-hidden bg-gradient-to-r from-store-primary via-store-secondary to-store-dark rounded-3xl p-8 sm:p-12 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="absolute -left-10 -bottom-10 w-48 h-48 bg-store-accent/20 rounded-full blur-2xl pointer-events-none" />
 
           <div className="space-y-3 text-center md:text-right relative z-10">
-            <span className="bg-white/20 text-white text-xs font-extrabold px-3.5 py-1.5 rounded-full inline-block">
+            <span className="bg-store-accent text-store-dark text-xs font-extrabold px-3.5 py-1.5 rounded-full inline-block">
               عرض لفترة محدودة 🔥
             </span>
             <h3 className="text-2xl sm:text-3xl font-black leading-tight">
-              احصل على خصم 20% على طلبك القادم!
+              احصل على خصم 20% على طلبك القادم مباشرة!
             </h3>
             <p className="text-zinc-200 text-xs sm:text-sm max-w-xl">
               استخدم كود الخصم <span className="bg-white/20 px-2 py-0.5 rounded font-mono font-bold text-white">SAVE20</span> عند إتمام السداد واستمتع بتوفير إضافي.
@@ -465,7 +436,7 @@ export default function HomePage() {
           <div className="relative z-10 shrink-0">
             <Link
               href="/products"
-              className="inline-flex items-center gap-2 bg-white text-store-dark hover:bg-zinc-100 font-extrabold px-8 py-3.5 rounded-2xl shadow-lg transition-all active:scale-95 text-sm"
+              className="inline-flex items-center gap-2 bg-store-light text-store-dark hover:bg-white font-extrabold px-8 py-3.5 rounded-2xl shadow-lg transition-all active:scale-95 text-sm"
             >
               <span>تسوق العروض الآن</span>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4 rotate-180">
@@ -476,28 +447,27 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 🌟 قسم آراء العملاء */}
       <TestimonialsTicker />
 
-      {/* 5. قسم مميزات المتجر */}
+      {/* مميزات المتجر */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8">
-        <div className="bg-white rounded-3xl border border-zinc-200/80 p-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+        <div className="bg-store-light rounded-3xl border border-zinc-200 p-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
           <div className="space-y-2">
-            <div className="w-12 h-12 bg-store-light rounded-2xl mx-auto flex items-center justify-center text-store-primary text-xl font-bold">
+            <div className="w-12 h-12 bg-white rounded-2xl mx-auto flex items-center justify-center text-store-secondary text-xl font-bold shadow-sm">
               🚚
             </div>
             <h3 className="font-bold text-store-dark">شحن سريع وآمن</h3>
             <p className="text-xs text-zinc-500">توصيل لجميع مناطق المملكة بأسرع وقت</p>
           </div>
           <div className="space-y-2">
-            <div className="w-12 h-12 bg-store-light rounded-2xl mx-auto flex items-center justify-center text-store-primary text-xl font-bold">
+            <div className="w-12 h-12 bg-white rounded-2xl mx-auto flex items-center justify-center text-store-primary text-xl font-bold shadow-sm">
               🔒
             </div>
             <h3 className="font-bold text-store-dark">دفع إلكتروني آمن</h3>
             <p className="text-xs text-zinc-500">طرق دفع متعددة ومحمية بالكامل</p>
           </div>
           <div className="space-y-2">
-            <div className="w-12 h-12 bg-store-light rounded-2xl mx-auto flex items-center justify-center text-store-primary text-xl font-bold">
+            <div className="w-12 h-12 bg-white rounded-2xl mx-auto flex items-center justify-center text-store-accent text-xl font-bold shadow-sm">
               ⭐
             </div>
             <h3 className="font-bold text-store-dark">ضمان الجودة</h3>
@@ -506,7 +476,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* استدعاء السلايدر الجانبي في الصفحة الرئيسية */}
       <ProductDrawer
         product={selectedProduct}
         isOpen={isDrawerOpen}

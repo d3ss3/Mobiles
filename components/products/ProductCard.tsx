@@ -6,7 +6,10 @@ import { useCart } from '@/context/CartContext';
 import Image from 'next/image';
 
 interface ProductCardProps {
-  product: Product;
+  product: Product & {
+    oem_number?: string;
+    vehicles?: { brand: string; model: string; year: string | number }[];
+  };
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
@@ -21,23 +24,59 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* حاوية الصورة مع تأثير التكبير عند التحويم */}
         <div className="relative h-52 w-full bg-zinc-100 overflow-hidden">
           <Image
-            src={product.image}
-            alt={product.title}
+            src={product.image || 'https://via.placeholder.com/300'}
+            alt={product.title || product.name}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover group-hover:scale-105 transition-transform duration-700"
           />
+          {product.category && (
+            <span className="absolute top-3 right-3 bg-store-accent/90 backdrop-blur-md text-store-dark text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
+              {product.category}
+            </span>
+          )}
         </div>
 
         {/* تفاصيل المنتج */}
         <div className="p-6">
-          <span className="text-xs font-bold text-store-primary bg-store-primary/10 border border-store-primary/20 px-3 py-1 rounded-full inline-block">
-            {product.category}
-          </span>
-          <h3 className="font-black text-lg text-store-dark mt-3 line-clamp-1 group-hover:text-store-primary transition-colors">
-            {product.title}
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <span className="text-xs font-bold text-store-primary bg-store-primary/10 border border-store-primary/20 px-3 py-1 rounded-full inline-block">
+              {product.category}
+            </span>
+            {product.oem_number && (
+              <span className="text-[11px] font-mono font-bold text-zinc-500 bg-zinc-100 border border-zinc-200 px-2.5 py-0.5 rounded-md">
+                OEM: {product.oem_number}
+              </span>
+            )}
+          </div>
+
+          <h3 className="font-black text-lg text-store-dark mt-2 line-clamp-1 group-hover:text-store-primary transition-colors">
+            {product.title || product.name}
           </h3>
-          <p className="text-zinc-500 text-sm mt-1.5 line-clamp-2 leading-relaxed font-medium">
+
+          {/* السيارات والموديلات المتوافقة */}
+          {product.vehicles && product.vehicles.length > 0 && (
+            <div className="mt-3 space-y-1 bg-zinc-50 p-2.5 rounded-2xl border border-zinc-100">
+              <div className="text-[11px] font-bold text-zinc-400">السيارات المتوافقة:</div>
+              <div className="flex flex-wrap gap-1">
+                {product.vehicles.slice(0, 2).map((veh, idx) => (
+                  <span 
+                    key={idx}
+                    className="bg-white text-store-dark text-[10px] font-bold px-2 py-1 rounded-lg border border-zinc-200 shadow-2xs"
+                  >
+                    {veh.brand} {veh.model} ({veh.year})
+                  </span>
+                ))}
+                {product.vehicles.length > 2 && (
+                  <span className="text-[10px] text-store-primary font-bold self-center px-1">
+                    +{product.vehicles.length - 2} أخرى
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+
+          <p className="text-zinc-500 text-sm mt-3 line-clamp-2 leading-relaxed font-medium">
             {product.description}
           </p>
         </div>

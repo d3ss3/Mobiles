@@ -1,10 +1,17 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useProducts } from '@/context/ProductContext';
 import { useCart } from '@/context/CartContext';
 import ProductDrawer from '@/components/products/ProductDrawer';
+import { createClient } from '@supabase/supabase-js';
+
+// إنشاء اتصال سوبابيس للاستعلامات المباشرة للربط
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+);
 
 function ProductsContent() {
   const searchParams = useSearchParams();
@@ -13,13 +20,75 @@ function ProductsContent() {
   const model = searchParams.get('model');
   const year = searchParams.get('year');
   
-  const { products, categories, loading } = useProducts();
+  const { products, categories, loading: contextLoading } = useProducts();
   const { addToCart } = useCart();
 
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  
+  // حالات خاصة للبحث المربوط بالسيارات (عبر جدول fitments)
+  const [fittedProductIds, setFittedProductIds] = useState<string[]>([]);
+  const [loadingFitments, setLoadingFitments] = useState(false);
 
-  // 1. العثور على التصنيف المطابق من قائمة التصنيفات
+  // جلب المنتجات المطابقة للسيارة (الماركة، الموديل، السنة) من جدول product_fitments و vehicles
+  useEffect(() => {
+    async function fetchFitmentProducts() {
+      if (!brand && !model && !year) {
+        setFittedProductIds([]);
+        return;
+      }
+
+      setLoadingFitments(true);
+      try {
+        // 1. البحث عن السيارات المطابقة في جدول vehicles
+        let vehicleQuery = supabase.from('vehicles').select('id');
+        
+        if (brand) {
+          const cleanBrand = brand.match(/\(([^)]+)\)/)?.[1]?.trim() || brand.split('(')[0].trim();
+          vehicleQuery = vehicleQuery.ilike('brand', `%${cleanBrand}%`);
+        }
+        if (model) {
+          vehicleQuery = vehicleQuery.ilike('model', model);
+        }
+        if (year) {
+          vehicleQuery = vehicleQuery.eq('year', year);
+        }
+
+        const { data: vehicles, error: vError } = await vehicleQuery;
+        if (vError) throw vError;
+
+        if (!vehicles || vehicles.length === 0) {
+          setFittedProductIds(['NO_MATCH']); // لا توجد مطابقة
+          return;
+        }
+
+        const vehicleIds = vehicles.map((v) => v.id);
+
+        // 2. جلب معرفات المنتجات من جدول product_fitments
+        const { data: fitments, error: fError } = await supabase
+          .from('product_fitments')
+          .select('product_id')
+          .in('vehicle_id', vehicleIds);
+
+        if (fError) throw fError;
+
+        if (fitments && fitments.length > 0) {
+          setFittedProductIds(fitments.map((f) => f.product_id));
+        } else {
+          setFittedProductIds(['NO_MATCH']);
+        }
+      } catch (err) {
+        console.error('Error fetching fitments:', err);
+        setFittedProductIds(['NO_MATCH']);
+      } finally {
+        setLoadingFitments(false);
+      }
+    }
+
+    fetchFitmentProducts();
+  }, [brand, model, year]);
+
+  // العثور على التصنيف الحالي
   const currentCategory = categories.find(
     (cat) => 
       String(cat.id) === String(categoryParam) || 
@@ -29,20 +98,16 @@ function ProductsContent() {
 
   const categoryTitle = currentCategory ? currentCategory.name : categoryParam || brand || '';
 
-  // 2. تصفية المنتجات بدقة شاملة (تدعم التصنيفات + محدد السيارة: الماركة، الموديل، السنة)
+  // تصفية المنتجات بناءً على التصنيف أو محدد السيارة
   const filteredProducts = products.filter((product: any) => {
-    // أ. فلترة محدد السيارة (إذا تم اختيارها من الصفحة الرئيسية)
-    if (brand && String(product.category || '').toLowerCase() !== String(brand).toLowerCase()) {
-      return false;
-    }
-    if (model && String(product.car_model || '').toLowerCase() !== String(model).toLowerCase()) {
-      return false;
-    }
-    if (year && String(product.car_year || '') !== String(year)) {
-      return false;
+    // أ. إذا تم البحث عبر محدد السيارة (Brand, Model, Year)
+    if (brand || model || year) {
+      if (!fittedProductIds.includes(product.id)) {
+        return false;
+      }
     }
 
-    // ب. فلترة التصنيف العام (إذا تم النقر على شعار شركة من القائمة المتحركة)
+    // ب. فلترة التصنيف العام
     if (categoryParam) {
       const pCategory = String(product.category || '').toLowerCase();
       const pCatId = String(product.category_id || '');
@@ -65,11 +130,13 @@ function ProductsContent() {
     return true;
   });
 
+  const isLoading = contextLoading || loadingFitments;
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-8 py-10 text-store-dark" dir="rtl">
       {/* عنوان الصفحة */}
       <div className="mb-10 text-center space-y-2">
-        <span className="bg-store-primary/10 text-store-primary text-xs font-extrabold px-3.5 py-1.5 rounded-full inline-block">
+        <span className="bg-store-accent/20 text-store-accent text-xs font-extrabold px-3.5 py-1.5 rounded-full inline-block border border-store-accent/30">
           {categoryTitle || brand ? `قطع غيار أصلية ومطابقة` : `كافة قطع الغيار المتوفرة`}
         </span>
         <h1 className="text-3xl sm:text-4xl font-black text-store-dark">
@@ -83,14 +150,14 @@ function ProductsContent() {
       </div>
 
       {/* عرض المحتوى */}
-      {loading ? (
-        <div className="text-center py-20 text-zinc-400 font-medium">جاري تحميل المنتجات من قاعدة البيانات...</div>
+      {isLoading ? (
+        <div className="text-center py-20 text-zinc-400 font-medium">جاري تحميل المنتجات المطابقة...</div>
       ) : filteredProducts.length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-3xl border border-dashed border-zinc-200 shadow-sm max-w-xl mx-auto space-y-3">
+        <div className="text-center py-16 bg-store-light rounded-3xl border border-dashed border-zinc-200 shadow-sm max-w-xl mx-auto space-y-3">
           <div className="text-4xl">🔍</div>
           <h3 className="font-bold text-store-dark text-base">لا توجد منتجات مطابقة لخياراتك حالياً</h3>
           <p className="text-zinc-400 text-xs px-4">
-            عذراً، لا توجد قطع غيار مسجلة تطابق الماركة أو الموديل أو السنة المحددة. يمكنك تعديل خيارات البحث أو إضافة منتجات مطابقة من لوحة التحكم.
+            عذراً، لا توجد قطع غيار مسجلة تطابق الماركة أو الموديل أو السنة المحددة. يمكنك تعديل خيارات البحث أو إضافة ارتباطات مطابقة من لوحة التحكم.
           </p>
         </div>
       ) : (
@@ -109,33 +176,39 @@ function ProductsContent() {
                     image: product.image || 'https://via.placeholder.com/300',
                     description: product.description,
                     category: product.category,
+                    oem_number: product.oem_number,
                   });
                   setIsDrawerOpen(true);
                 }}
                 className="p-4 cursor-pointer"
               >
-                <div className="relative h-48 rounded-2xl overflow-hidden bg-zinc-100 mb-4">
+                <div className="relative h-48 rounded-2xl overflow-hidden bg-store-light mb-4">
                   <img
                     src={product.image || 'https://via.placeholder.com/300'}
                     alt={product.title || product.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   {product.category && (
-                    <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-md text-store-dark text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
+                    <span className="absolute top-3 right-3 bg-store-accent/90 backdrop-blur-md text-store-dark text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
                       {product.category}
                     </span>
                   )}
                 </div>
 
-                <h3 className="font-bold text-store-dark text-base mb-1 line-clamp-1 group-hover:text-store-primary transition-colors">
+                <h3 className="font-bold text-store-dark text-base mb-1 line-clamp-1 group-hover:text-store-secondary transition-colors">
                   {product.title || product.name}
                 </h3>
+                {product.oem_number && (
+                  <p className="text-xs text-zinc-400 font-mono mb-1">
+                    OEM: {product.oem_number}
+                  </p>
+                )}
                 <p className="text-xs text-zinc-500 line-clamp-2 mb-4">
                   {product.description}
                 </p>
               </div>
 
-              <div className="p-4 bg-zinc-50 border-t border-zinc-100 flex items-center justify-between">
+              <div className="p-4 bg-store-light border-t border-zinc-100 flex items-center justify-between">
                 <span className="text-base font-black text-store-dark">
                   {product.price} ر.س
                 </span>
@@ -152,7 +225,7 @@ function ProductsContent() {
                       stock: product.stock || 10,
                     });
                   }}
-                  className="bg-store-primary hover:bg-[#a0636a] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center gap-1"
+                  className="bg-store-primary hover:bg-store-secondary text-white px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center gap-1"
                 >
                   + السلة
                 </button>

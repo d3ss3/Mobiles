@@ -6,6 +6,12 @@ import { useCart } from '@/context/CartContext';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
 
+interface VehicleFitment {
+  brand: string;
+  model: string;
+  year: string | number;
+}
+
 interface Product {
   id: string | number;
   name: string;
@@ -13,6 +19,8 @@ interface Product {
   image: string;
   description?: string;
   category?: string;
+  oem_number?: string;
+  vehicles?: VehicleFitment[];
 }
 
 interface ProductDrawerProps {
@@ -84,7 +92,7 @@ export default function ProductDrawer({
           {/* Header */}
           <header className="flex h-[72px] shrink-0 items-center justify-between border-b border-zinc-200/80 bg-white px-6">
             <h2 className="text-lg font-black text-store-dark tracking-tight">
-              تفاصيل المنتج
+              تفاصيل القطعة
             </h2>
   
             <button
@@ -124,19 +132,50 @@ export default function ProductDrawer({
                 <h1 className="text-xl sm:text-2xl font-black leading-snug text-store-dark tracking-tight">
                   {product.name}
                 </h1>
+
+                {/* رقم القطعة الفني OEM */}
+                {product.oem_number && (
+                  <div className="mt-2.5 inline-block">
+                    <span className="text-xs font-mono font-bold bg-zinc-100 text-zinc-600 px-3 py-1 rounded-xl border border-zinc-200">
+                      OEM: {product.oem_number}
+                    </span>
+                  </div>
+                )}
   
-                <div className="mt-4 inline-flex items-baseline gap-2 rounded-2xl bg-store-primary/10 border border-store-primary/20 px-4 py-2.5 text-store-primary">
-                  <span className="text-2xl font-black">
-                    {product.price.toLocaleString('ar-SA')}
-                  </span>
-                  <span className="text-xs font-bold">ر.س</span>
+                <div className="mt-4 flex items-center gap-3">
+                  <div className="inline-flex items-baseline gap-2 rounded-2xl bg-store-primary/10 border border-store-primary/20 px-4 py-2.5 text-store-primary">
+                    <span className="text-2xl font-black">
+                      {product.price.toLocaleString('ar-SA')}
+                    </span>
+                    <span className="text-xs font-bold">ر.س</span>
+                  </div>
                 </div>
               </div>
+
+              {/* السيارات والموديلات المتوافقة مع القطعة */}
+              {product.vehicles && product.vehicles.length > 0 && (
+                <div className="rounded-3xl border border-zinc-200/80 bg-zinc-50 p-5 shadow-sm space-y-3">
+                  <h3 className="text-sm font-black text-store-dark">
+                    السيارات المتوافقة مع هذه القطعة
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {product.vehicles.map((veh, idx) => (
+                      <span
+                        key={idx}
+                        className="bg-white text-store-dark text-xs font-bold px-3 py-1.5 rounded-xl border border-zinc-200 shadow-2xs flex items-center gap-1.5"
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-store-primary"></span>
+                        {veh.brand} {veh.model} ({veh.year})
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
   
               {product.description && (
                 <div className="rounded-3xl border border-zinc-200/80 bg-zinc-50/80 p-5 shadow-sm">
                   <h3 className="mb-2 text-sm font-black text-store-dark">
-                    وصف المنتج
+                    وصف القطعة
                   </h3>
   
                   <p className="text-sm leading-7 text-zinc-600 font-medium">
