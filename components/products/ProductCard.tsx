@@ -25,7 +25,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="relative h-52 w-full bg-zinc-100 overflow-hidden">
           <Image
             src={product.image || 'https://via.placeholder.com/300'}
-            alt={product.title || product.name}
+            alt={product.title || (product as any).name || 'product'}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover group-hover:scale-105 transition-transform duration-700"
@@ -51,7 +51,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
 
           <h3 className="font-black text-lg text-store-dark mt-2 line-clamp-1 group-hover:text-store-primary transition-colors">
-            {product.title || product.name}
+            {product.title || (product as any).name}
           </h3>
 
           {/* السيارات والموديلات المتوافقة */}
