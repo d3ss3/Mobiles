@@ -59,7 +59,7 @@ export default function Navbar() {
           {/* 2. الشعار في المنتصف */}
           <Link href="/" className="flex items-center gap-2.5 group focus:outline-none">
             <img
-              src="https://i.pinimg.com/736x/c9/9b/27/c99b27b7ece4d9894ed490fb3529f0f5.jpg" 
+              src="https://cdn.custom-cursor.com/packs/6955/color-medium-slate-blue-pack.png" 
               alt="شعار المتجر"
               className="w-10 h-10 object-contain rounded-xl group-hover:scale-105 transition-transform shadow-sm"
             />
