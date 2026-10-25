@@ -23,8 +23,8 @@ export default function Footer() {
             </h3>
           </div>
           <p className="text-zinc-400 text-sm leading-relaxed font-medium">
-            منصتك الأولى للتسوق الذكي، نوفر لك أرقى المنتجات بأعلى معايير الجودة وأفضل الأسعار التنافسية.
-          </p>
+          بورت بارتز منصتك الأولى لقطع غيار السيارات؛ نوفر لك أجود القطع الأصلية والمضمونة، لتبقى سيارتك في أفضل حالاتها وبأفضل الأسعار التنافسية.
+                    </p>
         </div>
 
         {/* روابط سريعة */}
@@ -83,7 +83,7 @@ export default function Footer() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-6 border-t border-zinc-900 text-center text-xs text-zinc-500 font-medium">
-        © {new Date().getFullYear()} متجري. جميع الحقوق محفوظة.
+        © {new Date().getFullYear()} بورت بارتز. جميع الحقوق محفوظة.
       </div>
     </footer>
   );

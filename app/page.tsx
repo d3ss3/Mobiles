@@ -530,31 +530,54 @@ export default function HomePage() {
       <TestimonialsTicker />
 
       {/* مميزات المتجر */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-8">
-        <div className="bg-store-light rounded-3xl border border-zinc-200 p-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-          <div className="space-y-2">
-            <div className="w-12 h-12 bg-white rounded-2xl mx-auto flex items-center justify-center text-store-secondary text-xl font-bold shadow-sm">
-              🚚
-            </div>
-            <h3 className="font-bold text-store-dark">شحن سريع وآمن</h3>
-            <p className="text-xs text-zinc-500">توصيل لجميع مناطق المملكة بأسرع وقت</p>
-          </div>
-          <div className="space-y-2">
-            <div className="w-12 h-12 bg-white rounded-2xl mx-auto flex items-center justify-center text-store-primary text-xl font-bold shadow-sm">
-              🔒
-            </div>
-            <h3 className="font-bold text-store-dark">دفع إلكتروني آمن</h3>
-            <p className="text-xs text-zinc-500">طرق دفع متعددة ومحمية بالكامل</p>
-          </div>
-          <div className="space-y-2">
-            <div className="w-12 h-12 bg-white rounded-2xl mx-auto flex items-center justify-center text-store-accent text-xl font-bold shadow-sm">
-              ⭐
-            </div>
-            <h3 className="font-bold text-store-dark">ضمان الجودة</h3>
-            <p className="text-xs text-zinc-500">منتجات أصلية ومضمونة 100%</p>
-          </div>
-        </div>
-      </section>
+<section className="max-w-7xl mx-auto px-4 sm:px-8 py-6">
+  <div className="bg-white rounded-3xl border border-zinc-200/80 shadow-sm p-6 sm:p-8 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 text-center">
+    
+    {/* الميزة الأولى: الشحن والتوصيل */}
+    <div className="flex flex-col items-center space-y-3 p-4 rounded-2xl transition-all duration-300 hover:bg-zinc-50">
+      <div className="w-14 h-14 bg-store-primary/10 text-store-primary rounded-2xl flex items-center justify-center border border-store-primary/20 shadow-sm group-hover:scale-110 transition-transform">
+        <svg className="w-7 h-7 fill-none stroke-current stroke-2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="1" y="3" width="15" height="13"></rect>
+          polygon points="16 8 20 8 23 11 23 16 16 16 16 8"
+          <circle cx="5.5" cy="18.5" r="2.5"></circle>
+          <circle cx="18.5" cy="18.5" r="2.5"></circle>
+        </svg>
+      </div>
+      <div className="space-y-1">
+        <h3 className="font-black text-store-dark text-base">شحن سريع وآمن</h3>
+        <p className="text-xs text-zinc-500 font-medium">توصيل عالي السرعة لكافة مناطق ومحافظات المملكة</p>
+      </div>
+    </div>
+
+    {/* الميزة الثانية: الدفع الإلكتروني */}
+    <div className="flex flex-col items-center space-y-3 p-4 rounded-2xl transition-all duration-300 hover:bg-zinc-50">
+      <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center border border-emerald-200/60 shadow-sm">
+        <svg className="w-7 h-7 fill-none stroke-current stroke-2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+          <line x1="2" y1="10" x2="22" y2="10"></line>
+        </svg>
+      </div>
+      <div className="space-y-1">
+        <h3 className="font-black text-store-dark text-base">دفع إلكتروني آمن</h3>
+        <p className="text-xs text-zinc-500 font-medium">خيارات دفع رقمية متعددة ومشفرة بالكامل للحماية</p>
+      </div>
+    </div>
+
+    {/* الميزة الثالثة: ضمان الجودة */}
+    <div className="flex flex-col items-center space-y-3 p-4 rounded-2xl transition-all duration-300 hover:bg-zinc-50">
+      <div className="w-14 h-14 bg-store-accent/20 text-store-dark rounded-2xl flex items-center justify-center border border-store-accent/30 shadow-sm">
+        <svg className="w-7 h-7 fill-none stroke-current stroke-2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+        </svg>
+      </div>
+      <div className="space-y-1">
+        <h3 className="font-black text-store-dark text-base">ضمان الجودة والمطابقة</h3>
+        <p className="text-xs text-zinc-500 font-medium">قطع غيار أصلية ومعتمدة بمواصفات المصنع الأصلي</p>
+      </div>
+    </div>
+
+  </div>
+</section>
 
       <ProductDrawer
         product={selectedProduct}

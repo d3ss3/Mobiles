@@ -6,13 +6,14 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { CartProvider } from '@/context/CartContext';
 import { ProductProvider } from '@/context/ProductContext';
+import WhatsAppButton from '@/components/ui/WhatsAppButton';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export const metadata: Metadata = {
-  title: 'المتجر الإلكتروني',
-  description: 'منصة تسوق إلكتروني متكاملة بأفضل الأسعار',
+  title: 'بورت بارتز - متخصص قطع غيار السيارات الصينية',
+  description: 'منصة تسوق إلكتروني متكاملة لقطع غيار السيارات الصينية بأفضل الأسعار وضمان المطابقة',
 };
 
 export default function RootLayout({
@@ -23,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <head>
-        {/* استدعاء خط القاهرة مباشر عبر CDN لتفادي حظر التنزيل في بيئة WebContainers / StackBlitz */}
+        {/* استدعاء خط القاهرة مباشر عبر CDN لتفادي حظر التنزيل في بيئة التطوير */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
@@ -55,6 +56,9 @@ export default function RootLayout({
 
             {/* 4. الفوتر / أسفل الصفحة */}
             <Footer />
+
+            {/* 5. زر الواتساب العائم */}
+            <WhatsAppButton />
           </CartProvider>
         </ProductProvider>
       </body>
