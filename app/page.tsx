@@ -237,6 +237,48 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* بنر الصور المتحركة التلقائي */}
+<section className="w-full max-w-7xl mx-auto px-2 sm:px-4">
+  <div className="relative w-full aspect-[3/1] overflow-hidden rounded-xl sm:rounded-2xl shadow-sm group">
+
+    {banners.map((imgSrc, index) => (
+      <Link
+        key={index}
+        href="/products"
+        aria-label={`عرض منتجات المتجر - البنر ${index + 1}`}
+        className={`absolute inset-0 block transition-opacity duration-1000 ease-in-out ${
+          currentBannerIndex === index
+            ? 'opacity-100 z-10'
+            : 'opacity-0 z-0 pointer-events-none'
+        }`}
+      >
+        <img
+          src={imgSrc}
+          alt={`بنر المتجر ${index + 1}`}
+          className="w-full h-full object-contain"
+        />
+      </Link>
+    ))}
+
+    <div className="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+      {banners.map((_, idx) => (
+        <button
+          key={idx}
+          type="button"
+          onClick={() => setCurrentBannerIndex(idx)}
+          aria-label={`الانتقال للصورة ${idx + 1}`}
+          className={`h-2 rounded-full transition-all ${
+            currentBannerIndex === idx
+              ? 'w-6 bg-white'
+              : 'w-2 bg-white/60'
+          }`}
+        />
+      ))}
+    </div>
+
+  </div>
+</section>
+
       {/* محدد السيارة الذكي */}
       <section className="homepage_section py-0 overflow-hidden" dir="rtl">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 mb-10">
@@ -365,49 +407,6 @@ export default function HomePage() {
           </div>
         )}
       </section>
-
-      
-{/* بنر الصور المتحركة التلقائي */}
-<section className="w-full max-w-7xl mx-auto px-2 sm:px-4">
-  <div className="relative w-full aspect-[3/1] overflow-hidden rounded-xl sm:rounded-2xl shadow-sm group">
-
-    {banners.map((imgSrc, index) => (
-      <Link
-        key={index}
-        href="/products"
-        aria-label={`عرض منتجات المتجر - البنر ${index + 1}`}
-        className={`absolute inset-0 block transition-opacity duration-1000 ease-in-out ${
-          currentBannerIndex === index
-            ? 'opacity-100 z-10'
-            : 'opacity-0 z-0 pointer-events-none'
-        }`}
-      >
-        <img
-          src={imgSrc}
-          alt={`بنر المتجر ${index + 1}`}
-          className="w-full h-full object-contain"
-        />
-      </Link>
-    ))}
-
-    <div className="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
-      {banners.map((_, idx) => (
-        <button
-          key={idx}
-          type="button"
-          onClick={() => setCurrentBannerIndex(idx)}
-          aria-label={`الانتقال للصورة ${idx + 1}`}
-          className={`h-2 rounded-full transition-all ${
-            currentBannerIndex === idx
-              ? 'w-6 bg-white'
-              : 'w-2 bg-white/60'
-          }`}
-        />
-      ))}
-    </div>
-
-  </div>
-</section>
 
 
       {/* قسم المنتجات المضافة حديثاً */}
