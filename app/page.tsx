@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/db';
 import { useProducts } from '@/context/ProductContext';
 import { useCart } from '@/context/CartContext';
@@ -9,6 +10,7 @@ import ProductDrawer from '@/components/products/ProductDrawer';
 import TestimonialsTicker from '@/components/TestimonialsTicker';
 
 export default function HomePage() {
+  const router = useRouter();
   const { products } = useProducts();
   const { addToCart } = useCart();
 
@@ -16,6 +18,10 @@ export default function HomePage() {
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+
+  // حالات البحث المتطور (OEM / VIN)
+  const [searchMode, setSearchMode] = useState<'oem' | 'vin'>('oem');
+  const [searchQuery, setSearchQuery] = useState('');
 
   // حالات محدد السيارة الذكي
   const [selectedBrand, setSelectedBrand] = useState('');
@@ -31,6 +37,18 @@ export default function HomePage() {
     "/images/banner2.png",
     "/images/banner3.jpg",
   ];
+
+  // معالجة البحث والتوجيه المباشر لصفحة المنتجات
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+
+    if (searchMode === 'oem') {
+      router.push(`/products?oem=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      router.push(`/products?vin=${encodeURIComponent(searchQuery.trim().toUpperCase())}`);
+    }
+  };
 
   // 1. جلب جميع الشركات من جدول categories الأساسي
   useEffect(() => {
@@ -133,7 +151,7 @@ export default function HomePage() {
 
   return (
     <div className="space-y-16 pb-16 text-store-dark" dir="rtl">
-      {/* قسم الهيرو */}
+      {/* قسم الهيرو المطور */}
       <section className="relative w-full bg-gradient-to-br from-store-dark via-zinc-900 to-store-primary py-20 px-6 overflow-hidden text-white shadow-xl">
         <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
           <span className="bg-store-accent/20 backdrop-blur-md text-store-accent text-xs font-extrabold px-4 py-1.5 rounded-full inline-block border border-store-accent/30">
@@ -144,21 +162,77 @@ export default function HomePage() {
             ابحث عن قطع غيار سيارتك الصينية بدقة وثقة
           </h1>
           
-          <p className="text-zinc-300 text-sm sm:text-base max-w-2xl mx-auto">
+          <p className="text-zinc-300 text-sm sm:text-base max-w-2xl mx-auto font-medium">
             وفرنا لك آلاف القطع الأصلية والتجارية لجميع الماركات الصينية بأسعار تنافسية وضمان المطابقة برقم الهيكل.
           </p>
 
-          <div className="bg-store-light p-3 rounded-2xl shadow-2xl max-w-2xl mx-auto text-zinc-800 flex flex-col sm:flex-row gap-2 border border-zinc-200">
-            <div className="flex-1 relative">
-              <input 
-                type="text" 
-                placeholder="أدخل رقم الهيكل (VIN) أو رقم القطعة (OEM)..." 
-                className="w-full bg-white border border-zinc-200 rounded-xl px-4 py-3.5 text-xs sm:text-sm focus:outline-none focus:border-store-secondary"
-              />
+          {/* مربع كبسولة البحث المزدوجة */}
+          <div className="bg-white/10 backdrop-blur-lg p-2.5 sm:p-3.5 rounded-3xl shadow-2xl max-w-2xl mx-auto border border-white/20">
+            
+            {/* أزرار اختيار نوع البحث */}
+            <div className="flex items-center justify-center gap-2 mb-3 bg-zinc-900/60 p-1 rounded-2xl max-w-xs mx-auto border border-white/10">
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchMode('oem');
+                  setSearchQuery('');
+                }}
+                className={`flex-1 py-1.5 px-3 rounded-xl text-xs font-bold transition-all ${
+                  searchMode === 'oem'
+                    ? 'bg-store-primary text-white shadow-md'
+                    : 'text-zinc-400 hover:text-white'
+                }`}
+              >
+                رقم القطعة (OEM)
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchMode('vin');
+                  setSearchQuery('');
+                }}
+                className={`flex-1 py-1.5 px-3 rounded-xl text-xs font-bold transition-all ${
+                  searchMode === 'vin'
+                    ? 'bg-store-primary text-white shadow-md'
+                    : 'text-zinc-400 hover:text-white'
+                }`}
+              >
+                رقم الهيكل (VIN)
+              </button>
             </div>
-            <button className="bg-store-primary hover:bg-store-secondary text-white font-extrabold px-8 py-3.5 rounded-xl text-sm transition-all shadow-md active:scale-95 shrink-0">
-              بحث بالهيكل 🔍
-            </button>
+
+            {/* نموذج إدخال البحث */}
+            <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-2">
+              <div className="flex-1 relative">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={
+                    searchMode === 'oem'
+                      ? 'أدخل رقم القطعة الفني (مثل: CH-1306010-TH1)...'
+                      : 'أدخل رقم الهيكل المكون من 17 خانة (VIN)...'
+                  }
+                  maxLength={searchMode === 'vin' ? 17 : 50}
+                  className="w-full bg-white text-zinc-800 placeholder-zinc-400 border border-zinc-200 rounded-2xl px-4 py-3.5 text-xs sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-store-primary"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="bg-store-primary hover:bg-store-secondary text-white font-extrabold px-7 py-3.5 rounded-2xl text-xs sm:text-sm transition-all shadow-md active:scale-95 shrink-0 flex items-center justify-center gap-2"
+              >
+                <span>{searchMode === 'oem' ? 'بحث برقم القطعة' : 'فحص برقم الهيكل'}</span>
+                <span>🔍</span>
+              </button>
+            </form>
+
+            {/* ملاحظة توضيحية */}
+            <p className="text-[11px] text-zinc-300 mt-2.5 font-medium">
+              {searchMode === 'oem'
+                ? '💡 ابحث باستخدام رقم المصنع الأصلي (OEM) المكتوب على القطعة أو الكرتون.'
+                : '🛡️ نضمن لك مطابقة القطع 100% مع مواصفات سيارتك فور إدخال رقم الهيكل.'}
+            </p>
           </div>
         </div>
       </section>
@@ -293,43 +367,43 @@ export default function HomePage() {
       </section>
 
       {/* بنر الصور المتحركة التلقائي */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-8">
-        <Link 
-          href="/products" 
-          className="block relative rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all group h-44 sm:h-64 lg:h-80"
-        >
-          {banners.map((imgSrc, index) => (
-            <div
-              key={index}
-              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                currentBannerIndex === index ? 'opacity-100 z-10' : 'opacity-0 z-0'
-              }`}
-            >
-              <img
-                src={imgSrc}
-                alt={`بنر المتجر ${index + 1}`}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-          ))}
+<section className="max-w-7xl mx-auto px-2 sm:px-8">
+  <Link 
+    href="/products" 
+    className="block relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all group h-44 sm:h-64 lg:h-80"
+  >
+    {banners.map((imgSrc, index) => (
+      <div
+        key={index}
+        className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+          currentBannerIndex === index ? 'opacity-100 z-10' : 'opacity-0 z-0'
+        }`}
+      >
+        <img
+          src={imgSrc}
+          alt={`بنر المتجر ${index + 1}`}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        />
+      </div>
+    ))}
 
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
-            {banners.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setCurrentBannerIndex(idx);
-                }}
-                className={`h-2 rounded-full transition-all ${
-                  currentBannerIndex === idx ? 'w-6 bg-white' : 'w-2 bg-white/50'
-                }`}
-                aria-label={`الانتقال للصورة ${idx + 1}`}
-              />
-            ))}
-          </div>
-        </Link>
-      </section>
+    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+      {banners.map((_, idx) => (
+        <button
+          key={idx}
+          onClick={(e) => {
+            e.preventDefault();
+            setCurrentBannerIndex(idx);
+          }}
+          className={`h-2 rounded-full transition-all ${
+            currentBannerIndex === idx ? 'w-6 bg-white' : 'w-2 bg-white/50'
+          }`}
+          aria-label={`الانتقال للصورة ${idx + 1}`}
+        />
+      ))}
+    </div>
+  </Link>
+</section>
 
       {/* قسم المنتجات المضافة حديثاً */}
       <section className="max-w-7xl mx-auto px-4 sm:px-8">

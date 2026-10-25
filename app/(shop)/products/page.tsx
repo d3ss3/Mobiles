@@ -15,6 +15,9 @@ const supabase = createClient(
 
 function ProductsContent() {
   const searchParams = useSearchParams();
+  
+  const oemParam = searchParams.get('oem');
+  const vinParam = searchParams.get('vin');
   const categoryParam = searchParams.get('category');
   const brand = searchParams.get('brand');
   const model = searchParams.get('model');
@@ -40,7 +43,6 @@ function ProductsContent() {
 
       setLoadingFitments(true);
       try {
-        // 1. البحث عن السيارات المطابقة في جدول vehicles
         let vehicleQuery = supabase.from('vehicles').select('id');
         
         if (brand) {
@@ -58,13 +60,12 @@ function ProductsContent() {
         if (vError) throw vError;
 
         if (!vehicles || vehicles.length === 0) {
-          setFittedProductIds(['NO_MATCH']); // لا توجد مطابقة
+          setFittedProductIds(['NO_MATCH']);
           return;
         }
 
         const vehicleIds = vehicles.map((v) => v.id);
 
-        // 2. جلب معرفات المنتجات من جدول product_fitments
         const { data: fitments, error: fError } = await supabase
           .from('product_fitments')
           .select('product_id')
@@ -88,7 +89,6 @@ function ProductsContent() {
     fetchFitmentProducts();
   }, [brand, model, year]);
 
-  // العثور على التصنيف الحالي
   const currentCategory = categories.find(
     (cat) => 
       String(cat.id) === String(categoryParam) || 
@@ -98,16 +98,39 @@ function ProductsContent() {
 
   const categoryTitle = currentCategory ? currentCategory.name : categoryParam || brand || '';
 
-  // تصفية المنتجات بناءً على التصنيف أو محدد السيارة
+  // تصفية المنتجات بناءً على التصنيف أو محدد السيارة أو رقم OEM
   const filteredProducts = products.filter((product: any) => {
-    // أ. إذا تم البحث عبر محدد السيارة (Brand, Model, Year)
+    // 1. التصفية برقم القطعة (OEM)
+    if (oemParam) {
+      const cleanQuery = oemParam.toLowerCase().trim();
+      const productOEM = String(product.oem_number || '').toLowerCase().trim();
+      const productTitle = String(product.title || product.name || '').toLowerCase().trim();
+  
+      const matchesOEM = productOEM.includes(cleanQuery);
+      const matchesTitle = productTitle.includes(cleanQuery);
+  
+      if (!matchesOEM && !matchesTitle) {
+        return false;
+      }
+    }
+  
+    // 2. التصفية برقم الهيكل (VIN)
+    if (vinParam) {
+      if (brand || model || year) {
+        if (!fittedProductIds.includes(product.id)) {
+          return false;
+        }
+      }
+    }
+  
+    // 3. التصفية حسب محدد السيارات (الماركة / الموديل / السنة)
     if (brand || model || year) {
       if (!fittedProductIds.includes(product.id)) {
         return false;
       }
     }
-
-    // ب. فلترة التصنيف العام
+  
+    // 4. التصفية حسب القسم (Category)
     if (categoryParam) {
       const pCategory = String(product.category || '').toLowerCase();
       const pCatId = String(product.category_id || '');
@@ -115,7 +138,7 @@ function ProductsContent() {
       const catName = currentCategory ? String(currentCategory.name).toLowerCase() : '';
       const catSlug = currentCategory ? String(currentCategory.slug).toLowerCase() : '';
       const catId = currentCategory ? String(currentCategory.id) : '';
-
+  
       const matchesCategory = (
         pCategory === targetParam ||
         pCatId === targetParam ||
@@ -123,10 +146,10 @@ function ProductsContent() {
         (catSlug && pCategory === catSlug) ||
         (catId && pCatId === catId)
       );
-
+  
       if (!matchesCategory) return false;
     }
-
+  
     return true;
   });
 
@@ -134,22 +157,23 @@ function ProductsContent() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-8 py-10 text-store-dark" dir="rtl">
-      {/* عنوان الصفحة */}
+      {/* تنبيه إذا كان البحث نشطاً برقم OEM */}
+      {oemParam && (
+        <div className="mb-6 p-4 bg-store-primary/10 border border-store-primary/20 rounded-2xl text-store-dark flex items-center justify-between">
+          <span>نتائج البحث برقم القطعة (OEM): <strong className="text-store-primary">{oemParam}</strong></span>
+          <a href="/products" className="text-xs font-bold text-store-secondary underline">إزالة البحث</a>
+        </div>
+      )}
+
       <div className="mb-10 text-center space-y-2">
         <span className="bg-store-accent/20 text-store-accent text-xs font-extrabold px-3.5 py-1.5 rounded-full inline-block border border-store-accent/30">
-          {categoryTitle || brand ? `قطع غيار أصلية ومطابقة` : `كافة قطع الغيار المتوفرة`}
+          {categoryTitle || brand || oemParam ? `قطع غيار أصلية ومطابقة` : `كافة قطع الغيار المتوفرة`}
         </span>
         <h1 className="text-3xl sm:text-4xl font-black text-store-dark">
-          {categoryTitle || brand ? `قطع غيار سيارات: ${categoryTitle || brand}` : 'جميع قطع الغيار الصينية'}
+          {oemParam ? `نتيجة البحث عن: ${oemParam}` : categoryTitle || brand ? `قطع غيار سيارات: ${categoryTitle || brand}` : 'جميع قطع الغيار الصينية'}
         </h1>
-        <p className="text-zinc-500 text-xs sm:text-sm max-w-xl mx-auto">
-          {categoryTitle || brand
-            ? `استعرض قطع الغيار المخصصة مع ضمان المطابقة برقم الهيكل (VIN).`
-            : 'تصفح أحدث قطع الغيار المستوردة مباشرة من مصانع الصين لكافة الماركات.'}
-        </p>
       </div>
 
-      {/* عرض المحتوى */}
       {isLoading ? (
         <div className="text-center py-20 text-zinc-400 font-medium">جاري تحميل المنتجات المطابقة...</div>
       ) : filteredProducts.length === 0 ? (
@@ -157,7 +181,7 @@ function ProductsContent() {
           <div className="text-4xl">🔍</div>
           <h3 className="font-bold text-store-dark text-base">لا توجد منتجات مطابقة لخياراتك حالياً</h3>
           <p className="text-zinc-400 text-xs px-4">
-            عذراً، لا توجد قطع غيار مسجلة تطابق الماركة أو الموديل أو السنة المحددة. يمكنك تعديل خيارات البحث أو إضافة ارتباطات مطابقة من لوحة التحكم.
+            عذراً، لا توجد قطع مسجلة تطابق بيانات البحث. تأكد من صحة رقم القطعة أو الهيكل المدخل.
           </p>
         </div>
       ) : (
@@ -173,7 +197,7 @@ function ProductsContent() {
                     id: product.id,
                     name: product.title || product.name,
                     price: product.price,
-                    image: product.image || 'https://via.placeholder.com/300',
+                    image: product.image || 'https://images.unsplash.com/photo-1486006920555-c77dce18193c?auto=format&fit=crop&w=800&q=80',
                     description: product.description,
                     category: product.category,
                     oem_number: product.oem_number,
@@ -184,7 +208,7 @@ function ProductsContent() {
               >
                 <div className="relative h-48 rounded-2xl overflow-hidden bg-store-light mb-4">
                   <img
-                    src={product.image || 'https://via.placeholder.com/300'}
+                    src={product.image || 'https://images.unsplash.com/photo-1486006920555-c77dce18193c?auto=format&fit=crop&w=800&q=80'}
                     alt={product.title || product.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
@@ -219,7 +243,7 @@ function ProductsContent() {
                       id: product.id,
                       title: product.title || product.name,
                       price: product.price,
-                      image: product.image || 'https://via.placeholder.com/300',
+                      image: product.image || 'https://images.unsplash.com/photo-1486006920555-c77dce18193c?auto=format&fit=crop&w=800&q=80',
                       description: product.description,
                       category: product.category,
                       stock: product.stock || 10,
@@ -235,7 +259,6 @@ function ProductsContent() {
         </div>
       )}
 
-      {/* نافذة تفاصيل المنتج */}
       <ProductDrawer
         product={selectedProduct}
         isOpen={isDrawerOpen}
