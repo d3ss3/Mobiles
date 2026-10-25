@@ -534,11 +534,11 @@ export default function HomePage() {
   <div className="bg-white rounded-3xl border border-zinc-200/80 shadow-sm p-6 sm:p-8 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 text-center">
     
     {/* الميزة الأولى: الشحن والتوصيل */}
-    <div className="flex flex-col items-center space-y-3 p-4 rounded-2xl transition-all duration-300 hover:bg-zinc-50">
+    <div className="flex flex-col items-center space-y-3 p-4 rounded-2xl transition-all duration-300 hover:bg-zinc-50 group">
       <div className="w-14 h-14 bg-store-primary/10 text-store-primary rounded-2xl flex items-center justify-center border border-store-primary/20 shadow-sm group-hover:scale-110 transition-transform">
         <svg className="w-7 h-7 fill-none stroke-current stroke-2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
           <rect x="1" y="3" width="15" height="13"></rect>
-          polygon points="16 8 20 8 23 11 23 16 16 16 16 8"
+          <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
           <circle cx="5.5" cy="18.5" r="2.5"></circle>
           <circle cx="18.5" cy="18.5" r="2.5"></circle>
         </svg>
@@ -550,8 +550,8 @@ export default function HomePage() {
     </div>
 
     {/* الميزة الثانية: الدفع الإلكتروني */}
-    <div className="flex flex-col items-center space-y-3 p-4 rounded-2xl transition-all duration-300 hover:bg-zinc-50">
-      <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center border border-emerald-200/60 shadow-sm">
+    <div className="flex flex-col items-center space-y-3 p-4 rounded-2xl transition-all duration-300 hover:bg-zinc-50 group">
+      <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center border border-emerald-200/60 shadow-sm group-hover:scale-110 transition-transform">
         <svg className="w-7 h-7 fill-none stroke-current stroke-2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
           <rect x="2" y="5" width="20" height="14" rx="2"></rect>
           <line x1="2" y1="10" x2="22" y2="10"></line>
@@ -564,8 +564,8 @@ export default function HomePage() {
     </div>
 
     {/* الميزة الثالثة: ضمان الجودة */}
-    <div className="flex flex-col items-center space-y-3 p-4 rounded-2xl transition-all duration-300 hover:bg-zinc-50">
-      <div className="w-14 h-14 bg-store-accent/20 text-store-dark rounded-2xl flex items-center justify-center border border-store-accent/30 shadow-sm">
+    <div className="flex flex-col items-center space-y-3 p-4 rounded-2xl transition-all duration-300 hover:bg-zinc-50 group">
+      <div className="w-14 h-14 bg-store-accent/20 text-store-dark rounded-2xl flex items-center justify-center border border-store-accent/30 shadow-sm group-hover:scale-110 transition-transform">
         <svg className="w-7 h-7 fill-none stroke-current stroke-2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
         </svg>
