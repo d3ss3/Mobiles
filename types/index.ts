@@ -1,12 +1,13 @@
 export interface Product {
-  id: string;
+  id: string | number;
   title: string;
-  description: string;
+  description?: string;
   price: number;
-  image: string;
-  created_at?: string;
   category: string;
-  stock: number;
+  stock?: number;
+  image?: string;
+  oem_number?: string; // أضف هذا السطر
+  created_at?: string;
 }
 
 // 2. تعريف عنصر السلة (Cart Item)
