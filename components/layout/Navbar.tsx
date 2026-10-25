@@ -59,7 +59,7 @@ export default function Navbar() {
           {/* 2. الشعار في المنتصف */}
           <Link href="/" className="flex items-center gap-2.5 group focus:outline-none">
             <img
-              src="https://cdn.custom-cursor.com/packs/6955/color-medium-slate-blue-pack.png" 
+              src="/images/logo.png" 
               alt="شعار المتجر"
               className="w-10 h-10 object-contain rounded-xl group-hover:scale-105 transition-transform shadow-sm"
             />
@@ -68,7 +68,7 @@ export default function Navbar() {
                 PortParts
               </span>
               <span className="text-[9px] font-bold text-store-primary tracking-wider uppercase">
-                قطع صينية
+              قطع غيار السيارات الصينية
               </span>
             </div>
           </Link>
@@ -115,7 +115,7 @@ export default function Navbar() {
         <div className="hidden md:flex items-center justify-between h-20">
           <Link href="/" className="flex items-center gap-3 group focus:outline-none">
             <img
-              src="https://i.pinimg.com/736x/c9/9b/27/c99b27b7ece4d9894ed490fb3529f0f5.jpg" 
+              src="/images/logo.png" 
               alt="شعار المتجر"
               className="w-12 h-12 object-contain rounded-2xl group-hover:scale-105 transition-transform shadow-sm"
             />
@@ -124,7 +124,7 @@ export default function Navbar() {
                 PortParts
               </span>
               <span className="text-[10px] font-bold text-zinc-400 -mt-0.5 tracking-wider uppercase">
-                متخصص قطع غيار السيارات الصينية
+              قطع غيار السيارات الصينية
               </span>
             </div>
           </Link>
@@ -202,12 +202,12 @@ export default function Navbar() {
             <div className="flex items-center justify-between p-5 border-b border-white/10 bg-gradient-to-r from-store-primary to-store-dark text-white">
               <div className="flex items-center gap-3">
                 <img
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWv_BiMd-nE8VfVaumxE4v4Ito0ARtWVl31IvTU3oRGg&s=10" 
+                  src="/images/logo.png" 
                   alt="شعار المتجر"
                   className="w-10 h-10 object-contain rounded-xl bg-white/10 backdrop-blur-sm p-1 shadow-sm border border-white/20"
                 />
                 <div>
-                  <h3 className="text-base font-black text-white leading-tight">متجر غناتي</h3>
+                  <h3 className="text-base font-black text-white leading-tight">PortParts</h3>
                   <p className="text-[10px] text-white/80 font-medium">قطع غيار السيارات الصينية</p>
                 </div>
               </div>

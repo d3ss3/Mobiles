@@ -51,3 +51,12 @@ body {
 .animate-infinite-scroll:hover {
   animation-play-state: paused;
 }
+
+/* إخفاء شريط التمرير مع الحفاظ على وظائفه */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

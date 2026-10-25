@@ -260,7 +260,7 @@ export default function HomePage() {
       </Link>
     ))}
 
-    <div className="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+    <div className="absolute bottom-2 sm:bottom-4 -translate-x-1/2 z-20 flex items-center gap-2">
       {banners.map((_, idx) => (
         <button
           key={idx}
@@ -280,14 +280,14 @@ export default function HomePage() {
 </section>
 
       {/* محدد السيارة الذكي */}
-      <section className="homepage_section py-0 overflow-hidden" dir="rtl">
+      <section className="homepage_section py-4 overflow-hidden bg-gradient-to-br from-store-dark via-zinc-900 to-store-primary" dir="rtl">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 mb-10">
           
           <div className="text-center space-y-2 mb-8">
-            <h2 className="text-2xl sm:text-4xl font-black text-store-dark tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-black leading-tight text-zinc-300">
               ابحث بقطع غيار سيارتك الصينية
             </h2>
-            <p className="text-xs sm:text-base text-zinc-500 font-medium">
+            <p className="text-xs sm:text-base font-medium text-zinc-300">
               اختر ماركة سيارتك، الموديل، وسنة الصنع للوصول الفوري للقطع المتوافقة
             </p>
           </div>
@@ -367,7 +367,7 @@ export default function HomePage() {
                 
                 window.location.href = `/products?${queryParams.toString()}`;
               }}
-              className="w-full bg-store-secondary hover:bg-store-primary text-white font-black py-3.5 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 text-base cursor-pointer"
+              className="w-full bg-store-primary hover:bg-store-secondary text-white font-black py-3.5 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 text-base cursor-pointer"
             >
               <span>عرض قطع الغيار المتوافقة</span>
               <svg className="w-5 h-5 rtl:rotate-180" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
@@ -377,14 +377,12 @@ export default function HomePage() {
           </div>
 
         </div>
-      </section>
-
-      {/* شريط الشركات المتحرك */}
-      <section className="homepage_section py-4 overflow-hidden">
+        {/* شريط الشركات المتحرك */}
+      <section className="homepage_section overflow-hidden">
         {categories.length > 0 && (
           <div className="relative w-full flex overflow-x-hidden group py-4">
-            <div className="absolute left-0 inset-y-0 w-24 sm:w-40 bg-gradient-to-r from-store-light via-store-light/80 to-transparent z-10 pointer-events-none" />
-            <div className="absolute right-0 inset-y-0 w-24 sm:w-40 bg-gradient-to-l from-store-light via-store-light/80 to-transparent z-10 pointer-events-none" />
+            <div className="absolute left-0 inset-y-0 w-24 sm:w-40" />
+            <div className="absolute right-0 inset-y-0 w-24 sm:w-40" />
 
             <div className="flex animate-marquee whitespace-nowrap gap-6 sm:gap-8 group-hover:[animation-play-state:paused]">
               {[...categories, ...categories, ...categories].map((cat, index) => (
@@ -400,13 +398,17 @@ export default function HomePage() {
                       <span className="text-store-primary font-black text-4xl">{cat.name.charAt(0)}</span>
                     )}
                   </div>
-                  <span className="text-base sm:text-lg font-black text-store-dark text-center line-clamp-1">{cat.name}</span>
+                  <span className="text-base sm:text-lg font-black text-zinc-300 text-center line-clamp-1">{cat.name}</span>
                 </Link>
               ))}
             </div>
           </div>
         )}
       </section>
+
+      </section>
+
+      
 
 
       {/* قسم المنتجات المضافة حديثاً */}

@@ -13,7 +13,7 @@ export default function Footer() {
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-store-primary flex items-center justify-center text-white shadow-lg shadow-store-primary/25 font-black text-xl">
             <img
-              src="https://cdn.custom-cursor.com/packs/6955/color-medium-slate-blue-pack.png" 
+              src="/images/logo.png" 
               alt="شعار المتجر"
               className="w-12 h-12 object-contain rounded-2xl group-hover:scale-105 transition-transform shadow-sm"
             />
