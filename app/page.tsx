@@ -35,7 +35,7 @@ export default function HomePage() {
   const banners = [
     "/images/banner1.png",
     "/images/banner2.png",
-    "/images/banner3.jpg",
+    "/images/banner3.png",
   ];
 
   // معالجة البحث والتوجيه المباشر لصفحة المنتجات
@@ -63,14 +63,20 @@ export default function HomePage() {
       }
     }
     fetchCategories();
+  }, []);
 
-    const timer = setInterval(() => {
-      setCurrentBannerIndex((prev) => (prev + 1) % banners.length);
-    }, 4000);
-    return () => clearInterval(timer);
+  // 2. حركة البنرات التلقائية (تم فصلها لتكون مستقلة)
+  useEffect(() => {
+    if (banners.length === 0) return;
+  
+    const interval = setInterval(() => {
+      setCurrentBannerIndex((prevIndex) => (prevIndex + 1) % banners.length);
+    }, 4000); // الانتقال كل 4 ثوانٍ
+  
+    return () => clearInterval(interval);
   }, [banners.length]);
 
-  // 2. جلب الموديلات من جدول vehicles بناءً على اسم الشركة المختارة
+  // 3. جلب الموديلات من جدول vehicles بناءً على اسم الشركة المختارة
   useEffect(() => {
     async function fetchModels() {
       if (!selectedBrand) {
@@ -82,12 +88,10 @@ export default function HomePage() {
 
       setLoadingModels(true);
       try {
-        // استخراج الاسم الإنجليزي من بين القوسين (مثل Changan من "شانجان (Changan)")
         const match = selectedBrand.match(/\(([^)]+)\)/);
         const englishBrand = match ? match[1].trim() : selectedBrand;
         const arabicPart = selectedBrand.split('(')[0].trim();
 
-        // البحث بمرونة إما بالاسم الإنجليزي أو العربي
         const { data, error } = await supabase
           .from('vehicles')
           .select('model')
@@ -112,7 +116,7 @@ export default function HomePage() {
     fetchModels();
   }, [selectedBrand]);
 
-  // 3. جلب السنوات من جدول vehicles بناءً على الشركة والموديل
+  // 4. جلب السنوات من جدول vehicles بناءً على الشركة والموديل
   useEffect(() => {
     async function fetchYears() {
       if (!selectedBrand || !selectedModel) {
